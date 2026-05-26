@@ -36,7 +36,7 @@ public static class MauiProgram
 
         // ── ViewModels ────────────────────────────
         builder.Services.AddTransient<LoginViewModel>();
-       // builder.Services.AddTransient<RegisterViewModel>();
+        // builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddTransient<AvailableOrdersViewModel>();
         builder.Services.AddTransient<ActiveDeliveryViewModel>();
@@ -46,8 +46,9 @@ public static class MauiProgram
 
         // ── Pages ─────────────────────────────────
         builder.Services.AddSingleton<AppShell>();
+        builder.Services.AddSingleton<SplashPage>();
         builder.Services.AddTransient<LoginPage>();
-       // builder.Services.AddTransient<RegisterPage>();
+        // builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddSingleton<HomePage>();
         builder.Services.AddTransient<AvailableOrdersPage>();
         builder.Services.AddTransient<ActiveDeliveryPage>();

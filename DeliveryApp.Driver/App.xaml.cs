@@ -5,13 +5,9 @@ namespace DeliveryApp.Driver;
 
 public partial class App : Application
 {
-    public App(AuthService auth, AppShell shell, LoginPage loginPage)
+    public App(SplashPage splash)
     {
         InitializeComponent();
-
-        if (auth.IsLoggedIn)
-            MainPage = shell;
-        else
-            MainPage = new NavigationPage(loginPage);
+        MainPage = splash; // ✅ من DI
     }
 }

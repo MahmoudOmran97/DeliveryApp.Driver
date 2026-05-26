@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             x:Class="DeliveryApp.Driver.Views.SplashPage"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#FF5722">
+	<Grid>
+		<VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20">
+			<Border BackgroundColor="White" StrokeShape="RoundRectangle 28"
+                    Stroke="Transparent" WidthRequest="110" HeightRequest="110">
+				<Label Text="🛵" FontSize="58" HorizontalOptions="Center" VerticalOptions="Center"/>
+			</Border>
+			<Label Text="drver"
+                   FontFamily="CairoBold" FontSize="42" TextColor="White" HorizontalOptions="Center"/>
+			<Label Text="dev"
+                   FontFamily="CairoRegular" FontSize="15" TextColor="#FFCCBC" HorizontalOptions="Center"/>
+		</VerticalStackLayout>
+		<ActivityIndicator Color="White" IsRunning="True" VerticalOptions="End" Margin="0,0,0,60"/>
+	</Grid>
+</ContentPage>

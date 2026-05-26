@@ -3,22 +3,39 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <Color x:Key="Primary">#FF5722</Color>
+
     <Color x:Key="PrimaryDark">#E64A19</Color>
+
     <Color x:Key="PrimaryLight">#FF8A65</Color>
+
     <Color x:Key="Secondary">#2D2D2D</Color>
+
     <Color x:Key="TextPrimary">#212121</Color>
+
     <Color x:Key="TextSecondary">#757575</Color>
+
     <Color x:Key="Background">#F8F9FA</Color>
+
     <Color x:Key="CardBg">#FFFFFF</Color>
+
     <Color x:Key="Divider">#E0E0E0</Color>
+
     <Color x:Key="Success">#4CAF50</Color>
+
     <Color x:Key="Warning">#FFC107</Color>
+
     <Color x:Key="Error">#F44336</Color>
+
     <Color x:Key="White">#FFFFFF</Color>
+
     <Color x:Key="Black">#000000</Color>
+
     <Color x:Key="Gray100">#F5F5F5</Color>
+
     <Color x:Key="Gray200">#EEEEEE</Color>
+
     <Color x:Key="Gray400">#BDBDBD</Color>
+
     <Color x:Key="Gray600">#757575</Color>
 
 </ResourceDictionary>
