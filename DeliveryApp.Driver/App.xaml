@@ -8,7 +8,7 @@
         <ResourceDictionary>
             <converters:LocaleStrings x:Key="LocStrings" />
             <converters:BoolToLayoutConverter x:Key="BoolToLayoutConverter" />
-            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:ChatBubbleColorConverter x:Key="ChatBubbleColorConverter" />
             <converters:BoolToTextColorConverter x:Key="BoolToTextColorConverter" />
             <converters:BoolToSubTextColorConverter x:Key="BoolToSubTextColorConverter" />
 

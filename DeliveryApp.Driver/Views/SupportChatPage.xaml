@@ -29,7 +29,7 @@
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="models:ChatMessage">
 					<Grid HorizontalOptions="{Binding IsFromMe, Converter={StaticResource BoolToLayoutConverter}}">
-						<Border BackgroundColor="{Binding IsFromMe, Converter={StaticResource BoolToColorConverter}}"
+						<Border BackgroundColor="{Binding IsFromMe, Converter={StaticResource ChatBubbleColorConverter}}"
                                 StrokeShape="RoundRectangle 12" Padding="12,8" MaximumWidthRequest="280">
 							<VerticalStackLayout Spacing="4">
 								<Label Text="{Binding Text}" TextColor="{Binding IsFromMe, Converter={StaticResource BoolToTextColorConverter}}"
