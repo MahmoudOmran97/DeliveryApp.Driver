@@ -22,7 +22,7 @@
 		</Grid>
 
 		<!-- Messages List -->
-		<CollectionView Grid.Row="1" ItemsSource="{Binding Messages}" Padding="16">
+		<CollectionView Grid.Row="1" ItemsSource="{Binding Messages}" Margin="16">
 			<CollectionView.ItemsLayout>
 				<LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
 			</CollectionView.ItemsLayout>
@@ -55,6 +55,5 @@
                         CornerRadius="22" WidthRequest="80" HeightRequest="44"/>
 			</Grid>
 		</Border>
-
 	</Grid>
 </ContentPage>
