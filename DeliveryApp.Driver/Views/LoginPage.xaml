@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             x:Class="DeliveryApp.Driver.Views.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             NavigationPage.HasNavigationBar="False">
+	<ScrollView>
+		<Grid RowDefinitions="280,*">
+
+			<!-- Orange top section -->
+			<Grid Grid.Row="0" BackgroundColor="#FF5722">
+				<VerticalStackLayout VerticalOptions="End" HorizontalOptions="Center"
+                                     Padding="0,0,0,36" Spacing="10">
+					<Label Text="🛵" FontSize="60" HorizontalOptions="Center"/>
+					<Label Text="Driver Portal"
+                           FontFamily="CairoBold" FontSize="30" TextColor="White" HorizontalOptions="Center"/>
+					<Label Text="Sign in to start delivering"
+                           FontFamily="CairoRegular" FontSize="14" TextColor="#FFCCBC" HorizontalOptions="Center"/>
+				</VerticalStackLayout>
+			</Grid>
+
+			<!-- White card -->
+			<Border Grid.Row="0" Grid.RowSpan="2"
+                    BackgroundColor="#F8F9FA"
+                    StrokeShape="RoundRectangle 32,32,0,0"
+                    Stroke="Transparent"
+                    VerticalOptions="End"
+                    Padding="28,32,28,40">
+				<VerticalStackLayout Spacing="18">
+
+					<Label Text="Login"
+                           FontFamily="CairoBold" FontSize="26" TextColor="#212121"/>
+
+					<!-- Email -->
+					<VerticalStackLayout Spacing="6">
+						<Label Text="Email"
+                               FontFamily="CairoRegular" FontSize="13" TextColor="#757575"/>
+						<Border Style="{StaticResource InputBorder}">
+							<Entry Placeholder="your@email.com"
+                                   Text="{Binding Email}"
+                                   Keyboard="Email" HeightRequest="50"
+                                   BackgroundColor="Transparent"
+                                   FontFamily="CairoRegular" FontSize="15" TextColor="#212121"/>
+						</Border>
+					</VerticalStackLayout>
+
+					<!-- Password -->
+					<VerticalStackLayout Spacing="6">
+						<Label Text="Password"
+                               FontFamily="CairoRegular" FontSize="13" TextColor="#757575"/>
+						<Border Style="{StaticResource InputBorder}">
+							<Entry Placeholder="••••••••"
+                                   Text="{Binding Password}"
+                                   IsPassword="True"
+                                   HeightRequest="50" BackgroundColor="Transparent"
+                                   FontFamily="CairoRegular" FontSize="15" TextColor="#212121"
+                                   ReturnCommand="{Binding LoginCommand}"/>
+						</Border>
+					</VerticalStackLayout>
+
+					<Button Text="Login"
+                            Command="{Binding LoginCommand}"
+                            IsEnabled="{Binding IsNotBusy}"
+                            Style="{StaticResource PrimaryBtn}"
+                            Margin="0,6,0,0"/>
+
+					<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                       Color="#FF5722" HorizontalOptions="Center"/>
+
+					<HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+						<Label Text="Don't have an account?"
+                               FontFamily="CairoRegular" FontSize="14" TextColor="#757575" VerticalOptions="Center"/>
+						<Label Text="Register"
+                               FontFamily="CairoBold" FontSize="14" TextColor="#FF5722" VerticalOptions="Center">
+							<Label.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding GoToRegisterCommand}"/>
+							</Label.GestureRecognizers>
+						</Label>
+					</HorizontalStackLayout>
+
+				</VerticalStackLayout>
+			</Border>
+
+		</Grid>
+	</ScrollView>
+</ContentPage>

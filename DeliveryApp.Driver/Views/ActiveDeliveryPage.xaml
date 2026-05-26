@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
+             x:Class="DeliveryApp.Driver.Views.ActiveDeliveryPage"
+             x:DataType="vm:ActiveDeliveryViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F8F9FA"
+             Title="Active Delivery">
+
+	<Grid RowDefinitions="Auto,300,*">
+
+		<!-- Header -->
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,16"
+              ColumnDefinitions="44,*">
+			<Border Grid.Column="0" BackgroundColor="#E64A19"
+                    StrokeShape="RoundRectangle 22" Stroke="Transparent"
+                    WidthRequest="36" HeightRequest="36"
+                    HorizontalOptions="Start" VerticalOptions="Center">
+				<Label Text="←" TextColor="White" FontSize="18"
+                       HorizontalOptions="Center" VerticalOptions="Center">
+					<Label.GestureRecognizers>
+						<TapGestureRecognizer Tapped="OnBackTapped"/>
+					</Label.GestureRecognizers>
+				</Label>
+			</Border>
+			<VerticalStackLayout Grid.Column="1" Spacing="2" Margin="12,0,0,0">
+				<Label Text="Active Delivery" FontFamily="CairoBold" FontSize="20" TextColor="White"/>
+				<Label Text="{Binding Order.StatusText}"
+                       FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
+			</VerticalStackLayout>
+		</Grid>
+
+		<!-- Map -->
+		<mapsui:MapControl x:Name="MapControl" Grid.Row="1"/>
+
+		<!-- Bottom Sheet -->
+		<ScrollView Grid.Row="2">
+			<VerticalStackLayout Padding="16" Spacing="14">
+
+				<!-- Status Badge -->
+				<Border BackgroundColor="{Binding Order.StatusColor}"
+                        StrokeShape="RoundRectangle 10" Stroke="Transparent"
+                        Padding="16,10" HorizontalOptions="Center">
+					<Label Text="{Binding Order.StatusText}"
+                           FontFamily="CairoBold" FontSize="14" TextColor="White"
+                           HorizontalOptions="Center"/>
+				</Border>
+
+				<!-- Order Info Card -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 16"
+                        Stroke="Transparent"
+                        Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                        Padding="16">
+					<VerticalStackLayout Spacing="12">
+
+						<!-- Restaurant → Customer -->
+						<Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8">
+							<Label Grid.Column="0" Text="🏪" FontSize="16" VerticalOptions="Center"/>
+							<Label Grid.Column="1" Text="{Binding Order.RestaurantName}"
+                                   FontFamily="CairoBold" FontSize="13" TextColor="#212121"
+                                   VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+							<Label Grid.Column="2" Text="→" FontSize="16" TextColor="#9E9E9E"
+                                   VerticalOptions="Center"/>
+							<Label Grid.Column="3"
+                                   FontFamily="CairoBold" FontSize="13" TextColor="#212121"
+                                   VerticalOptions="Center" LineBreakMode="TailTruncation">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="👤 "/>
+										<Span Text="{Binding Order.CustomerName}"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+						</Grid>
+
+						<BoxView HeightRequest="1" Color="#F5F5F5"/>
+
+						<!-- Delivery Address -->
+						<HorizontalStackLayout Spacing="8">
+							<Label Text="📍" FontSize="14" VerticalOptions="Start"/>
+							<Label Text="{Binding Order.DeliveryAddress}"
+                                   FontFamily="CairoRegular" FontSize="13" TextColor="#616161"
+                                   HorizontalOptions="FillAndExpand" LineBreakMode="WordWrap"/>
+						</HorizontalStackLayout>
+
+						<!-- Notes -->
+						<HorizontalStackLayout Spacing="8"
+                                               IsVisible="{Binding Order.DeliveryNotes, Converter={StaticResource StringNotEmpty}}">
+							<Label Text="📝" FontSize="14" VerticalOptions="Start"/>
+							<Label Text="{Binding Order.DeliveryNotes}"
+                                   FontFamily="CairoRegular" FontSize="13" TextColor="#757575"
+                                   HorizontalOptions="FillAndExpand" LineBreakMode="WordWrap"/>
+						</HorizontalStackLayout>
+
+						<!-- Earning -->
+						<HorizontalStackLayout Spacing="6">
+							<Label Text="💰" FontSize="16"/>
+							<Label FontFamily="CairoBold" FontSize="15" TextColor="#4CAF50"
+                                   VerticalOptions="Center">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="Earning: "/>
+										<Span Text="{Binding Order.DeliveryFeeText}"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+						</HorizontalStackLayout>
+
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Order Items -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 16"
+                        Stroke="Transparent"
+                        Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                        Padding="16">
+					<VerticalStackLayout Spacing="10">
+						<Label Text="Order Items" FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
+						<BindableLayout.ItemsSource>
+							<x:Array Type="{x:Type x:String}"/>
+						</BindableLayout.ItemsSource>
+						<CollectionView ItemsSource="{Binding Order.Items}">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="m2:ActiveOrderItem"
+                                              xmlns:m2="clr-namespace:DeliveryApp.Driver.Models">
+									<HorizontalStackLayout Padding="0,4" Spacing="10">
+										<Label Text="•" FontSize="14" TextColor="#FF5722" VerticalOptions="Center"/>
+										<Label Text="{Binding Display}"
+                                               FontFamily="CairoRegular" FontSize="14" TextColor="#424242"
+                                               VerticalOptions="Center"/>
+									</HorizontalStackLayout>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Action Buttons -->
+				<Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+					<!-- Call Customer -->
+					<Border Grid.Column="0" BackgroundColor="White"
+                            StrokeShape="RoundRectangle 12" Stroke="#E0E0E0"
+                            Padding="0" HeightRequest="50">
+						<Button Text="📞 Call Customer"
+                                Command="{Binding CallCustomerCommand}"
+                                BackgroundColor="Transparent" TextColor="#212121"
+                                FontFamily="CairoBold" FontSize="13"/>
+					</Border>
+
+					<!-- Open Maps -->
+					<Border Grid.Column="1" BackgroundColor="White"
+                            StrokeShape="RoundRectangle 12" Stroke="#E0E0E0"
+                            Padding="0" HeightRequest="50">
+						<Button Text="🗺 Navigate"
+                                Command="{Binding OpenMapCommand}"
+                                BackgroundColor="Transparent" TextColor="#212121"
+                                FontFamily="CairoBold" FontSize="13"/>
+					</Border>
+				</Grid>
+
+				<!-- Main Action Button -->
+				<Button Text="{Binding Order.NextActionText}"
+                        Command="{Binding NextStatusCommand}"
+                        IsEnabled="{Binding IsNotBusy}"
+                        BackgroundColor="#FF5722" TextColor="White"
+                        FontFamily="CairoBold" FontSize="16"
+                        HeightRequest="54" CornerRadius="14"/>
+
+				<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                                   Color="#FF5722" HorizontalOptions="Center"/>
+
+				<BoxView HeightRequest="20" Color="Transparent"/>
+			</VerticalStackLayout>
+		</ScrollView>
+
+	</Grid>
+</ContentPage>
