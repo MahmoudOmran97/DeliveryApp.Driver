@@ -1,0 +1,473 @@
+﻿<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+
+	<!-- General -->
+	<data name="AppName">
+		<value>ديليفر</value>
+	</data>
+	<data name="Ok">
+		<value>موافق</value>
+	</data>
+	<data name="Cancel">
+		<value>إلغاء</value>
+	</data>
+	<data name="Save">
+		<value>حفظ</value>
+	</data>
+	<data name="Edit">
+		<value>تعديل</value>
+	</data>
+	<data name="Back">
+		<value>رجوع</value>
+	</data>
+	<data name="Notice">
+		<value>تنبيه</value>
+	</data>
+	<data name="Error">
+		<value>خطأ</value>
+	</data>
+	<data name="Yes">
+		<value>نعم</value>
+	</data>
+	<data name="No">
+		<value>لا</value>
+	</data>
+
+	<!-- Splash -->
+	<data name="SplashSubtitle">
+		<value>أسرع توصيل طعام</value>
+	</data>
+
+	<!-- Auth -->
+	<data name="WelcomeBack">
+		<value>أهلاً بعودتك!</value>
+	</data>
+	<data name="SignInToContinue">
+		<value>سجّل دخولك للمتابعة</value>
+	</data>
+	<data name="Login">
+		<value>تسجيل الدخول</value>
+	</data>
+	<data name="Email">
+		<value>البريد الإلكتروني</value>
+	</data>
+	<data name="EmailPlaceholder">
+		<value>example@email.com</value>
+	</data>
+	<data name="Password">
+		<value>كلمة المرور</value>
+	</data>
+	<data name="PasswordPlaceholder">
+		<value>••••••••</value>
+	</data>
+	<data name="DontHaveAccount">
+		<value>ليس لديك حساب؟</value>
+	</data>
+	<data name="Register">
+		<value>إنشاء حساب</value>
+	</data>
+	<data name="AlreadyHaveAccount">
+		<value>لديك حساب بالفعل؟</value>
+	</data>
+	<data name="FullName">
+		<value>الاسم الكامل</value>
+	</data>
+	<data name="FullNamePlaceholder">
+		<value>اكتب اسمك الكامل</value>
+	</data>
+	<data name="Phone">
+		<value>رقم الهاتف</value>
+	</data>
+	<data name="PhonePlaceholder">
+		<value>01xxxxxxxxx</value>
+	</data>
+	<data name="LoginFillFields">
+		<value>يرجى ملء جميع الحقول</value>
+	</data>
+	<data name="LoginInvalid">
+		<value>البريد الإلكتروني أو كلمة المرور غير صحيحة</value>
+	</data>
+
+	<!-- Home -->
+	<data name="Tab_Home">
+		<value>الرئيسية</value>
+	</data>
+	<data name="Tab_Orders">
+		<value>طلباتي</value>
+	</data>
+	<data name="Tab_Alerts">
+		<value>الإشعارات</value>
+	</data>
+	<data name="Tab_Settings">
+		<value>الإعدادات</value>
+	</data>
+	<data name="Support">
+		<value>الدعم</value>
+	</data>
+	<data name="ChatWithUs">
+		<value>تحدث معنا · مدعوم بالذكاء الاصطناعي</value>
+	</data>
+	<data name="Tab_Profile">
+		<value>حسابي</value>
+	</data>
+	<data name="SearchPlaceholder">
+		<value>ابحث عن مطعم أو طعام…</value>
+	</data>
+	<data name="RestaurantsNearYou">
+		<value>المطاعم القريبة منك</value>
+	</data>
+
+	<!-- Restaurant -->
+	<data name="Rating">
+		<value>⭐ التقييم</value>
+	</data>
+	<data name="DeliveryLabel">
+		<value>🚴 التوصيل</value>
+	</data>
+	<data name="EstTime">
+		<value>⏱ الوقت</value>
+	</data>
+	<data name="ViewCart">
+		<value>عرض السلة</value>
+	</data>
+
+	<!-- Cart -->
+	<data name="MyCart">
+		<value>سلة التسوق</value>
+	</data>
+	<data name="ClearAll">
+		<value>حذف الكل</value>
+	</data>
+	<data name="CartEmpty">
+		<value>سلتك فارغة</value>
+	</data>
+	<data name="CartEmptySub">
+		<value>تصفح المطاعم وأضف ما تشتهي!</value>
+	</data>
+	<data name="Total">
+		<value>الإجمالي</value>
+	</data>
+	<data name="ProceedToCheckout">
+		<value>متابعة الطلب ←</value>
+	</data>
+
+	<!-- Checkout -->
+	<data name="Checkout">
+		<value>تأكيد الطلب</value>
+	</data>
+	<data name="DeliveryAddress">
+		<value>عنوان التوصيل</value>
+	</data>
+	<data name="AddressPlaceholder">
+		<value>اكتب عنوان التوصيل</value>
+	</data>
+	<data name="NotesPlaceholder">
+		<value>ملاحظات للمندوب (اختياري)</value>
+	</data>
+	<data name="PickAddressOnMap">
+		<value>📍  اختر من الخريطة</value>
+	</data>
+	<data name="AddressRequired">
+		<value>يرجى إدخال أو تحديد عنوان التوصيل</value>
+	</data>
+	<data name="PaymentMethod">
+		<value>طريقة الدفع</value>
+	</data>
+	<data name="OrderSummary">
+		<value>ملخص الطلب</value>
+	</data>
+	<data name="Subtotal">
+		<value>المجموع الفرعي</value>
+	</data>
+	<data name="DeliveryFee">
+		<value>رسوم التوصيل</value>
+	</data>
+	<data name="PlaceOrder">
+		<value>تأكيد الطلب 🎉</value>
+	</data>
+	<data name="OrderFailed">
+		<value>فشل تقديم الطلب. يرجى المحاولة مرة أخرى.</value>
+	</data>
+
+	<!-- Map picker -->
+	<data name="PickLocation">
+		<value>اختر موقع التوصيل</value>
+	</data>
+	<data name="ConfirmLocation">
+		<value>تأكيد الموقع</value>
+	</data>
+	<data name="LocationPermissionDenied">
+		<value>يلزم منح صلاحية الموقع لتحديد عنوانك على الخريطة.</value>
+	</data>
+	<data name="LocationError">
+		<value>تعذّر تحديد موقعك. يمكنك تحريك الدبوس يدوياً.</value>
+	</data>
+
+	<!-- Orders -->
+	<data name="MyOrders">
+		<value>طلباتي</value>
+	</data>
+	<data name="NoOrders">
+		<value>لا توجد طلبات بعد</value>
+	</data>
+	<data name="NoOrdersSub">
+		<value>سيظهر سجل طلباتك هنا</value>
+	</data>
+	<data name="TrackOrder">
+		<value>تتبع الطلب ←</value>
+	</data>
+	<data name="ItemsLabel">
+		<value>عناصر</value>
+	</data>
+
+	<!-- Order Detail -->
+	<data name="OrderDetails">
+		<value>تفاصيل الطلب</value>
+	</data>
+	<data name="OrderNumber">
+		<value>طلب رقم #</value>
+	</data>
+	<data name="Placed">
+		<value>وقت الطلب: </value>
+	</data>
+	<data name="ItemsSectionTitle">
+		<value>العناصر</value>
+	</data>
+	<data name="CancelOrder">
+		<value>إلغاء الطلب</value>
+	</data>
+	<data name="CancelReason">
+		<value>السبب (اختياري):</value>
+	</data>
+	<data name="CancelFailed">
+		<value>لا يمكن الإلغاء في هذه المرحلة</value>
+	</data>
+	<data name="RateExperience">
+		<value>⭐  قيّم تجربتك</value>
+	</data>
+	<data name="RateOrder">
+		<value>قيّم طلبك</value>
+	</data>
+	<data name="RateRestaurant">
+		<value>المطعم (1 – 5)</value>
+	</data>
+	<data name="RateDriver">
+		<value>المندوب (1 – 5)</value>
+	</data>
+	<data name="CommentPlaceholder">
+		<value>اترك تعليقاً (اختياري)</value>
+	</data>
+	<data name="SubmitRating">
+		<value>إرسال التقييم</value>
+	</data>
+	<data name="ThankYouFeedback">
+		<value>شكراً على تقييمك!</value>
+	</data>
+
+	<!-- Order Tracking -->
+	<data name="TrackingTitle">
+		<value>تتبع الطلب</value>
+	</data>
+	<data name="Step_Placed">
+		<value>استُلم</value>
+	</data>
+	<data name="Step_Accepted">
+		<value>قُبل</value>
+	</data>
+	<data name="Step_Cooking">
+		<value>يُحضَّر</value>
+	</data>
+	<data name="Step_OnWay">
+		<value>في الطريق</value>
+	</data>
+	<data name="Step_Delivered">
+		<value>وصل</value>
+	</data>
+	<data name="Status_Pending">
+		<value>في انتظار موافقة المطعم ⏳</value>
+	</data>
+	<data name="Status_Accepted">
+		<value>تم قبول طلبك من المطعم ✓</value>
+	</data>
+	<data name="Status_Preparing">
+		<value>جاري تحضير طعامك 🍳</value>
+	</data>
+	<data name="Status_ReadyForPickup">
+		<value>جاهز — المندوب في الطريق 📦</value>
+	</data>
+	<data name="Status_OnTheWay">
+		<value>المندوب في طريقه إليك! 🛵</value>
+	</data>
+	<data name="Status_Delivered">
+		<value>تم التوصيل! بالهناء والشفاء 🎉</value>
+	</data>
+
+	<!-- Notifications -->
+	<data name="Notifications">
+		<value>الإشعارات</value>
+	</data>
+	<data name="MarkAllRead">
+		<value>تعيين الكل كمقروء</value>
+	</data>
+	<data name="NoNotifications">
+		<value>لا توجد إشعارات حتى الآن</value>
+	</data>
+
+	<!-- Profile -->
+	<data name="Profile">
+		<value>حسابي</value>
+	</data>
+	<data name="PersonalInfo">
+		<value>البيانات الشخصية</value>
+	</data>
+	<data name="EditProfile">
+		<value>تعديل الملف الشخصي</value>
+	</data>
+	<data name="Logout">
+		<value>تسجيل الخروج</value>
+	</data>
+	<data name="LogoutConfirm">
+		<value>هل أنت متأكد من تسجيل الخروج؟</value>
+	</data>
+	<data name="ChangeLanguage">
+		<value>تغيير اللغة</value>
+	</data>
+	<data name="LanguageChanged">
+		<value>تم تغيير اللغة. يرجى إعادة تشغيل التطبيق.</value>
+	</data>
+	<data name="Address">
+		<value>العنوان</value>
+	</data>
+	<data name="AddressFieldPlaceholder">
+		<value>عنوانك</value>
+	</data>
+	<data name="UpdateFailed">
+		<value>فشل التحديث</value>
+	</data>
+
+	<!-- Register -->
+	<data name="CreateAccount">
+		<value>إنشاء حساب</value>
+	</data>
+	<data name="FillDetails">
+		<value>أدخل بياناتك للبدء</value>
+	</data>
+	<data name="PhoneNumber">
+		<value>رقم الهاتف</value>
+	</data>
+	<data name="ConfirmPassword">
+		<value>تأكيد كلمة المرور</value>
+	</data>
+	<data name="MinPasswordHint">
+		<value>٨ أحرف على الأقل</value>
+	</data>
+	<data name="ConfirmPasswordPlaceholder">
+		<value>أعد كتابة كلمة المرور</value>
+	</data>
+
+	<!-- Profile Settings -->
+	<data name="Settings">
+		<value>الإعدادات</value>
+	</data>
+	<data name="HelpAndSupport">
+		<value>المساعدة والدعم</value>
+	</data>
+	<data name="AboutApp">
+		<value>عن التطبيق</value>
+	</data>
+	<data name="Status_Pending">
+		<value>في انتظار قبول المطعم ⏳</value>
+	</data>
+	<data name="Status_Accepted">
+		<value>المطعم قبل طلبك ✓</value>
+	</data>
+	<data name="Status_Preparing">
+		<value>جاري تحضير طعامك 🍳</value>
+	</data>
+	<data name="Status_ReadyForPickup">
+		<value>جاهز — المندوب في الطريق 📦</value>
+	</data>
+	<data name="Status_OnTheWay">
+		<value>المندوب في الطريق! 🛵</value>
+	</data>
+	<data name="Status_Delivered">
+		<value>تم التوصيل! بالهنا والشفا 🎉</value>
+	</data>
+	<!-- Support Chat -->
+	<data name="SupportChat">
+		<value>دردشة الدعم</value>
+	</data>
+	<data name="ChatPlaceholder">
+		<value>اكتب رسالتك...</value>
+	</data>
+	<data name="AiPowered">
+		<value>مدعوم بالذكاء الاصطناعي · متاح دائمًا</value>
+	</data>
+	<!-- Driver Specific -->
+	<data name="Tab_Earnings">
+		<value>الأرباح</value>
+
+	</data>
+	<data name="AvailableOrders">
+		<value>الطلبات المتاحة</value>
+
+	</data>
+	<data name="ActiveDelivery">
+		<value>التوصيل الحالي</value>
+
+	</data>
+	<data name="AcceptOrder">
+		<value>قبول الطلب</value>
+
+	</data>
+	<data name="RejectOrder">
+		<value>رفض الطلب</value>
+
+	</data>
+	<data name="Navigate">
+		<value>التنقل</value>
+
+	</data>
+	<data name="CallCustomer">
+		<value>اتصال بالعميل</value>
+
+	</data>
+	<data name="ChatWithCustomer">
+		<value>دردشة مع العميل</value>
+
+	</data>
+	<data name="Earnings">
+		<value>الأرباح</value>
+
+	</data>
+	<data name="TodayEarnings">
+		<value>أرباح اليوم</value>
+
+	</data>
+	<data name="TotalEarnings">
+		<value>إجمالي الأرباح</value>
+
+	</data>
+	<data name="CompletedOrders">
+		<value>الطلبات المكتملة</value>
+
+	</data>
+
+</root>

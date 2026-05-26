@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             xmlns:models="clr-namespace:DeliveryApp.Driver.Models"
+             x:Class="DeliveryApp.Driver.Views.CustomerChatPage"
+             x:DataType="vm:CustomerChatViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#F5F5F5">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="16,48,16,16">
+            <Grid ColumnDefinitions="44,*,44">
+                <Image Grid.Column="0" Source="icon_back.png" WidthRequest="38" HeightRequest="38"
+                       VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
+                    <Label Text="{Binding CustomerName}"
+                           FontFamily="CairoBold" FontSize="17" TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="{loc:Loc Key=ChatWithCustomer}"
+                           FontFamily="CairoRegular" FontSize="11" TextColor="#FFCCBC" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+
+        <!-- Messages List -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Messages}"
+                        Margin="0,4,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ChatMessage">
+                    <Grid Margin="12,4">
+                        <!-- Customer message (left) -->
+                        <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 18,18,18,4"
+                                Stroke="#E0E0E0" StrokeThickness="1"
+                                Padding="14,10"
+                                MaximumWidthRequest="280"
+                                HorizontalOptions="Start"
+                                IsVisible="{Binding IsFromMe, Converter={StaticResource InvertedBoolConverter}}">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Text}" FontFamily="CairoRegular"
+                                       FontSize="14" TextColor="#212121"/>
+                                <Label Text="{Binding TimeText}" FontFamily="CairoRegular"
+                                       FontSize="10" TextColor="#BDBDBD" HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Driver message (right) -->
+                        <Border BackgroundColor="#FF5722"
+                                StrokeShape="RoundRectangle 18,18,4,18"
+                                Stroke="Transparent" StrokeThickness="0"
+                                Padding="14,10"
+                                MaximumWidthRequest="280"
+                                HorizontalOptions="End"
+                                IsVisible="{Binding IsFromMe}">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Text}" FontFamily="CairoRegular"
+                                       FontSize="14" TextColor="White"/>
+                                <Label Text="{Binding TimeText}" FontFamily="CairoRegular"
+                                       FontSize="10" TextColor="#FFCCBC" HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Input Bar -->
+        <Border Grid.Row="2" BackgroundColor="White"
+                StrokeShape="RoundRectangle 0"
+                Stroke="#E0E0E0" StrokeThickness="1"
+                Padding="12,10,12,30">
+            <Grid ColumnDefinitions="*,56" ColumnSpacing="10">
+                <Border Grid.Column="0"
+                        BackgroundColor="#F5F5F5"
+                        StrokeShape="RoundRectangle 24"
+                        Stroke="#E0E0E0" StrokeThickness="1"
+                        Padding="16,0">
+                    <Entry Text="{Binding InputText}"
+                           Placeholder="{loc:Loc Key=ChatPlaceholder}"
+                           PlaceholderColor="#BDBDBD"
+                           FontFamily="CairoRegular"
+                           FontSize="14"
+                           TextColor="#212121"
+                           BackgroundColor="Transparent"
+                           HeightRequest="46"
+                           ReturnCommand="{Binding SendCommand}"/>
+                </Border>
+                <Border Grid.Column="1"
+                        BackgroundColor="#FF5722"
+                        StrokeShape="RoundRectangle 28"
+                        Stroke="Transparent"
+                        WidthRequest="50" HeightRequest="50"
+                        VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SendCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="➤" FontSize="20" TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+</ContentPage>

@@ -215,3 +215,13 @@ public class PagedResult<T>
     public int? TotalPages { get; set; }
     public List<T> Data { get; set; } = new();
 }
+
+// ─── Chat ────────────────────────────────────────────────────────────────────
+
+public class ChatMessage
+{
+    public string Text { get; set; } = string.Empty;
+    public bool IsFromMe { get; set; }
+    public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+    public string TimeText => Timestamp.ToLocalTime().ToString("hh:mm tt");
+}

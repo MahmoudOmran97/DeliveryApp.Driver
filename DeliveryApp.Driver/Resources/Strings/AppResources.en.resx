@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+
+	<!-- General -->
+	<data name="AppName">
+		<value>Deliver</value>
+	</data>
+	<data name="Ok">
+		<value>OK</value>
+	</data>
+	<data name="Cancel">
+		<value>Cancel</value>
+	</data>
+	<data name="Save">
+		<value>Save</value>
+	</data>
+	<data name="Edit">
+		<value>Edit</value>
+	</data>
+	<data name="Back">
+		<value>Back</value>
+	</data>
+	<data name="Notice">
+		<value>Notice</value>
+	</data>
+	<data name="Error">
+		<value>Error</value>
+	</data>
+	<data name="Yes">
+		<value>Yes</value>
+	</data>
+	<data name="No">
+		<value>No</value>
+	</data>
+
+	<!-- Splash -->
+	<data name="SplashSubtitle">
+		<value>Fastest food delivery</value>
+	</data>
+
+	<!-- Auth -->
+	<data name="WelcomeBack">
+		<value>Welcome Back!</value>
+	</data>
+	<data name="SignInToContinue">
+		<value>Sign in to continue</value>
+	</data>
+	<data name="Login">
+		<value>Login</value>
+	</data>
+	<data name="Email">
+		<value>Email</value>
+	</data>
+	<data name="EmailPlaceholder">
+		<value>your@email.com</value>
+	</data>
+	<data name="Password">
+		<value>Password</value>
+	</data>
+	<data name="PasswordPlaceholder">
+		<value>••••••••</value>
+	</data>
+	<data name="DontHaveAccount">
+		<value>Don't have an account?</value>
+	</data>
+	<data name="Register">
+		<value>Register</value>
+	</data>
+	<data name="AlreadyHaveAccount">
+		<value>Already have an account?</value>
+	</data>
+	<data name="FullName">
+		<value>Full Name</value>
+	</data>
+	<data name="FullNamePlaceholder">
+		<value>Your full name</value>
+	</data>
+	<data name="Phone">
+		<value>Phone</value>
+	</data>
+	<data name="PhonePlaceholder">
+		<value>01xxxxxxxxx</value>
+	</data>
+	<data name="LoginFillFields">
+		<value>Please fill in all fields</value>
+	</data>
+	<data name="LoginInvalid">
+		<value>Invalid email or password</value>
+	</data>
+
+	<!-- Home -->
+	<data name="Tab_Home">
+		<value>Home</value>
+	</data>
+	<data name="Tab_Orders">
+		<value>Orders</value>
+	</data>
+	<data name="Tab_Alerts">
+		<value>Alerts</value>
+	</data>
+	<data name="Tab_Settings">
+		<value>Settings</value>
+	</data>
+	<data name="Support">
+		<value>Support</value>
+	</data>
+	<data name="ChatWithUs">
+		<value>Chat with us · AI-powered</value>
+	</data>
+	<data name="Tab_Profile">
+		<value>Profile</value>
+	</data>
+	<data name="SearchPlaceholder">
+		<value>Search restaurants or food…</value>
+	</data>
+	<data name="RestaurantsNearYou">
+		<value>Restaurants Near You</value>
+	</data>
+
+	<!-- Restaurant -->
+	<data name="Rating">
+		<value>⭐ Rating</value>
+	</data>
+	<data name="DeliveryLabel">
+		<value>🚴 Delivery</value>
+	</data>
+	<data name="EstTime">
+		<value>⏱ Est.</value>
+	</data>
+	<data name="ViewCart">
+		<value>View Cart</value>
+	</data>
+
+	<!-- Cart -->
+	<data name="MyCart">
+		<value>My Cart</value>
+	</data>
+	<data name="ClearAll">
+		<value>Clear All</value>
+	</data>
+	<data name="CartEmpty">
+		<value>Your cart is empty</value>
+	</data>
+	<data name="CartEmptySub">
+		<value>Browse restaurants and add items!</value>
+	</data>
+	<data name="Total">
+		<value>Total</value>
+	</data>
+	<data name="ProceedToCheckout">
+		<value>Proceed to Checkout →</value>
+	</data>
+
+	<!-- Checkout -->
+	<data name="Checkout">
+		<value>Checkout</value>
+	</data>
+	<data name="DeliveryAddress">
+		<value>Delivery Address</value>
+	</data>
+	<data name="AddressPlaceholder">
+		<value>Enter your delivery address</value>
+	</data>
+	<data name="NotesPlaceholder">
+		<value>Notes for driver (optional)</value>
+	</data>
+	<data name="PickAddressOnMap">
+		<value>📍  Pick on Map</value>
+	</data>
+	<data name="AddressRequired">
+		<value>Please enter or pick your delivery address</value>
+	</data>
+	<data name="PaymentMethod">
+		<value>Payment Method</value>
+	</data>
+	<data name="OrderSummary">
+		<value>Order Summary</value>
+	</data>
+	<data name="Subtotal">
+		<value>Subtotal</value>
+	</data>
+	<data name="DeliveryFee">
+		<value>Delivery Fee</value>
+	</data>
+	<data name="PlaceOrder">
+		<value>Place Order 🎉</value>
+	</data>
+	<data name="OrderFailed">
+		<value>Failed to place order. Please try again.</value>
+	</data>
+
+	<!-- Map picker -->
+	<data name="PickLocation">
+		<value>Pick Delivery Location</value>
+	</data>
+	<data name="ConfirmLocation">
+		<value>Confirm Location</value>
+	</data>
+	<data name="LocationPermissionDenied">
+		<value>Location permission is required to pick your address on the map.</value>
+	</data>
+	<data name="LocationError">
+		<value>Could not get your location. Please move the pin manually.</value>
+	</data>
+
+	<!-- Orders -->
+	<data name="MyOrders">
+		<value>My Orders</value>
+	</data>
+	<data name="NoOrders">
+		<value>No orders yet</value>
+	</data>
+	<data name="NoOrdersSub">
+		<value>Your order history will appear here</value>
+	</data>
+	<data name="TrackOrder">
+		<value>Track Order →</value>
+	</data>
+	<data name="ItemsLabel">
+		<value>items</value>
+	</data>
+
+	<!-- Order Detail -->
+	<data name="OrderDetails">
+		<value>Order Details</value>
+	</data>
+	<data name="OrderNumber">
+		<value>Order #</value>
+	</data>
+	<data name="Placed">
+		<value>Placed: </value>
+	</data>
+	<data name="ItemsSectionTitle">
+		<value>Items</value>
+	</data>
+	<data name="CancelOrder">
+		<value>Cancel Order</value>
+	</data>
+	<data name="CancelReason">
+		<value>Reason (optional):</value>
+	</data>
+	<data name="CancelFailed">
+		<value>Could not cancel at this stage</value>
+	</data>
+	<data name="RateExperience">
+		<value>⭐  Rate Your Experience</value>
+	</data>
+	<data name="RateOrder">
+		<value>Rate Your Order</value>
+	</data>
+	<data name="RateRestaurant">
+		<value>Restaurant (1 – 5)</value>
+	</data>
+	<data name="RateDriver">
+		<value>Driver (1 – 5)</value>
+	</data>
+	<data name="CommentPlaceholder">
+		<value>Leave a comment (optional)</value>
+	</data>
+	<data name="SubmitRating">
+		<value>Submit Rating</value>
+	</data>
+	<data name="ThankYouFeedback">
+		<value>Thank you for your feedback!</value>
+	</data>
+
+	<!-- Order Tracking -->
+	<data name="TrackingTitle">
+		<value>Tracking Order</value>
+	</data>
+	<data name="Step_Placed">
+		<value>Placed</value>
+	</data>
+	<data name="Step_Accepted">
+		<value>Accepted</value>
+	</data>
+	<data name="Step_Cooking">
+		<value>Cooking</value>
+	</data>
+	<data name="Step_OnWay">
+		<value>On Way</value>
+	</data>
+	<data name="Step_Delivered">
+		<value>Delivered</value>
+	</data>
+	<data name="Status_Pending">
+		<value>Waiting for restaurant to accept ⏳</value>
+	</data>
+	<data name="Status_Accepted">
+		<value>Restaurant accepted your order ✓</value>
+	</data>
+	<data name="Status_Preparing">
+		<value>Preparing your food 🍳</value>
+	</data>
+	<data name="Status_ReadyForPickup">
+		<value>Ready — driver is coming 📦</value>
+	</data>
+	<data name="Status_OnTheWay">
+		<value>Driver is on the way! 🛵</value>
+	</data>
+	<data name="Status_Delivered">
+		<value>Delivered! Enjoy your meal 🎉</value>
+	</data>
+
+	<!-- Notifications -->
+	<data name="Notifications">
+		<value>Notifications</value>
+	</data>
+	<data name="MarkAllRead">
+		<value>Mark all read</value>
+	</data>
+	<data name="NoNotifications">
+		<value>No notifications yet</value>
+	</data>
+
+	<!-- Profile -->
+	<data name="Profile">
+		<value>Profile</value>
+	</data>
+	<data name="PersonalInfo">
+		<value>Personal Info</value>
+	</data>
+	<data name="EditProfile">
+		<value>Edit Profile</value>
+	</data>
+	<data name="Logout">
+		<value>Logout</value>
+	</data>
+	<data name="LogoutConfirm">
+		<value>Are you sure you want to logout?</value>
+	</data>
+	<data name="ChangeLanguage">
+		<value>Change Language</value>
+	</data>
+	<data name="LanguageChanged">
+		<value>Language changed. Please restart the app.</value>
+	</data>
+	<data name="Address">
+		<value>Address</value>
+	</data>
+	<data name="AddressFieldPlaceholder">
+		<value>Your address</value>
+	</data>
+	<data name="UpdateFailed">
+		<value>Update failed</value>
+	</data>
+
+	<!-- Register -->
+	<data name="CreateAccount">
+		<value>Create Account</value>
+	</data>
+	<data name="FillDetails">
+		<value>Fill in your details to get started</value>
+	</data>
+	<data name="PhoneNumber">
+		<value>Phone Number</value>
+	</data>
+	<data name="ConfirmPassword">
+		<value>Confirm Password</value>
+	</data>
+	<data name="MinPasswordHint">
+		<value>Min 8 characters</value>
+	</data>
+	<data name="ConfirmPasswordPlaceholder">
+		<value>Repeat password</value>
+	</data>
+	<data name="Status_Pending">
+		<value>Waiting for restaurant to accept ⏳</value>
+	</data>
+	<data name="Status_Accepted">
+		<value>Restaurant accepted your order ✓</value>
+	</data>
+	<data name="Status_Preparing">
+		<value>Preparing your food 🍳</value>
+	</data>
+	<data name="Status_ReadyForPickup">
+		<value>Ready — driver is coming 📦</value>
+	</data>
+	<data name="Status_OnTheWay">
+		<value>Driver is on the way! 🛵</value>
+	</data>
+	<data name="Status_Delivered">
+		<value>Delivered! Enjoy your meal 🎉</value>
+	</data>
+	<!-- Profile Settings -->
+	<data name="Settings">
+		<value>Settings</value>
+	</data>
+	<data name="HelpAndSupport">
+		<value>Help &amp; Support</value>
+	</data>
+	<data name="AboutApp">
+		<value>About App</value>
+	</data>
+	<!-- Support Chat -->
+	<data name="SupportChat">
+		<value>Support Chat</value>
+	</data>
+	<data name="ChatPlaceholder">
+		<value>Type your message...</value>
+	</data>
+	<data name="AiPowered">
+		<value>AI-powered · Always online</value>
+	</data>
+	<!-- Driver Specific -->
+	<data name="Tab_Earnings">
+		<value>Earnings</value>
+
+	</data>
+	<data name="AvailableOrders">
+		<value>Available Orders</value>
+
+	</data>
+	<data name="ActiveDelivery">
+		<value>Active Delivery</value>
+
+	</data>
+	<data name="AcceptOrder">
+		<value>Accept Order</value>
+
+	</data>
+	<data name="RejectOrder">
+		<value>Reject Order</value>
+
+	</data>
+	<data name="Navigate">
+		<value>Navigate</value>
+
+	</data>
+	<data name="CallCustomer">
+		<value>Call Customer</value>
+
+	</data>
+	<data name="ChatWithCustomer">
+		<value>Chat with Customer</value>
+
+	</data>
+	<data name="Earnings">
+		<value>Earnings</value>
+
+	</data>
+	<data name="TodayEarnings">
+		<value>Today's Earnings</value>
+
+	</data>
+	<data name="TotalEarnings">
+		<value>Total Earnings</value>
+
+	</data>
+	<data name="CompletedOrders">
+		<value>Completed Orders</value>
+
+	</data>
+
+</root>
