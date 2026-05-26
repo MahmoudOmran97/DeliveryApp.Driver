@@ -171,6 +171,13 @@ public class ApiService
     public Task<ActiveOrder?> GetActiveOrderAsync()
         => GetAsync<ActiveOrder>("drivers/orders/active");
 
+    public async Task<bool> StartVoiceCallAsync(int orderId)
+    {
+        // This is a placeholder for the actual voice call initiation via SignalR or a dedicated endpoint
+        // For now, we'll assume it's handled via the SignalR service we updated.
+        return true;
+    }
+
     // ─── Orders ──────────────────────────────────────────────────────────────
 
     public Task<List<AvailableOrder>?> GetAvailableOrdersAsync()

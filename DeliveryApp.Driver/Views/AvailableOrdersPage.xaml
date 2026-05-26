@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.AvailableOrdersPage"
              x:DataType="vm:AvailableOrdersViewModel"
              Shell.NavBarIsVisible="False"
@@ -11,19 +12,25 @@
 	<Grid RowDefinitions="Auto,*">
 
 		<!-- Header -->
-		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,16">
-			<Grid ColumnDefinitions="*,Auto">
-				<VerticalStackLayout Grid.Column="0" Spacing="2">
-					<Label Text="Available Orders" FontFamily="CairoBold" FontSize="22" TextColor="White"/>
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,16" ColumnDefinitions="44,*">
+			<Image Grid.Column="0" Source="icon_back.png" WidthRequest="38" HeightRequest="38"
+				   VerticalOptions="Center">
+				<Image.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+				</Image.GestureRecognizers>
+			</Image>
+			<Grid Grid.Column="1" ColumnDefinitions="*,Auto">
+				<VerticalStackLayout Grid.Column="0" Spacing="2" Margin="12,0,0,0">
+					<Label Text="{loc:Loc Key=AvailableOrders}" FontFamily="CairoBold" FontSize="22" TextColor="White"/>
 					<Label Text="{Binding OrdersCount}"
-                           FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
+						   FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
 				</VerticalStackLayout>
 				<Button Grid.Column="1"
-                        Text="↻ Refresh"
-                        Command="{Binding LoadCommand}"
-                        BackgroundColor="Transparent"
-                        TextColor="White"
-                        FontFamily="CairoBold" FontSize="14"/>
+						Text="↻ Refresh"
+						Command="{Binding LoadCommand}"
+						BackgroundColor="Transparent"
+						TextColor="White"
+						FontFamily="CairoBold" FontSize="14"/>
 			</Grid>
 		</Grid>
 

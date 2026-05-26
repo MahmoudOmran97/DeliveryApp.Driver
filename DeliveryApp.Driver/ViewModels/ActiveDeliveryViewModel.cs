@@ -76,15 +76,22 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    async Task OpenChatAsync()
+    {
+        if (Order == null) return;
+        await Shell.Current.GoToAsync($"CustomerChatPage?orderId={Order.Id}&customerName={Order.CustomerName}");
+    }
+
+    [RelayCommand]
     async Task CallCustomerAsync()
     {
-        if (Order == null || string.IsNullOrEmpty(Order.CustomerPhone)) return;
-        try
-        {
-            var uri = new Uri($"tel:{Order.CustomerPhone}");
-            await Launcher.OpenAsync(uri);
-        }
-        catch { await AlertAsync("Cannot open phone app"); }
+        if (Order == null) return;
+        var confirm = await ConfirmAsync("Do you want to start an in-app voice call with the customer?");
+        if (!confirm) return;
+
+        // In a real app, this would open a VoiceCallPage or initiate WebRTC
+        await _api.StartVoiceCallAsync(Order.Id);
+        await AlertAsync("Calling customer via app... (Voice Call simulation)", "In-App Call");
     }
 
     [RelayCommand]

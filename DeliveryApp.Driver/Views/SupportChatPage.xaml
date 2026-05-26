@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:models="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             x:Class="DeliveryApp.Driver.Views.SupportChatPage"
+             x:DataType="vm:SupportChatViewModel"
+             Shell.NavBarIsVisible="False">
+
+	<Grid RowDefinitions="Auto,*,Auto" BackgroundColor="White">
+
+		<!-- Header -->
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,20" ColumnDefinitions="Auto,*,Auto">
+			<ImageButton Grid.Column="0" Source="back_white.png"
+                         Command="{Binding GoBackCommand}"
+                         WidthRequest="24" HeightRequest="24"
+                         BackgroundColor="Transparent"/>
+
+			<Label Grid.Column="1" Text="{loc:Loc Key=Support}" FontFamily="CairoBold"
+                   FontSize="18" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center"/>
+		</Grid>
+
+		<!-- Messages List -->
+		<CollectionView Grid.Row="1" ItemsSource="{Binding Messages}" Padding="16">
+			<CollectionView.ItemsLayout>
+				<LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
+			</CollectionView.ItemsLayout>
+			<CollectionView.ItemTemplate>
+				<DataTemplate x:DataType="models:ChatMessage">
+					<Grid HorizontalOptions="{Binding IsFromMe, Converter={StaticResource BoolToLayoutConverter}}">
+						<Border BackgroundColor="{Binding IsFromMe, Converter={StaticResource BoolToColorConverter}}"
+                                StrokeShape="RoundRectangle 12" Padding="12,8" MaximumWidthRequest="280">
+							<VerticalStackLayout Spacing="4">
+								<Label Text="{Binding Text}" TextColor="{Binding IsFromMe, Converter={StaticResource BoolToTextColorConverter}}"
+                                       FontFamily="CairoRegular" FontSize="14"/>
+								<Label Text="{Binding TimeText}" TextColor="{Binding IsFromMe, Converter={StaticResource BoolToSubTextColorConverter}}"
+                                       FontSize="10" HorizontalOptions="End"/>
+							</VerticalStackLayout>
+						</Border>
+					</Grid>
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+		</CollectionView>
+
+		<!-- Input Area -->
+		<Border Grid.Row="2" Padding="16,12" BackgroundColor="#F5F5F5" StrokeThickness="0">
+			<Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+				<Border Grid.Column="0" BackgroundColor="White" StrokeShape="RoundRectangle 22" Padding="16,0">
+					<Entry Placeholder="{loc:Loc Key=TypeMessage}" Text="{Binding InputText}"
+                           FontFamily="CairoRegular" FontSize="14" VerticalOptions="Center"/>
+				</Border>
+				<Button Grid.Column="1" Text="Send" Command="{Binding SendCommand}"
+                        BackgroundColor="#FF5722" TextColor="White"
+                        CornerRadius="22" WidthRequest="80" HeightRequest="44"/>
+			</Grid>
+		</Border>
+
+	</Grid>
+</ContentPage>

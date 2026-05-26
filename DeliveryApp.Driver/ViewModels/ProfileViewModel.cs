@@ -39,6 +39,12 @@ public partial class ProfileViewModel : BaseViewModel
     }
 
     [RelayCommand]
+    async Task OpenSettingsAsync()
+    {
+        await Shell.Current.GoToAsync("SettingsPage");
+    }
+
+    [RelayCommand]
     async Task LogoutAsync()
     {
         var confirm = await ConfirmAsync("Are you sure you want to logout?", "Logout");

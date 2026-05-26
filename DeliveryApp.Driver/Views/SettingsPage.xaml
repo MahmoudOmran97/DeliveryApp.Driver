@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             x:Class="DeliveryApp.Driver.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Shell.NavBarIsVisible="False">
+
+	<Grid RowDefinitions="Auto,*" BackgroundColor="#F5F5F5">
+
+		<!-- Header -->
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,24">
+			<Label Text="{loc:Loc Key=Settings}" FontFamily="CairoBold"
+                   FontSize="22" TextColor="White" HorizontalOptions="Center"/>
+		</Grid>
+
+		<!-- Body -->
+		<ScrollView Grid.Row="1">
+			<VerticalStackLayout Padding="16,20" Spacing="14">
+
+				<!-- Language Section -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                        Stroke="#E0E0E0" StrokeThickness="1" Padding="16,16">
+					<VerticalStackLayout Spacing="14">
+
+						<HorizontalStackLayout Spacing="10">
+							<Label Text="🌐" FontSize="20" VerticalOptions="Center"/>
+							<Label Text="{loc:Loc Key=ChangeLanguage}" FontFamily="CairoBold"
+                                   FontSize="16" TextColor="#212121" VerticalOptions="Center"/>
+						</HorizontalStackLayout>
+
+						<BoxView Color="#E0E0E0" HeightRequest="1"/>
+
+						<!-- AR / EN Side by Side -->
+						<Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+
+							<!-- Arabic -->
+							<Border Grid.Column="0"
+                                    BackgroundColor="{Binding ArabicBtnBg}"
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="{Binding ArabicBtnBorder}"
+                                    StrokeThickness="2"
+                                    Padding="0,16">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding SetLanguageCommand}"
+                                                          CommandParameter="ar"/>
+								</Border.GestureRecognizers>
+								<VerticalStackLayout HorizontalOptions="Center" Spacing="6">
+									<Label Text="🇸🇦" FontSize="28" HorizontalOptions="Center"/>
+									<Label Text="العربية" FontFamily="CairoBold" FontSize="14"
+                                           TextColor="{Binding ArabicBtnText}"
+                                           HorizontalOptions="Center"/>
+									<Label Text="Arabic" FontFamily="CairoRegular" FontSize="11"
+                                           TextColor="{Binding ArabicSubText}"
+                                           HorizontalOptions="Center"/>
+								</VerticalStackLayout>
+							</Border>
+
+							<!-- English -->
+							<Border Grid.Column="1"
+                                    BackgroundColor="{Binding EnglishBtnBg}"
+                                    StrokeShape="RoundRectangle 12"
+                                    Stroke="{Binding EnglishBtnBorder}"
+                                    StrokeThickness="2"
+                                    Padding="0,16">
+								<Border.GestureRecognizers>
+									<TapGestureRecognizer Command="{Binding SetLanguageCommand}"
+                                                          CommandParameter="en"/>
+								</Border.GestureRecognizers>
+								<VerticalStackLayout HorizontalOptions="Center" Spacing="6">
+									<Label Text="🇬🇧" FontSize="28" HorizontalOptions="Center"/>
+									<Label Text="English" FontFamily="CairoBold" FontSize="14"
+                                           TextColor="{Binding EnglishBtnText}"
+                                           HorizontalOptions="Center"/>
+									<Label Text="الإنجليزية" FontFamily="CairoRegular" FontSize="11"
+                                           TextColor="{Binding EnglishSubText}"
+                                           HorizontalOptions="Center"/>
+								</VerticalStackLayout>
+							</Border>
+
+						</Grid>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Support Section -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                        Stroke="#E0E0E0" StrokeThickness="1" Padding="16,16">
+					<VerticalStackLayout Spacing="0">
+
+						<HorizontalStackLayout Spacing="10" Margin="0,0,0,12">
+							<Label Text="🎧" FontSize="20" VerticalOptions="Center"/>
+							<Label Text="{loc:Loc Key=Support}" FontFamily="CairoBold"
+                                   FontSize="16" TextColor="#212121" VerticalOptions="Center"/>
+						</HorizontalStackLayout>
+
+						<BoxView Color="#E0E0E0" HeightRequest="1" Margin="0,0,0,4"/>
+
+						<!-- Chat with Support -->
+						<Grid Padding="0,10">
+							<Grid.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OpenChatCommand}"/>
+							</Grid.GestureRecognizers>
+							<HorizontalStackLayout Spacing="14">
+								<Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
+                                        Stroke="Transparent" WidthRequest="42" HeightRequest="42">
+									<Label Text="💬" FontSize="20"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+								</Border>
+								<VerticalStackLayout VerticalOptions="Center" Spacing="2"
+                                                     HorizontalOptions="StartAndExpand">
+									<Label Text="{loc:Loc Key=HelpAndSupport}" FontFamily="CairoBold"
+                                           FontSize="14" TextColor="#212121"/>
+									<Label Text="{loc:Loc Key=ChatWithUs}" FontFamily="CairoRegular"
+                                           FontSize="12" TextColor="#757575"/>
+								</VerticalStackLayout>
+								<Label Text="›" FontFamily="CairoBold" FontSize="24"
+                                       TextColor="#BDBDBD" VerticalOptions="Center"/>
+							</HorizontalStackLayout>
+						</Grid>
+
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- About Section -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                        Stroke="#E0E0E0" StrokeThickness="1" Padding="16,16">
+					<HorizontalStackLayout Spacing="14">
+						<Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
+                                Stroke="Transparent" WidthRequest="42" HeightRequest="42">
+							<Label Text="ℹ️" FontSize="20"
+                                   HorizontalOptions="Center" VerticalOptions="Center"/>
+						</Border>
+						<VerticalStackLayout VerticalOptions="Center" Spacing="2"
+                                             HorizontalOptions="StartAndExpand">
+							<Label Text="{loc:Loc Key=AboutApp}" FontFamily="CairoBold"
+                                   FontSize="14" TextColor="#212121"/>
+							<Label Text="Version 1.0.0" FontFamily="CairoRegular"
+                                   FontSize="12" TextColor="#757575"/>
+						</VerticalStackLayout>
+						<Label Text="›" FontFamily="CairoBold" FontSize="24"
+                               TextColor="#BDBDBD" VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+				</Border>
+
+				<BoxView HeightRequest="40" Color="Transparent"/>
+
+			</VerticalStackLayout>
+		</ScrollView>
+
+	</Grid>
+</ContentPage>

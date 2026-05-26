@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.HomePage"
              x:DataType="vm:HomeViewModel"
              Shell.NavBarIsVisible="False"
@@ -16,12 +17,13 @@
 				<Grid BackgroundColor="#FF5722" Padding="20,52,20,20" ColumnDefinitions="*,48">
 
 					<VerticalStackLayout Grid.Column="0" Spacing="3">
-						<Label Text="🛵 Driver App"
+						<Label Text="{loc:Loc Key=DriverApp}"
                                FontFamily="CairoRegular" FontSize="12" TextColor="#FFCCBC"/>
 						<Label FontFamily="CairoBold" FontSize="20" TextColor="White">
 							<Label.FormattedText>
 								<FormattedString>
-									<Span Text="Hello, "/>
+									<Span Text="{loc:Loc Key=Hello}"/>
+									<Span Text=", "/>
 									<Span Text="{Binding GreetingName}"/>
 									<Span Text=" 👋"/>
 								</FormattedString>
@@ -51,7 +53,7 @@
 					<Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,12,Auto">
 
 						<Label Grid.Row="0" Grid.Column="0"
-                               Text="Status" FontFamily="CairoRegular" FontSize="13" TextColor="#757575"/>
+                               Text="{loc:Loc Key=Status}" FontFamily="CairoRegular" FontSize="13" TextColor="#757575"/>
 
 						<Border Grid.Row="0" Grid.Column="1"
                                 BackgroundColor="{Binding IsOnline, Converter={StaticResource BoolToOnlineColorConverter}}"
@@ -64,7 +66,7 @@
 						<Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                FontFamily="CairoRegular" FontSize="12" TextColor="#FF9800"
                                IsVisible="{Binding IsNotVerified}"
-                               Text="⚠️ Account pending verification by admin"/>
+                               Text="{loc:Loc Key=PendingVerification}"/>
 
 						<Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                 Text="{Binding OnlineButtonText}"
@@ -92,7 +94,7 @@
 
 							<HorizontalStackLayout Spacing="8">
 								<Label Text="📦" FontSize="20"/>
-								<Label Text="Active Delivery"
+								<Label Text="{loc:Loc Key=ActiveDelivery}"
                                        FontFamily="CairoBold" FontSize="16" TextColor="#212121"
                                        VerticalOptions="Center"/>
 							</HorizontalStackLayout>
@@ -107,12 +109,12 @@
 
 							<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
 								<VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
-									<Label Text="Restaurant" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
+									<Label Text="{loc:Loc Key=Restaurant}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
 									<Label Text="{Binding ActiveOrder.RestaurantName}"
                                            FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
 								</VerticalStackLayout>
 								<VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
-									<Label Text="Earning" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
+									<Label Text="{loc:Loc Key=Earning}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
 									<Label Text="{Binding ActiveOrder.DeliveryFeeText}"
                                            FontFamily="CairoBold" FontSize="14" TextColor="#4CAF50"/>
 								</VerticalStackLayout>
@@ -122,7 +124,7 @@
                                    FontFamily="CairoRegular" FontSize="13" TextColor="#757575"
                                    LineBreakMode="TailTruncation"/>
 
-							<Button Text="View Delivery Details →"
+							<Button Text="{loc:Loc Key=ViewDetails}"
                                     Command="{Binding GoToDeliveryCommand}"
                                     BackgroundColor="#FF5722" TextColor="White"
                                     FontFamily="CairoBold" FontSize="14"
@@ -136,7 +138,7 @@
                             Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
                             Padding="16">
 						<VerticalStackLayout Spacing="14">
-							<Label Text="Today's Stats"
+							<Label Text="{loc:Loc Key=TodayStats}"
                                    FontFamily="CairoBold" FontSize="16" TextColor="#212121"/>
 
 							<Grid ColumnDefinitions="*,*,*">
@@ -146,7 +148,7 @@
 									<Label Text="{Binding TodayEarnings.TotalDeliveries}"
                                            FontFamily="CairoBold" FontSize="28" TextColor="#FF5722"
                                            HorizontalOptions="Center"/>
-									<Label Text="Deliveries" FontFamily="CairoRegular" FontSize="12"
+									<Label Text="{loc:Loc Key=Deliveries}" FontFamily="CairoRegular" FontSize="12"
                                            TextColor="#757575" HorizontalOptions="Center"/>
 								</VerticalStackLayout>
 
@@ -160,7 +162,7 @@
 									<Label Text="{Binding TodayEarnings.TotalEarningsText}"
                                            FontFamily="CairoBold" FontSize="22" TextColor="#4CAF50"
                                            HorizontalOptions="Center"/>
-									<Label Text="Earnings" FontFamily="CairoRegular" FontSize="12"
+									<Label Text="{loc:Loc Key=Earnings}" FontFamily="CairoRegular" FontSize="12"
                                            TextColor="#757575" HorizontalOptions="Center"/>
 								</VerticalStackLayout>
 
@@ -174,7 +176,7 @@
 									<Label Text="{Binding Profile.RatingText}"
                                            FontFamily="CairoBold" FontSize="22" TextColor="#FF9800"
                                            HorizontalOptions="Center"/>
-									<Label Text="Rating" FontFamily="CairoRegular" FontSize="12"
+									<Label Text="{loc:Loc Key=Rating}" FontFamily="CairoRegular" FontSize="12"
                                            TextColor="#757575" HorizontalOptions="Center"/>
 								</VerticalStackLayout>
 							</Grid>
@@ -182,7 +184,7 @@
 					</Border>
 
 					<!-- ── QUICK ACTIONS ── -->
-					<Label Text="Quick Actions"
+					<Label Text="{loc:Loc Key=QuickActions}"
                            FontFamily="CairoBold" FontSize="16" TextColor="#212121"/>
 
 					<Grid ColumnDefinitions="*,*" ColumnSpacing="12">
@@ -197,9 +199,9 @@
 							</Border.GestureRecognizers>
 							<VerticalStackLayout Spacing="8" HorizontalOptions="Center">
 								<Label Text="📋" FontSize="32" HorizontalOptions="Center"/>
-								<Label Text="Available" FontFamily="CairoBold" FontSize="14"
+								<Label Text="{loc:Loc Key=Available}" FontFamily="CairoBold" FontSize="14"
                                        TextColor="#212121" HorizontalOptions="Center"/>
-								<Label Text="Orders" FontFamily="CairoRegular" FontSize="12"
+								<Label Text="{loc:Loc Key=Orders}" FontFamily="CairoRegular" FontSize="12"
                                        TextColor="#757575" HorizontalOptions="Center"/>
 							</VerticalStackLayout>
 						</Border>
@@ -214,9 +216,9 @@
 							</Border.GestureRecognizers>
 							<VerticalStackLayout Spacing="8" HorizontalOptions="Center">
 								<Label Text="💰" FontSize="32" HorizontalOptions="Center"/>
-								<Label Text="My" FontFamily="CairoBold" FontSize="14"
+								<Label Text="{loc:Loc Key=My}" FontFamily="CairoBold" FontSize="14"
                                        TextColor="#212121" HorizontalOptions="Center"/>
-								<Label Text="Earnings" FontFamily="CairoRegular" FontSize="12"
+								<Label Text="{loc:Loc Key=Earnings}" FontFamily="CairoRegular" FontSize="12"
                                        TextColor="#757575" HorizontalOptions="Center"/>
 							</VerticalStackLayout>
 						</Border>

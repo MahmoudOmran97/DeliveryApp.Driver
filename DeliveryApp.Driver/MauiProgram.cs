@@ -2,6 +2,7 @@
 using DeliveryApp.Driver.Services;
 using DeliveryApp.Driver.ViewModels;
 using DeliveryApp.Driver.Views;
+using DeliveryApp.Driver.Converters;
 using Mapsui.UI.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
@@ -14,6 +15,9 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        // Apply localization before UI starts
+        LocalizationService.Apply(Preferences.Get(LocalizationService.LangKey, LocalizationService.Arabic));
+
         var builder = MauiApp.CreateBuilder();
 
         builder
@@ -33,6 +37,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ApiService>();
         builder.Services.AddSingleton<SignalRService>();
         builder.Services.AddSingleton<LocationService>();
+        builder.Services.AddSingleton<LocaleStrings>();
 
         // ── ViewModels ────────────────────────────
         builder.Services.AddTransient<LoginViewModel>();
@@ -42,6 +47,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ActiveDeliveryViewModel>();
         builder.Services.AddTransient<EarningsViewModel>();
         builder.Services.AddTransient<NotificationsViewModel>();
+        builder.Services.AddTransient<CustomerChatViewModel>();
+        builder.Services.AddTransient<SupportChatViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
 
         // ── Pages ─────────────────────────────────
@@ -54,6 +62,9 @@ public static class MauiProgram
         builder.Services.AddTransient<ActiveDeliveryPage>();
         builder.Services.AddTransient<EarningsPage>();
         builder.Services.AddTransient<NotificationsPage>();
+        builder.Services.AddTransient<CustomerChatPage>();
+        builder.Services.AddTransient<SupportChatPage>();
+        builder.Services.AddTransient<SettingsPage>();
         builder.Services.AddTransient<ProfilePage>();
 
 #if DEBUG
