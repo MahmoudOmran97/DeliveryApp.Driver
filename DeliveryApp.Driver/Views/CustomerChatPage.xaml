@@ -3,10 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             xmlns:cv="clr-namespace:DeliveryApp.Driver.Converters"
              xmlns:models="clr-namespace:DeliveryApp.Driver.Models"
              x:Class="DeliveryApp.Driver.Views.CustomerChatPage"
              x:DataType="vm:CustomerChatViewModel"
              Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <cv:InvertedBoolConverter x:Key="InvertBool"/>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#F5F5F5">
 
@@ -22,16 +27,35 @@
                 <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
                     <Label Text="{Binding CustomerName}"
                            FontFamily="CairoBold" FontSize="17" TextColor="White" HorizontalOptions="Center"/>
-                    <Label Text="{loc:Loc Key=ChatWithCustomer}"
-                           FontFamily="CairoRegular" FontSize="11" TextColor="#FFCCBC" HorizontalOptions="Center"/>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
+                        <Ellipse WidthRequest="8" HeightRequest="8" Fill="#4CAF50"
+                                 VerticalOptions="Center"
+                                 IsVisible="{Binding IsConnected}"/>
+                        <Ellipse WidthRequest="8" HeightRequest="8" Fill="#BDBDBD"
+                                 VerticalOptions="Center"
+                                 IsVisible="{Binding IsConnected, Converter={StaticResource InvertBool}}"/>
+                        <Label Text="{loc:Loc Key=ChatWithCustomer}"
+                               FontFamily="CairoRegular" FontSize="11" TextColor="#FFCCBC" HorizontalOptions="Center"/>
+                    </HorizontalStackLayout>
                 </VerticalStackLayout>
+                <BoxView Grid.Column="2" Color="Transparent"/>
             </Grid>
         </Grid>
 
         <!-- Messages List -->
         <CollectionView Grid.Row="1"
+                        x:Name="ChatList"
                         ItemsSource="{Binding Messages}"
                         Margin="0,4,0,0">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center"
+                                     Spacing="12" Margin="40,60">
+                    <Label Text="💬" FontSize="52" HorizontalOptions="Center"/>
+                    <Label Text="ابدأ المحادثة مع العميل"
+                           FontFamily="CairoBold" FontSize="15" TextColor="#9E9E9E"
+                           HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:ChatMessage">
                     <Grid Margin="12,4">
@@ -42,7 +66,7 @@
                                 Padding="14,10"
                                 MaximumWidthRequest="280"
                                 HorizontalOptions="Start"
-                                IsVisible="{Binding IsFromMe, Converter={StaticResource InvertedBoolConverter}}">
+                                IsVisible="{Binding IsFromOther}">
                             <VerticalStackLayout Spacing="4">
                                 <Label Text="{Binding Text}" FontFamily="CairoRegular"
                                        FontSize="14" TextColor="#212121"/>

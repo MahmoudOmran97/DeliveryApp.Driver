@@ -222,6 +222,7 @@ public class ChatMessage
 {
     public string Text { get; set; } = string.Empty;
     public bool IsFromMe { get; set; }
+    public bool IsFromOther => !IsFromMe;
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     public string TimeText => Timestamp.ToLocalTime().ToString("hh:mm tt");
 }

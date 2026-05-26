@@ -68,6 +68,17 @@ public class SignalRService
         if (IsConnected) await _hub!.InvokeAsync("SendChatMessage", orderId, message);
     }
 
+    // BUG FIX #2: الدرايفر محتاج يضم group الطلب عشان يستقبل رسائل العميل
+    public async Task JoinOrderAsync(int orderId)
+    {
+        if (IsConnected) await _hub!.InvokeAsync("JoinOrderTracking", orderId);
+    }
+
+    public async Task LeaveOrderAsync(int orderId)
+    {
+        if (IsConnected) await _hub!.InvokeAsync("LeaveOrderTracking", orderId);
+    }
+
     public async Task StartVoiceCallAsync(int orderId)
     {
         if (IsConnected) await _hub!.InvokeAsync("StartVoiceCall", orderId);
