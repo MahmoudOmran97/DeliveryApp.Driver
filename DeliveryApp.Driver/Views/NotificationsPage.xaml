@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             x:Class="DeliveryApp.Driver.Views.NotificationsPage"
+             x:DataType="vm:NotificationsViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F8F9FA">
+
+	<Grid RowDefinitions="Auto,*">
+
+		<!-- Header -->
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,16">
+			<Grid ColumnDefinitions="*,Auto">
+				<VerticalStackLayout Grid.Column="0" Spacing="2">
+					<Label Text="🔔 Notifications" FontFamily="CairoBold" FontSize="22" TextColor="White"/>
+					<Label FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"
+                           IsVisible="{Binding UnreadCount, Converter={StaticResource BoolToColorConverter}}">
+						<Label.FormattedText>
+							<FormattedString>
+								<Span Text="{Binding UnreadCount}"/>
+								<Span Text=" unread"/>
+							</FormattedString>
+						</Label.FormattedText>
+					</Label>
+				</VerticalStackLayout>
+				<Button Grid.Column="1"
+                        Text="Mark All Read"
+                        Command="{Binding MarkAllReadCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontFamily="CairoBold" FontSize="13"/>
+			</Grid>
+		</Grid>
+
+		<!-- Notifications List -->
+		<RefreshView Grid.Row="1"
+                     Command="{Binding LoadCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+			<CollectionView ItemsSource="{Binding Notifications}"
+                            EmptyView="No notifications yet 🔔"
+                            Margin="0,8">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="m:Notification">
+						<Border Margin="16,4"
+                                BackgroundColor="{Binding IsRead, Converter={StaticResource IsReadColor}}"
+                                StrokeShape="RoundRectangle 14"
+                                Stroke="Transparent"
+                                Shadow="{Shadow Brush=Black, Offset='0,2', Radius=6, Opacity=0.05}"
+                                Padding="16,14">
+							<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+
+								<!-- Icon -->
+								<Border Grid.Column="0"
+                                        BackgroundColor="#FFF3EF"
+                                        StrokeShape="RoundRectangle 22" Stroke="Transparent"
+                                        WidthRequest="44" HeightRequest="44"
+                                        HorizontalOptions="Center" VerticalOptions="Center">
+									<Label Text="📦" FontSize="20"
+                                           HorizontalOptions="Center" VerticalOptions="Center"/>
+								</Border>
+
+								<!-- Content -->
+								<VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+									<Label Text="{Binding Title}"
+                                           FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+									<Label Text="{Binding Body}"
+                                           FontFamily="CairoRegular" FontSize="13" TextColor="#616161"
+                                           LineBreakMode="WordWrap"/>
+								</VerticalStackLayout>
+
+								<!-- Time + Unread dot -->
+								<VerticalStackLayout Grid.Column="2" Spacing="6"
+                                                     HorizontalOptions="End" VerticalOptions="Center">
+									<Label Text="{Binding TimeText}"
+                                           FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"
+                                           HorizontalOptions="End"/>
+									<Ellipse WidthRequest="8" HeightRequest="8"
+                                             Fill="#FF5722"
+                                             HorizontalOptions="End"
+                                             IsVisible="{Binding IsRead, Converter={StaticResource InvertedBool}}"/>
+								</VerticalStackLayout>
+
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</RefreshView>
+
+	</Grid>
+</ContentPage>

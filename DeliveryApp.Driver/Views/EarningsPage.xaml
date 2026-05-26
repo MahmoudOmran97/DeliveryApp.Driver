@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             x:Class="DeliveryApp.Driver.Views.EarningsPage"
+             x:DataType="vm:EarningsViewModel"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F8F9FA">
+
+	<Grid RowDefinitions="Auto,*">
+
+		<!-- Header -->
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,20">
+			<Grid ColumnDefinitions="*,Auto">
+				<VerticalStackLayout Grid.Column="0" Spacing="2">
+					<Label Text="💰 My Earnings" FontFamily="CairoBold" FontSize="22" TextColor="White"/>
+					<Label Text="{Binding SelectedPeriodLabel}"
+                           FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
+				</VerticalStackLayout>
+				<Button Grid.Column="1" Text="↻" Command="{Binding LoadCommand}"
+                        BackgroundColor="Transparent" TextColor="White"
+                        FontFamily="CairoBold" FontSize="18"/>
+			</Grid>
+		</Grid>
+
+		<RefreshView Grid.Row="1"
+                     Command="{Binding LoadCommand}"
+                     IsRefreshing="{Binding IsRefreshing}">
+			<ScrollView>
+				<VerticalStackLayout Spacing="0">
+
+					<!-- Period Selector -->
+					<Border Margin="16,-20,16,0" BackgroundColor="White"
+                            StrokeShape="RoundRectangle 16" Stroke="Transparent"
+                            Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                            Padding="8,10">
+						<Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+
+							<Button x:Name="BtnToday" Grid.Column="0"
+                                    Text="Today"
+                                    Clicked="OnTodayTapped"
+                                    BackgroundColor="#FF5722" TextColor="White"
+                                    FontFamily="CairoBold" FontSize="13"
+                                    CornerRadius="10" HeightRequest="38"/>
+
+							<Button x:Name="BtnWeek" Grid.Column="1"
+                                    Text="This Week"
+                                    Clicked="OnWeekTapped"
+                                    BackgroundColor="#F5F5F5" TextColor="#757575"
+                                    FontFamily="CairoBold" FontSize="13"
+                                    CornerRadius="10" HeightRequest="38"/>
+
+							<Button x:Name="BtnMonth" Grid.Column="2"
+                                    Text="This Month"
+                                    Clicked="OnMonthTapped"
+                                    BackgroundColor="#F5F5F5" TextColor="#757575"
+                                    FontFamily="CairoBold" FontSize="13"
+                                    CornerRadius="10" HeightRequest="38"/>
+						</Grid>
+					</Border>
+
+					<VerticalStackLayout Padding="16,16,16,0" Spacing="14">
+
+						<!-- Summary Card -->
+						<Border BackgroundColor="White" StrokeShape="RoundRectangle 16"
+                                Stroke="Transparent"
+                                Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                                Padding="20,18">
+							<Grid ColumnDefinitions="*,Auto,*">
+
+								<VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+									<Label Text="{Binding Earnings.TotalEarningsText}"
+                                           FontFamily="CairoBold" FontSize="30" TextColor="#4CAF50"
+                                           HorizontalOptions="Center"/>
+									<Label Text="Total Earnings" FontFamily="CairoRegular" FontSize="13"
+                                           TextColor="#757575" HorizontalOptions="Center"/>
+								</VerticalStackLayout>
+
+								<BoxView Grid.Column="1" WidthRequest="1" Color="#F0F0F0"
+                                         VerticalOptions="Fill" Margin="0,4"/>
+
+								<VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+									<Label Text="{Binding Earnings.TotalDeliveries}"
+                                           FontFamily="CairoBold" FontSize="30" TextColor="#FF5722"
+                                           HorizontalOptions="Center"/>
+									<Label Text="Deliveries" FontFamily="CairoRegular" FontSize="13"
+                                           TextColor="#757575" HorizontalOptions="Center"/>
+								</VerticalStackLayout>
+
+							</Grid>
+						</Border>
+
+						<!-- Deliveries List -->
+						<Label Text="Delivery History" FontFamily="CairoBold" FontSize="16" TextColor="#212121"/>
+
+						<CollectionView ItemsSource="{Binding Earnings.Deliveries}"
+                                        EmptyView="No deliveries for this period 📭">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="m:EarningDelivery">
+									<Border Margin="0,0,0,10" BackgroundColor="White"
+                                            StrokeShape="RoundRectangle 14" Stroke="Transparent"
+                                            Shadow="{Shadow Brush=Black, Offset='0,2', Radius=6, Opacity=0.06}"
+                                            Padding="16,14">
+										<Grid ColumnDefinitions="*,Auto">
+											<VerticalStackLayout Grid.Column="0" Spacing="4">
+												<HorizontalStackLayout Spacing="8">
+													<Label Text="🏪" FontSize="16" VerticalOptions="Center"/>
+													<Label Text="{Binding RestaurantName}"
+                                                           FontFamily="CairoBold" FontSize="14" TextColor="#212121"
+                                                           VerticalOptions="Center"/>
+												</HorizontalStackLayout>
+												<HorizontalStackLayout Spacing="6">
+													<Label Text="🕐" FontSize="12"/>
+													<Label Text="{Binding TimeText}"
+                                                           FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"
+                                                           VerticalOptions="Center"/>
+													<Label Text="•" FontSize="12" TextColor="#BDBDBD" VerticalOptions="Center"/>
+													<Label FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"
+                                                           VerticalOptions="Center">
+														<Label.FormattedText>
+															<FormattedString>
+																<Span Text="Order #"/>
+																<Span Text="{Binding Id}"/>
+															</FormattedString>
+														</Label.FormattedText>
+													</Label>
+												</HorizontalStackLayout>
+											</VerticalStackLayout>
+											<VerticalStackLayout Grid.Column="1" HorizontalOptions="End" Spacing="2">
+												<Label Text="{Binding EarningText}"
+                                                       FontFamily="CairoBold" FontSize="18" TextColor="#4CAF50"
+                                                       HorizontalOptions="End"/>
+												<Label Text="earned" FontFamily="CairoRegular" FontSize="11"
+                                                       TextColor="#9E9E9E" HorizontalOptions="End"/>
+											</VerticalStackLayout>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+
+						<BoxView HeightRequest="20" Color="Transparent"/>
+
+					</VerticalStackLayout>
+				</VerticalStackLayout>
+			</ScrollView>
+		</RefreshView>
+
+	</Grid>
+</ContentPage>

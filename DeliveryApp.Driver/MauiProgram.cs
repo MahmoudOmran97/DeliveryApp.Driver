@@ -1,25 +1,64 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using DeliveryApp.Driver.Services;
+using DeliveryApp.Driver.ViewModels;
+using DeliveryApp.Driver.Views;
+using Mapsui.UI.Maui;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Hosting;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
-namespace DeliveryApp.Driver
+
+namespace DeliveryApp.Driver;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+
+        builder
+            .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
+            .UseSkiaSharp()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("Cairo-Regular.ttf", "CairoRegular");
+                fonts.AddFont("Cairo-Bold.ttf", "CairoBold");
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
+
+        // ── Services ─────────────────────────────
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<ApiService>();
+        builder.Services.AddSingleton<SignalRService>();
+        builder.Services.AddSingleton<LocationService>();
+
+        // ── ViewModels ────────────────────────────
+        builder.Services.AddTransient<LoginViewModel>();
+       // builder.Services.AddTransient<RegisterViewModel>();
+        builder.Services.AddSingleton<HomeViewModel>();
+        builder.Services.AddTransient<AvailableOrdersViewModel>();
+        builder.Services.AddTransient<ActiveDeliveryViewModel>();
+        builder.Services.AddTransient<EarningsViewModel>();
+        builder.Services.AddTransient<NotificationsViewModel>();
+        builder.Services.AddTransient<ProfileViewModel>();
+
+        // ── Pages ─────────────────────────────────
+        builder.Services.AddSingleton<AppShell>();
+        builder.Services.AddTransient<LoginPage>();
+       // builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddSingleton<HomePage>();
+        builder.Services.AddTransient<AvailableOrdersPage>();
+        builder.Services.AddTransient<ActiveDeliveryPage>();
+        builder.Services.AddTransient<EarningsPage>();
+        builder.Services.AddTransient<NotificationsPage>();
+        builder.Services.AddTransient<ProfilePage>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
 }

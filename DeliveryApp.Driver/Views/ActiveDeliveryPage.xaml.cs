@@ -4,7 +4,7 @@ using Mapsui.Layers;
 using Mapsui.Projections;
 using Mapsui.Styles;
 using Mapsui.Tiling;
-using Microsoft.UI.Xaml.Controls;
+
 using System.Diagnostics;
 using System.Text.Json;
 using static Microsoft.Maui.ApplicationModel.Permissions;
