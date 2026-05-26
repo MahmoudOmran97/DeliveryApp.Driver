@@ -200,6 +200,11 @@ public class ApiService
     public Task<bool> MarkNotificationReadAsync(int id) => PutAsync($"notifications/{id}/read");
     public Task<bool> MarkAllReadAsync() => PutAsync("notifications/read-all");
 
+    // ─── Chat ────────────────────────────────────────────────────────────────
+
+    public Task<List<ChatMessage>?> GetChatMessagesAsync(int orderId)
+        => GetAsync<List<ChatMessage>>($"chatmessages/{orderId}");
+
     private static void Debug(Exception ex, string path)
         => System.Diagnostics.Debug.WriteLine($"[API] {path}: {ex.Message}");
 }

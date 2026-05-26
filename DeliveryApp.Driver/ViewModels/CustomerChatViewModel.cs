@@ -12,6 +12,7 @@ public partial class CustomerChatViewModel : BaseViewModel
 {
     private readonly SignalRService _signalR;
     private readonly AuthService _auth;
+    private readonly ApiService _api;
 
     [ObservableProperty] private int _orderId;
     [ObservableProperty] private string _customerName = string.Empty;
@@ -20,10 +21,11 @@ public partial class CustomerChatViewModel : BaseViewModel
 
     public ObservableCollection<ChatMessage> Messages { get; } = new();
 
-    public CustomerChatViewModel(SignalRService signalR, AuthService auth)
+    public CustomerChatViewModel(SignalRService signalR, AuthService auth, ApiService api)
     {
         _signalR = signalR;
         _auth = auth;
+        _api = api;
         _signalR.ChatMessageReceived += OnChatMessageReceived;
     }
 
@@ -44,6 +46,29 @@ public partial class CustomerChatViewModel : BaseViewModel
         await _signalR.JoinOrderAsync(OrderId);
 
         IsConnected = _signalR.IsConnected;
+
+        // تحميل الرسائل القديمة
+        await LoadHistoryAsync();
+    }
+
+    private async Task LoadHistoryAsync()
+    {
+        try
+        {
+            var history = await _api.GetChatMessagesAsync(OrderId);
+            if (history != null)
+            {
+                Messages.Clear();
+                foreach (var msg in history)
+                {
+                    Messages.Add(msg);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ChatHistory] {ex.Message}");
+        }
     }
 
     private void OnChatMessageReceived(int orderId, int senderId, string message)
