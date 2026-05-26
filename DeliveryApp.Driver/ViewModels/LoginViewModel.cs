@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Services;
-using DeliveryApp.Driver.Views;
 
 namespace DeliveryApp.Driver.ViewModels;
 
@@ -41,6 +40,4 @@ public partial class LoginViewModel : BaseViewModel
         }
         finally { IsBusy = false; }
     }
-
-   
 }

@@ -68,16 +68,9 @@
 					<ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
                                        Color="#FF5722" HorizontalOptions="Center"/>
 
-					<HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
-						<Label Text="Don't have an account?"
-                               FontFamily="CairoRegular" FontSize="14" TextColor="#757575" VerticalOptions="Center"/>
-						<Label Text="Register"
-                               FontFamily="CairoBold" FontSize="14" TextColor="#FF5722" VerticalOptions="Center">
-							<Label.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding GoToRegisterCommand}"/>
-							</Label.GestureRecognizers>
-						</Label>
-					</HorizontalStackLayout>
+					<Label Text="Contact your admin to get an account"
+                           FontFamily="CairoRegular" FontSize="13" TextColor="#9E9E9E"
+                           HorizontalOptions="Center"/>
 
 				</VerticalStackLayout>
 			</Border>
