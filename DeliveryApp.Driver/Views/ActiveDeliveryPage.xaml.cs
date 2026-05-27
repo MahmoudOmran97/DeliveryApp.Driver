@@ -6,7 +6,6 @@ using Mapsui.Styles;
 using Mapsui.Tiling;
 
 using System.Diagnostics;
-using System.IO;
 using System.Text.Json;
 using static Microsoft.Maui.ApplicationModel.Permissions;
 
@@ -21,9 +20,9 @@ public partial class ActiveDeliveryPage : ContentPage
     MemoryLayer? _routeLayer;
     bool _mapInitialized;
 
-    string _customerSvg = BuildPinSvg("#2196F3", "#1565C0");
-    string _restaurantSvg = BuildPinSvg("#4CAF50", "#2E7D32");
-    string _driverSvg = BuildCircleSvg("#FF5722", "#BF360C");
+    string _customerSvg = "embedded://DeliveryApp.Driver.Resources.Images.marker_user_img.png";
+    string _restaurantSvg = "embedded://DeliveryApp.Driver.Resources.Images.marker_shop_img.png";
+    string _driverSvg = "embedded://DeliveryApp.Driver.Resources.Images.marker_driver_img.png";
 
     public ActiveDeliveryPage(ActiveDeliveryViewModel vm)
     {
@@ -31,52 +30,8 @@ public partial class ActiveDeliveryPage : ContentPage
         BindingContext = vm;
         _vm = vm;
         SetupMap();
-        _ = LoadMarkerSvgsAsync();
         vm.MapUpdated += OnMapUpdated;
     }
-
-    async Task LoadMarkerSvgsAsync()
-    {
-        _customerSvg = await TryReadRasterMarkerAsync("marker_user_img.png", _customerSvg);
-        _restaurantSvg = await TryReadRasterMarkerAsync("marker_shop_img.png", _restaurantSvg);
-        _driverSvg = await TryReadRasterMarkerAsync("marker_driver_img.png", _driverSvg);
-
-        MainThread.BeginInvokeOnMainThread(OnMapUpdated);
-    }
-
-    static async Task<string> TryReadRasterMarkerAsync(string fileName, string fallback)
-    {
-        try
-        {
-            using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-            var markerPath = Path.Combine(FileSystem.CacheDirectory, fileName);
-            using var output = File.Create(markerPath);
-            await stream.CopyToAsync(output);
-            return new Uri(markerPath).AbsoluteUri;
-        }
-        catch
-        {
-            return fallback;
-        }
-    }
-
-    static string BuildPinSvg(string fill, string dark) =>
-        $"svg-content://<svg xmlns='http://www.w3.org/2000/svg' width='56' height='72' viewBox='0 0 56 72'>" +
-        $"<defs><filter id='sh'><feDropShadow dx='0' dy='2' stdDeviation='2.5' flood-color='#00000055'/></filter></defs>" +
-        $"<g filter='url(#sh)'>" +
-        $"<path d='M28 4C14.7 4 4 14.7 4 28C4 44 28 68 28 68C28 68 52 44 52 28C52 14.7 41.3 4 28 4Z' fill='{fill}' stroke='white' stroke-width='2'/>" +
-        $"</g>" +
-        $"<circle cx='28' cy='28' r='10' fill='white' opacity='0.9'/>" +
-        $"<circle cx='28' cy='28' r='7' fill='{dark}'/>" +
-        $"</svg>";
-
-    static string BuildCircleSvg(string fill, string dark) =>
-        $"svg-content://<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'>" +
-        $"<defs><filter id='sh'><feDropShadow dx='0' dy='2' stdDeviation='3' flood-color='#00000060'/></filter></defs>" +
-        $"<circle cx='30' cy='30' r='26' fill='{fill}' stroke='white' stroke-width='3' filter='url(#sh)'/>" +
-        $"<circle cx='30' cy='30' r='16' fill='white' opacity='0.2'/>" +
-        $"<text x='30' y='38' text-anchor='middle' font-size='22' fill='white'>🛵</text>" +
-        $"</svg>";
 
     void SetupMap()
     {
@@ -114,11 +69,11 @@ public partial class ActiveDeliveryPage : ContentPage
 
                 if (hasCustomer)
                     DrawImagePin(ref _customerLayer, "CustomerLayer",
-                        _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude, _customerSvg, 1.0);
+                        _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude, _customerSvg, 0.04);
 
                 if (hasRestaurant)
                     DrawImagePin(ref _restaurantLayer, "RestaurantLayer",
-                        _vm.Order.RestaurantLat, _vm.Order.RestaurantLng, _restaurantSvg, 1.0);
+                        _vm.Order.RestaurantLat, _vm.Order.RestaurantLng, _restaurantSvg, 0.04);
 
                 if (hasCustomer && hasRestaurant)
                 {
@@ -140,7 +95,7 @@ public partial class ActiveDeliveryPage : ContentPage
             if (_vm.DriverLat != 0 && _vm.DriverLng != 0)
             {
                 DrawImagePin(ref _driverLayer, "DriverLayer",
-                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.65);
+                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.045);
 
                 var targetLat = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLatitude : _vm.Order.RestaurantLat;
                 var targetLng = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLongitude : _vm.Order.RestaurantLng;
@@ -179,7 +134,8 @@ public partial class ActiveDeliveryPage : ContentPage
             {
                 Image = svgSource,
                 SymbolScale = scale,
-                RelativeOffset = new RelativeOffset(0.0, 0.5)
+                // Keep marker center locked to geographic coordinate.
+                RelativeOffset = new RelativeOffset(0.0, 0.0)
             }
         };
 

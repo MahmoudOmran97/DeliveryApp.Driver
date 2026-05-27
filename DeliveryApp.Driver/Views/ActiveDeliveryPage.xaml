@@ -31,7 +31,43 @@
 		</Grid>
 
 		<!-- Map -->
-		<mapsui:MapControl x:Name="MapControl" Grid.Row="1"/>
+		<Grid Grid.Row="1">
+			<mapsui:MapControl x:Name="MapControl"/>
+
+			<!-- Map Legend -->
+			<Border BackgroundColor="#CCFFFFFF"
+                    Stroke="#E0E0E0"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="10,8"
+                    Margin="12"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start">
+				<VerticalStackLayout Spacing="6">
+					<Label Text="{loc:Loc Key=MapLegendTitle}"
+                           FontFamily="CairoBold"
+                           FontSize="11"
+                           TextColor="#424242"/>
+
+					<HorizontalStackLayout Spacing="8">
+						<Image Source="marker_user_img.png" WidthRequest="16" HeightRequest="16"/>
+						<Label Text="{loc:Loc Key=MapLegendCustomer}"
+                               FontFamily="CairoRegular"
+                               FontSize="11"
+                               TextColor="#424242"
+                               VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+
+					<HorizontalStackLayout Spacing="8">
+						<Image Source="marker_shop_img.png" WidthRequest="16" HeightRequest="16"/>
+						<Label Text="{loc:Loc Key=MapLegendShop}"
+                               FontFamily="CairoRegular"
+                               FontSize="11"
+                               TextColor="#424242"
+                               VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+				</VerticalStackLayout>
+			</Border>
+		</Grid>
 
 		<!-- Bottom Sheet -->
 		<ScrollView Grid.Row="2">

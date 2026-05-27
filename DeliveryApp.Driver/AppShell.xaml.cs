@@ -1,4 +1,4 @@
-﻿using DeliveryApp.Driver.Views;
+using DeliveryApp.Driver.Views;
 
 namespace DeliveryApp.Driver;
 

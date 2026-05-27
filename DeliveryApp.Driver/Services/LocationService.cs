@@ -1,4 +1,4 @@
-﻿namespace DeliveryApp.Driver.Services;
+namespace DeliveryApp.Driver.Services;
 
 public class LocationService
 {
