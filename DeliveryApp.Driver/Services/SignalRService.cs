@@ -13,16 +13,42 @@ public class SignalRService
     public event Action<int, int, string>? ChatMessageReceived;
     public event Action<int, int>? IncomingVoiceCall;
 
+    // ✅ FIX 1 — بنتحقق من Connected وبس مش من وجود الـ object
     public bool IsConnected => _hub?.State == HubConnectionState.Connected;
 
     public async Task ConnectAsync(string token)
     {
-        if (IsConnected) return;
+        // ✅ FIX 1 — لو في connection قديمة مش Connected، نعملها Dispose الأول
+        if (_hub != null && _hub.State != HubConnectionState.Disconnected)
+        {
+            if (IsConnected) return; // شغالة فعلاً، مفيش لزمة
+        }
+
+        if (_hub != null)
+        {
+            // نظّف الـ connection القديمة قبل ما نعمل جديدة
+            try { await _hub.DisposeAsync(); } catch { }
+            _hub = null;
+        }
 
         _hub = new HubConnectionBuilder()
             .WithUrl(HubUrl, o => o.AccessTokenProvider = () => Task.FromResult<string?>(token))
-            .WithAutomaticReconnect()
+            .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) })
             .Build();
+
+        // ✅ FIX 1 — لو انقطع الاتصال، نعرف ونقدر نعمل reconnect يدوي
+        _hub.Closed += async (error) =>
+        {
+            System.Diagnostics.Debug.WriteLine($"[SignalR] Connection closed: {error?.Message}");
+            await Task.Delay(3000);
+            // WithAutomaticReconnect هيتولى الموضوع، بس لو مشيش نحاول يدوي
+        };
+
+        _hub.Reconnected += (connectionId) =>
+        {
+            System.Diagnostics.Debug.WriteLine($"[SignalR] Reconnected: {connectionId}");
+            return Task.CompletedTask;
+        };
 
         _hub.On<JsonElement>("OrderStatusChanged", el =>
         {
@@ -51,7 +77,6 @@ public class SignalRService
             MainThread.BeginInvokeOnMainThread(() => IncomingVoiceCall?.Invoke(orderId, callerId));
         });
 
-        // When driver is assigned to an order
         _hub.On<JsonElement>("DriverAssigned", el =>
         {
             var orderId = el.GetProperty("orderId").GetInt32();
@@ -60,7 +85,7 @@ public class SignalRService
 
         try { await _hub.StartAsync(); }
         catch (Exception ex)
-        { System.Diagnostics.Debug.WriteLine($"[SignalR] {ex.Message}"); }
+        { System.Diagnostics.Debug.WriteLine($"[SignalR] Connect failed: {ex.Message}"); }
     }
 
     public async Task SendChatMessageAsync(int orderId, string message)
@@ -68,7 +93,6 @@ public class SignalRService
         if (IsConnected) await _hub!.InvokeAsync("SendChatMessage", orderId, message);
     }
 
-    // BUG FIX #2: الدرايفر محتاج يضم group الطلب عشان يستقبل رسائل العميل
     public async Task JoinOrderAsync(int orderId)
     {
         if (IsConnected) await _hub!.InvokeAsync("JoinOrderTracking", orderId);
@@ -88,9 +112,16 @@ public class SignalRService
     {
         if (_hub != null)
         {
-            await _hub.StopAsync();
-            await _hub.DisposeAsync();
-            _hub = null;
+            try
+            {
+                await _hub.StopAsync();
+                await _hub.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[SignalR] Disconnect error: {ex.Message}");
+            }
+            finally { _hub = null; }
         }
     }
 }

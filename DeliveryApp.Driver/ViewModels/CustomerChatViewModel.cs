@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿// ═══════════════════════════════════════════════════════════════
+// DeliveryApp.Driver / ViewModels / CustomerChatViewModel.cs
+// ═══════════════════════════════════════════════════════════════
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Models;
@@ -13,6 +16,7 @@ public partial class CustomerChatViewModel : BaseViewModel
     private readonly SignalRService _signalR;
     private readonly AuthService _auth;
     private readonly ApiService _api;
+    private readonly ChatNotificationService _chatNotif; // ✅ FIX #4
 
     [ObservableProperty] private int _orderId;
     [ObservableProperty] private string _customerName = string.Empty;
@@ -21,20 +25,26 @@ public partial class CustomerChatViewModel : BaseViewModel
 
     public ObservableCollection<ChatMessage> Messages { get; } = new();
 
-    public CustomerChatViewModel(SignalRService signalR, AuthService auth, ApiService api)
+    public CustomerChatViewModel(
+        SignalRService signalR,
+        AuthService auth,
+        ApiService api,
+        ChatNotificationService chatNotif) // ✅ FIX #4 — inject
     {
         _signalR = signalR;
         _auth = auth;
         _api = api;
+        _chatNotif = chatNotif;
         _signalR.ChatMessageReceived += OnChatMessageReceived;
     }
 
-    // BUG FIX #2: لما الـ OrderId يتغير نعمل connect ونضم group الطلب
-    // بدون ده، الدرايفر مش في الـ group ومش بيستقبل رسائل العميل
     partial void OnOrderIdChanged(int value)
     {
-        if (value > 0)
-            _ = EnsureConnectedAsync();
+        if (value <= 0) return;
+
+        // ✅ FIX #4 — لما الدرايفر يفتح الشات، وقّف الـ in-app notification
+        _chatNotif.ActiveChatOrderId = value;
+        _ = EnsureConnectedAsync();
     }
 
     private async Task EnsureConnectedAsync()
@@ -47,7 +57,7 @@ public partial class CustomerChatViewModel : BaseViewModel
 
         IsConnected = _signalR.IsConnected;
 
-        // تحميل الرسائل القديمة
+        // تحميل الرسائل القديمة من API
         await LoadHistoryAsync();
     }
 
@@ -56,14 +66,11 @@ public partial class CustomerChatViewModel : BaseViewModel
         try
         {
             var history = await _api.GetChatMessagesAsync(OrderId);
-            if (history != null)
-            {
-                Messages.Clear();
-                foreach (var msg in history)
-                {
-                    Messages.Add(msg);
-                }
-            }
+            if (history == null) return;
+
+            Messages.Clear();
+            foreach (var msg in history)
+                Messages.Add(msg);
         }
         catch (Exception ex)
         {
@@ -75,9 +82,8 @@ public partial class CustomerChatViewModel : BaseViewModel
     {
         if (orderId != OrderId) return;
 
-        // BUG FIX #3: تجاهل الـ echo — السيرفر بيبعت الرسالة لكل الـ group بما فيه المرسل
-        var myId = _auth.GetUserId();
-        if (senderId == myId) return;
+        // تجاهل الـ echo — السيرفر بيبعت الرسالة لكل الـ group بما فيه المرسل
+        if (senderId == _auth.GetUserId()) return;
 
         Messages.Add(new ChatMessage
         {
@@ -92,22 +98,23 @@ public partial class CustomerChatViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(InputText)) return;
 
-        var msg = new ChatMessage
-        {
-            Text = InputText,
-            IsFromMe = true,
-            Timestamp = DateTime.UtcNow
-        };
-
-        Messages.Add(msg);
         var text = InputText;
         InputText = string.Empty;
+
+        Messages.Add(new ChatMessage
+        {
+            Text = text,
+            IsFromMe = true,
+            Timestamp = DateTime.UtcNow
+        });
 
         await _signalR.SendChatMessageAsync(OrderId, text);
     }
 
     public void Cleanup()
     {
+        // ✅ FIX #4 — لما الدرايفر يخرج من الشات، اسمح للـ notification تشتغل تاني
+        _chatNotif.ActiveChatOrderId = null;
         _signalR.ChatMessageReceived -= OnChatMessageReceived;
     }
 }

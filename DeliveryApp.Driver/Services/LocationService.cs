@@ -16,15 +16,22 @@ public class LocationService
 
     public void StartTracking(int? orderId = null)
     {
-        if (_isTracking) return;
+        // ✅ FIX 2 — لو الـ timer اتعملها dispose (لما يرجع من background)
+        // مش بس نتحقق من الـ flag، لازم نتحقق من الـ timer كمان
+        if (_isTracking && _timer != null) return;
+
         _currentOrderId = orderId;
         _isTracking = true;
 
-        _timer = new System.Timers.Timer(8000); // every 8 seconds
+        // ✅ FIX 2 — نتأكد إن القديم اتنظّف قبل ما نعمل جديد
+        _timer?.Stop();
+        _timer?.Dispose();
+
+        _timer = new System.Timers.Timer(8000);
         _timer.Elapsed += async (_, _) => await UpdateLocationAsync();
         _timer.Start();
 
-        // immediate first update
+        // أول update فوري
         _ = UpdateLocationAsync();
     }
 
@@ -41,12 +48,37 @@ public class LocationService
         _timer = null;
     }
 
+    /// <summary>
+    /// استدعيه من App.xaml.cs في OnSleep/OnResume
+    /// عشان لما التطبيق يرجع من الـ background يعمل restart للـ timer
+    /// </summary>
+    public void OnAppResumed()
+    {
+        if (_isTracking)
+        {
+            // ✅ FIX 2 — إعادة تشغيل الـ tracking لما التطبيق يرجع
+            _isTracking = false; // نفضي الـ flag عشان StartTracking ميرجعش
+            StartTracking(_currentOrderId);
+        }
+    }
+
+    public void OnAppSleeping()
+    {
+        // وقّف الـ timer بس خلّي الـ flag زي ما هي عشان OnAppResumed يعرف يشغله تاني
+        _timer?.Stop();
+        _timer?.Dispose();
+        _timer = null;
+        // _isTracking يفضل true عشان OnAppResumed يعرف يرجع يشتغل
+    }
+
     private async Task UpdateLocationAsync()
     {
         try
         {
-            var location = await Geolocation.GetLastKnownLocationAsync()
-                ?? await Geolocation.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(5)));
+            var location =
+                await Geolocation.GetLastKnownLocationAsync()
+                ?? await Geolocation.GetLocationAsync(
+                       new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(5)));
 
             if (location != null)
             {

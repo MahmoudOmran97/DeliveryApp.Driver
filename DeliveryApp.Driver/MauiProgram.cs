@@ -1,4 +1,7 @@
-﻿using CommunityToolkit.Maui;
+﻿// ═══════════════════════════════════════════════════════════════
+// DeliveryApp.Driver / MauiProgram.cs
+// ═══════════════════════════════════════════════════════════════
+using CommunityToolkit.Maui;
 using DeliveryApp.Driver.Services;
 using DeliveryApp.Driver.ViewModels;
 using DeliveryApp.Driver.Views;
@@ -8,15 +11,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
-
 namespace DeliveryApp.Driver;
 
 public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        // Apply localization before UI starts
-        LocalizationService.Apply(Preferences.Get(LocalizationService.LangKey, LocalizationService.Arabic));
+        // تطبيق اللغة قبل ما الـ UI يبدأ
+        LocalizationService.Apply(
+            Preferences.Get(LocalizationService.LangKey, LocalizationService.Arabic));
 
         var builder = MauiApp.CreateBuilder();
 
@@ -32,16 +35,16 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // ── Services ─────────────────────────────
+        // ── Services ─────────────────────────────────────────────────────────
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<ApiService>();
         builder.Services.AddSingleton<SignalRService>();
         builder.Services.AddSingleton<LocationService>();
         builder.Services.AddSingleton<LocaleStrings>();
+        builder.Services.AddSingleton<ChatNotificationService>(); // ✅ FIX #4
 
-        // ── ViewModels ────────────────────────────
+        // ── ViewModels ────────────────────────────────────────────────────────
         builder.Services.AddTransient<LoginViewModel>();
-        // builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddTransient<AvailableOrdersViewModel>();
         builder.Services.AddTransient<ActiveDeliveryViewModel>();
@@ -52,11 +55,10 @@ public static class MauiProgram
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
 
-        // ── Pages ─────────────────────────────────
+        // ── Pages ─────────────────────────────────────────────────────────────
         builder.Services.AddSingleton<AppShell>();
         builder.Services.AddSingleton<SplashPage>();
         builder.Services.AddTransient<LoginPage>();
-        // builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddSingleton<HomePage>();
         builder.Services.AddTransient<AvailableOrdersPage>();
         builder.Services.AddTransient<ActiveDeliveryPage>();

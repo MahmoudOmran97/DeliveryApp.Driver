@@ -1,4 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿// ═══════════════════════════════════════════════════════════════
+// DeliveryApp.Driver / ViewModels / ActiveDeliveryViewModel.cs
+// ═══════════════════════════════════════════════════════════════
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Models;
 using DeliveryApp.Driver.Services;
@@ -10,6 +13,7 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
 {
     readonly ApiService _api;
     readonly LocationService _location;
+    readonly ChatNotificationService _chatNotif; // ✅ FIX #4
 
     [ObservableProperty] ActiveOrder? _order;
     [ObservableProperty] double _driverLat;
@@ -17,10 +21,14 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
 
     public event Action? MapUpdated;
 
-    public ActiveDeliveryViewModel(ApiService api, LocationService location)
+    public ActiveDeliveryViewModel(
+        ApiService api,
+        LocationService location,
+        ChatNotificationService chatNotif) // ✅ FIX #4 — inject
     {
         _api = api;
         _location = location;
+        _chatNotif = chatNotif;
 
         _location.LocationUpdated += (lat, lng) =>
         {
@@ -33,7 +41,11 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     partial void OnOrderChanged(ActiveOrder? value)
     {
         if (value != null)
+        {
             _location.SetOrderId(value.Id);
+            // ✅ FIX #4 — سجّل الطلب عشان لو العميل بعت رسالة يظهر للدرايفر notification
+            _chatNotif.RegisterOrder(value.Id, value.CustomerName);
+        }
     }
 
     [RelayCommand]
@@ -56,12 +68,12 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
                 if (nextStatus == "Delivered")
                 {
                     _location.SetOrderId(null);
+                    _chatNotif.UnregisterOrder(Order.Id); // نظّف بعد التوصيل
                     await AlertAsync("Order delivered successfully! Great job! 🎉", "Delivered ✓");
                     await Shell.Current.GoToAsync("//HomePage");
                 }
                 else
                 {
-                    // Reload active order
                     var updated = await _api.GetActiveOrderAsync();
                     if (updated?.Id > 0)
                         Order = updated;
@@ -79,7 +91,8 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     async Task OpenChatAsync()
     {
         if (Order == null) return;
-        await Shell.Current.GoToAsync($"CustomerChatPage?orderId={Order.Id}&customerName={Order.CustomerName}");
+        await Shell.Current.GoToAsync(
+            $"CustomerChatPage?orderId={Order.Id}&customerName={Order.CustomerName}");
     }
 
     [RelayCommand]
@@ -88,8 +101,6 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
         if (Order == null) return;
         var confirm = await ConfirmAsync("Do you want to start an in-app voice call with the customer?");
         if (!confirm) return;
-
-        // In a real app, this would open a VoiceCallPage or initiate WebRTC
         await _api.StartVoiceCallAsync(Order.Id);
         await AlertAsync("Calling customer via app... (Voice Call simulation)", "In-App Call");
     }
@@ -100,9 +111,9 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
         if (Order == null) return;
         try
         {
-            // Navigate to customer if on the way, else to restaurant
             double lat, lng;
             string label;
+
             if (Order.IsOnTheWay)
             {
                 lat = Order.DeliveryLatitude;
