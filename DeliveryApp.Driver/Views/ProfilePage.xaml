@@ -2,13 +2,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:controls="clr-namespace:DeliveryApp.Driver.Controls"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.ProfilePage"
              x:DataType="vm:ProfileViewModel"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              BackgroundColor="#F8F9FA">
 
-    <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+    <Grid RowDefinitions="*,Auto">
+    <RefreshView Grid.Row="0" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
         <ScrollView>
             <VerticalStackLayout Spacing="0">
 
@@ -148,4 +151,7 @@
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
+    <controls:CurvedBottomBar Grid.Row="1" SelectedTab="profile"
+                             HorizontalOptions="Fill" Margin="0" Padding="0"/>
+    </Grid>
 </ContentPage>

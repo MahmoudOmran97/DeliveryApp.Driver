@@ -33,7 +33,7 @@ public partial class AvailableOrdersViewModel : BaseViewModel
             Orders.Clear();
             if (orders != null)
                 foreach (var o in orders) Orders.Add(o);
-            OrdersCount = $"{Orders.Count} available orders";
+            OrdersCount = string.Format(LocalizationService.Get("AvailableOrdersCount"), Orders.Count);
         }
         finally { IsRefreshing = false; }
     }

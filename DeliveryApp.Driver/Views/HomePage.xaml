@@ -3,13 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:controls="clr-namespace:DeliveryApp.Driver.Controls"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.HomePage"
              x:DataType="vm:HomeViewModel"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              BackgroundColor="#F8F9FA">
 
-	<RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+	<Grid RowDefinitions="*,Auto">
+	<RefreshView Grid.Row="0" Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
 		<ScrollView>
 			<VerticalStackLayout Spacing="0">
 
@@ -84,53 +87,64 @@
 
 				<VerticalStackLayout Padding="16,20,16,0" Spacing="16">
 
-					<!-- ── ACTIVE ORDER CARD ── -->
-					<Border IsVisible="{Binding HasActiveOrder}"
-                            BackgroundColor="White" StrokeShape="RoundRectangle 16"
-                            Stroke="#FF5722" StrokeThickness="2"
-                            Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
-                            Padding="16">
-						<VerticalStackLayout Spacing="12">
+					<!-- ── ACTIVE ORDERS ── -->
+					<VerticalStackLayout IsVisible="{Binding HasActiveOrders}" Spacing="8">
+						<HorizontalStackLayout Spacing="8">
+							<Label Text="📦" FontSize="20"/>
+							<Label Text="{loc:Loc Key=ActiveDeliveries}"
+                                   FontFamily="CairoBold" FontSize="16" TextColor="#212121"
+                                   VerticalOptions="Center"/>
+						</HorizontalStackLayout>
 
-							<HorizontalStackLayout Spacing="8">
-								<Label Text="📦" FontSize="20"/>
-								<Label Text="{loc:Loc Key=ActiveDelivery}"
-                                       FontFamily="CairoBold" FontSize="16" TextColor="#212121"
-                                       VerticalOptions="Center"/>
-							</HorizontalStackLayout>
+						<CollectionView ItemsSource="{Binding ActiveOrders}" SelectionMode="None">
+							<CollectionView.ItemTemplate>
+								<DataTemplate x:DataType="m:DriverOrder">
+									<Border BackgroundColor="White" StrokeShape="RoundRectangle 16"
+                                            Stroke="#FF5722" StrokeThickness="1.5"
+                                            Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                                            Padding="14" Margin="0,0,0,8">
+										<VerticalStackLayout Spacing="10">
+											<Grid ColumnDefinitions="*,Auto">
+												<Label Text="{Binding RestaurantName}" Grid.Column="0"
+                                                       FontFamily="CairoBold" FontSize="15" TextColor="#212121"
+                                                       LineBreakMode="TailTruncation"/>
+												<Border Grid.Column="1" BackgroundColor="{Binding StatusColor}"
+                                                        Stroke="Transparent" StrokeShape="RoundRectangle 8"
+                                                        Padding="10,4">
+													<Label Text="{Binding Status}" FontFamily="CairoBold" FontSize="11" TextColor="White"/>
+												</Border>
+											</Grid>
 
-							<!-- Status badge -->
-							<Border BackgroundColor="{Binding ActiveOrder.StatusColor}"
-                                    StrokeShape="RoundRectangle 8" Stroke="Transparent"
-                                    Padding="12,6" HorizontalOptions="Start">
-								<Label Text="{Binding ActiveOrder.StatusText}"
-                                       FontFamily="CairoBold" FontSize="13" TextColor="White"/>
-							</Border>
+											<Label Text="{Binding DeliveryAddress}"
+                                                   FontFamily="CairoRegular" FontSize="13" TextColor="#757575"
+                                                   LineBreakMode="TailTruncation"/>
 
-							<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
-								<VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="2">
-									<Label Text="{loc:Loc Key=Restaurant}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
-									<Label Text="{Binding ActiveOrder.RestaurantName}"
-                                           FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
-								</VerticalStackLayout>
-								<VerticalStackLayout Grid.Row="0" Grid.Column="1" Spacing="2">
-									<Label Text="{loc:Loc Key=Earning}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
-									<Label Text="{Binding ActiveOrder.DeliveryFeeText}"
-                                           FontFamily="CairoBold" FontSize="14" TextColor="#4CAF50"/>
-								</VerticalStackLayout>
-							</Grid>
+											<Grid ColumnDefinitions="*,*">
+												<VerticalStackLayout Spacing="2">
+													<Label Text="{loc:Loc Key=Earning}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+													<Label Text="{Binding EarningText}" FontFamily="CairoBold" FontSize="14" TextColor="#4CAF50"/>
+												</VerticalStackLayout>
+												<VerticalStackLayout Grid.Column="1" Spacing="2">
+													<Label Text="{loc:Loc Key=OrderTotal}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+													<Label Text="{Binding TotalText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+												</VerticalStackLayout>
+											</Grid>
 
-							<Label Text="{Binding ActiveOrder.DeliveryAddress}"
-                                   FontFamily="CairoRegular" FontSize="13" TextColor="#757575"
-                                   LineBreakMode="TailTruncation"/>
-
-							<Button Text="{loc:Loc Key=ViewDetails}"
-                                    Command="{Binding GoToDeliveryCommand}"
-                                    BackgroundColor="#FF5722" TextColor="White"
-                                    FontFamily="CairoBold" FontSize="14"
-                                    HeightRequest="44" CornerRadius="10"/>
-						</VerticalStackLayout>
-					</Border>
+											<Button Text="{loc:Loc Key=ViewDetails}"
+                                                    BackgroundColor="#FFF3EF"
+                                                    TextColor="#FF5722"
+                                                    FontFamily="CairoBold"
+                                                    FontSize="13"
+                                                    HeightRequest="40"
+                                                    CornerRadius="10"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=OpenOrderDetailsCommand}"
+                                                    CommandParameter="{Binding .}"/>
+										</VerticalStackLayout>
+									</Border>
+								</DataTemplate>
+							</CollectionView.ItemTemplate>
+						</CollectionView>
+					</VerticalStackLayout>
 
 					<!-- ── TODAY STATS ── -->
 					<Border BackgroundColor="White" StrokeShape="RoundRectangle 16"
@@ -230,4 +244,7 @@
 			</VerticalStackLayout>
 		</ScrollView>
 	</RefreshView>
+	<controls:CurvedBottomBar Grid.Row="1" SelectedTab="home"
+                             HorizontalOptions="Fill" Margin="0" Padding="0"/>
+	</Grid>
 </ContentPage>

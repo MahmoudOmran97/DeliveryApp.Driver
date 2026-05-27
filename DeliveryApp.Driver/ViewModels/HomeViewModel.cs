@@ -4,7 +4,6 @@ using DeliveryApp.Driver.Models;
 using DeliveryApp.Driver.Services;
 
 using System.Collections.ObjectModel;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DeliveryApp.Driver.ViewModels;
 
@@ -25,7 +24,9 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] string _greetingName = string.Empty;
     [ObservableProperty] EarningsResult? _todayEarnings;
     [ObservableProperty] bool _hasActiveOrder;
+    [ObservableProperty] bool _hasActiveOrders;
     [ObservableProperty] bool _isNotVerified;
+    public ObservableCollection<DriverOrder> ActiveOrders { get; } = new();
 
     public HomeViewModel(ApiService api, AuthService auth, SignalRService hub, LocationService location)
     {
@@ -41,6 +42,7 @@ public partial class HomeViewModel : BaseViewModel
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await LoadActiveOrderAsync();
+                await LoadActiveOrdersAsync();
             });
         };
 
@@ -49,6 +51,7 @@ public partial class HomeViewModel : BaseViewModel
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await LoadActiveOrderAsync();
+                await LoadActiveOrdersAsync();
             });
         };
     }
@@ -62,8 +65,9 @@ public partial class HomeViewModel : BaseViewModel
             var profileTask = _api.GetMyProfileAsync();
             var earningsTask = _api.GetEarningsAsync("today");
             var activeTask = _api.GetActiveOrderAsync();
+            var myOrdersTask = _api.GetMyOrdersAsync();
 
-            await Task.WhenAll(profileTask, earningsTask, activeTask);
+            await Task.WhenAll(profileTask, earningsTask, activeTask, myOrdersTask);
 
             Profile = profileTask.Result;
             TodayEarnings = earningsTask.Result;
@@ -78,6 +82,7 @@ public partial class HomeViewModel : BaseViewModel
             var active = activeTask.Result;
             ActiveOrder = active?.Id > 0 ? active : null;
             HasActiveOrder = ActiveOrder != null;
+            UpdateActiveOrders(myOrdersTask.Result?.Data, ActiveOrder);
 
             // Start GPS if online
             if (IsOnline)
@@ -97,6 +102,43 @@ public partial class HomeViewModel : BaseViewModel
 
         if (HasActiveOrder)
             _location.SetOrderId(ActiveOrder!.Id);
+    }
+
+    private async Task LoadActiveOrdersAsync()
+    {
+        var myOrders = await _api.GetMyOrdersAsync();
+        UpdateActiveOrders(myOrders?.Data, ActiveOrder);
+    }
+
+    private void UpdateActiveOrders(List<DriverOrder>? orders, ActiveOrder? activeOrder = null)
+    {
+        var activeStatuses = new[] { "Assigned", "Accepted", "Preparing", "ReadyForPickup", "OnTheWay" };
+        var activeOrders = (orders ?? new List<DriverOrder>())
+            .Where(o => activeStatuses.Contains(o.Status, StringComparer.OrdinalIgnoreCase))
+            .OrderByDescending(o => o.CreatedAt)
+            .ToList();
+
+        if (activeOrder is { Id: > 0 } &&
+            activeStatuses.Contains(activeOrder.Status, StringComparer.OrdinalIgnoreCase) &&
+            !activeOrders.Any(o => o.Id == activeOrder.Id))
+        {
+            activeOrders.Insert(0, new DriverOrder
+            {
+                Id = activeOrder.Id,
+                Status = activeOrder.Status,
+                TotalAmount = activeOrder.TotalAmount,
+                DeliveryFee = activeOrder.DeliveryFee,
+                DeliveryAddress = activeOrder.DeliveryAddress,
+                CreatedAt = DateTime.UtcNow,
+                RestaurantName = activeOrder.RestaurantName
+            });
+        }
+
+        ActiveOrders.Clear();
+        foreach (var order in activeOrders)
+            ActiveOrders.Add(order);
+
+        HasActiveOrders = ActiveOrders.Count > 0;
     }
 
     [RelayCommand]
@@ -137,9 +179,32 @@ public partial class HomeViewModel : BaseViewModel
             new Dictionary<string, object> { ["Order"] = ActiveOrder });
     }
 
+    [RelayCommand]
+    async Task OpenOrderDetailsAsync(DriverOrder? order)
+    {
+        if (order == null) return;
+
+        IsBusy = true;
+        try
+        {
+            var details = await _api.GetOrderDetailsForDriverAsync(order.Id);
+            if (details == null || details.Id <= 0)
+            {
+                await AlertAsync(LocalizationService.Get("OrderDetailsNotAvailable"));
+                return;
+            }
+
+            await Shell.Current.GoToAsync(nameof(Views.ActiveDeliveryPage),
+                new Dictionary<string, object> { ["Order"] = details });
+        }
+        finally { IsBusy = false; }
+    }
+
     private void UpdateOnlineButton()
     {
-        OnlineButtonText = IsOnline ? "Go Offline" : "Go Online";
+        OnlineButtonText = IsOnline
+            ? LocalizationService.Get("GoOffline")
+            : LocalizationService.Get("GoOnline");
         OnlineButtonColor = IsOnline ? Color.FromArgb("#F44336") : Color.FromArgb("#4CAF50");
     }
 

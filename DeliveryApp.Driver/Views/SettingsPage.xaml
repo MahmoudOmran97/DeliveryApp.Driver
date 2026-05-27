@@ -2,12 +2,14 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:controls="clr-namespace:DeliveryApp.Driver.Controls"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.SettingsPage"
              x:DataType="vm:SettingsViewModel"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*" BackgroundColor="#F5F5F5">
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#F5F5F5">
 
         <!-- ✅ Header (no back button — Settings is a TabBar tab now) -->
         <Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,24">
@@ -148,5 +150,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
+        <controls:CurvedBottomBar Grid.Row="2" SelectedTab="settings"
+                                 HorizontalOptions="Fill" Margin="0" Padding="0"/>
     </Grid>
 </ContentPage>

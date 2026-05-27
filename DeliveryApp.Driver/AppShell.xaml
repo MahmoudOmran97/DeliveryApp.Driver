@@ -5,46 +5,38 @@
        xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
        x:Class="DeliveryApp.Driver.AppShell"
        Shell.NavBarIsVisible="False"
+       Shell.TabBarIsVisible="False"
        FlyoutBehavior="Disabled">
-
-    <Shell.Resources>
-        <Style TargetType="TabBar">
-            <Setter Property="Shell.TabBarBackgroundColor" Value="White" />
-            <Setter Property="Shell.TabBarForegroundColor" Value="#FF5722" />
-            <Setter Property="Shell.TabBarTitleColor"      Value="#FF5722" />
-            <Setter Property="Shell.TabBarUnselectedColor" Value="#BDBDBD" />
-        </Style>
-    </Shell.Resources>
 
     <TabBar>
 
         <!-- 1. Home -->
         <ShellContent Title="{loc:Loc Key=Tab_Home}"
-                      Icon="icon_home.png"
+                      Icon="tab_home.svg"
                       ContentTemplate="{DataTemplate views:HomePage}"
                       Route="HomePage" />
 
         <!-- 2. Available Orders -->
         <ShellContent Title="{loc:Loc Key=Tab_Orders}"
-                      Icon="icon_orders.png"
+                      Icon="tab_orders.svg"
                       ContentTemplate="{DataTemplate views:AvailableOrdersPage}"
                       Route="AvailableOrdersPage" />
 
         <!-- 3. Notifications (replaces Earnings tab — bell icon fits better) -->
         <ShellContent Title="{loc:Loc Key=Tab_Notifications}"
-                      Icon="icon_bell.png"
+                      Icon="tab_notifications.svg"
                       ContentTemplate="{DataTemplate views:NotificationsPage}"
                       Route="NotificationsPage" />
 
         <!-- 4. Profile -->
         <ShellContent Title="{loc:Loc Key=Tab_Profile}"
-                      Icon="icon_profile.png"
+                      Icon="tab_profile.svg"
                       ContentTemplate="{DataTemplate views:ProfilePage}"
                       Route="ProfilePage" />
 
         <!-- 5. Settings -->
         <ShellContent Title="{loc:Loc Key=Tab_Settings}"
-                      Icon="icon_settings.png"
+                      Icon="tab_settings.svg"
                       ContentTemplate="{DataTemplate views:SettingsPage}"
                       Route="SettingsPage" />
 

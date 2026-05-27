@@ -8,6 +8,7 @@
              x:Class="DeliveryApp.Driver.Views.ActiveDeliveryPage"
              x:DataType="vm:ActiveDeliveryViewModel"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              BackgroundColor="#F8F9FA"
              Title="Active Delivery">
 
@@ -98,8 +99,20 @@
                                    VerticalOptions="Center">
 								<Label.FormattedText>
 									<FormattedString>
-										<Span Text="Earning: "/>
+										<Span Text="{loc:Loc Key=EarningPrefix}"/>
 										<Span Text="{Binding Order.DeliveryFeeText}"/>
+									</FormattedString>
+								</Label.FormattedText>
+							</Label>
+						</HorizontalStackLayout>
+
+						<HorizontalStackLayout Spacing="6">
+							<Label Text="🧾" FontSize="16"/>
+							<Label FontFamily="CairoBold" FontSize="15" TextColor="#212121" VerticalOptions="Center">
+								<Label.FormattedText>
+									<FormattedString>
+										<Span Text="{loc:Loc Key=OrderTotalPrefix}"/>
+										<Span Text="{Binding Order.TotalAmountText}"/>
 									</FormattedString>
 								</Label.FormattedText>
 							</Label>
@@ -114,7 +127,7 @@
                         Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
                         Padding="16">
 					<VerticalStackLayout Spacing="10">
-						<Label Text="Order Items" FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
+						<Label Text="{loc:Loc Key=OrderItems}" FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
 						<CollectionView ItemsSource="{Binding Order.Items}">
 							<CollectionView.ItemTemplate>
 								<DataTemplate x:DataType="m:ActiveOrderItem">

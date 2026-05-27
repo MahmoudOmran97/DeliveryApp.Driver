@@ -57,6 +57,10 @@
 	<data name="HelpAndSupport"  xml:space="preserve"><value>Help &amp; Support</value></data>
 	<data name="ChatWithUs"      xml:space="preserve"><value>Chat with us now</value></data>
 	<data name="AboutApp"        xml:space="preserve"><value>About App</value></data>
+	<data name="ApiEndpoint"     xml:space="preserve"><value>API Endpoint</value></data>
+	<data name="SaveApiEndpoint" xml:space="preserve"><value>Save Endpoint</value></data>
+	<data name="InvalidApiUrl"   xml:space="preserve"><value>Please enter a valid API URL.</value></data>
+	<data name="ApiUrlSaved"     xml:space="preserve"><value>API endpoint saved successfully.</value></data>
 	<data name="Logout"          xml:space="preserve"><value>Logout</value></data>
 	<data name="Rating"          xml:space="preserve"><value>Rating</value></data>
 	<data name="Deliveries"      xml:space="preserve"><value>Deliveries</value></data>
@@ -71,6 +75,7 @@
 	<data name="Status"              xml:space="preserve"><value>Status</value></data>
 	<data name="PendingVerification" xml:space="preserve"><value>⚠️ Account pending verification</value></data>
 	<data name="ActiveDelivery"      xml:space="preserve"><value>Active Delivery</value></data>
+	<data name="ActiveDeliveries"    xml:space="preserve"><value>Active Deliveries</value></data>
 	<data name="Restaurant"          xml:space="preserve"><value>Restaurant</value></data>
 	<data name="Earning"             xml:space="preserve"><value>Earning</value></data>
 	<data name="ViewDetails"         xml:space="preserve"><value>View Delivery Details ←</value></data>
@@ -87,13 +92,21 @@
 	<data name="OrderTotal"       xml:space="preserve"><value>Order Total</value></data>
 	<data name="ItemsCount"       xml:space="preserve"><value>Items</value></data>
 	<data name="AcceptOrder"      xml:space="preserve"><value>Accept Order ✓</value></data>
+	<data name="NoAvailableOrders" xml:space="preserve"><value>No available orders right now. Check back soon! 🕐</value></data>
+	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} available orders</value></data>
 
 	<!-- ── Active Delivery ── -->
 	<data name="EarningPrefix"  xml:space="preserve"><value>Earning: </value></data>
+	<data name="OrderTotalPrefix" xml:space="preserve"><value>Order Total: </value></data>
 	<data name="OrderItems"     xml:space="preserve"><value>Order Items</value></data>
 	<data name="CallCustomer"   xml:space="preserve"><value>Call Customer</value></data>
 	<data name="ChatWithCustomer" xml:space="preserve"><value>Chat with Customer</value></data>
 	<data name="Navigate"       xml:space="preserve"><value>Navigate</value></data>
+	<data name="GoOnline"       xml:space="preserve"><value>Go Online</value></data>
+	<data name="GoOffline"      xml:space="preserve"><value>Go Offline</value></data>
+	<data name="OrderDetailsNotAvailable" xml:space="preserve"><value>Order details are not available right now.</value></data>
+	<data name="ActionPickedUp" xml:space="preserve"><value>I Picked Up the Order</value></data>
+	<data name="ActionDelivered" xml:space="preserve"><value>Order Delivered ✓</value></data>
 
 	<!-- ── Earnings Page ── -->
 	<data name="MyEarnings"      xml:space="preserve"><value>My Earnings</value></data>

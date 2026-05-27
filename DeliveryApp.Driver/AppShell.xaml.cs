@@ -7,6 +7,8 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
+        Shell.SetTabBarIsVisible(this, false);
+        Navigated += OnShellNavigated;
 
         // ── Pushed pages (need back button) ──────────────────────
         Routing.RegisterRoute(nameof(ActiveDeliveryPage), typeof(ActiveDeliveryPage));
@@ -19,5 +21,12 @@ public partial class AppShell : Shell
         // ── Removed from routes (now TabBar items) ───────────────
         // NotificationsPage → Tab 3
         // SettingsPage       → Tab 5
+    }
+
+    void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
+    {
+        Shell.SetTabBarIsVisible(this, false);
+        if (CurrentPage is Page page)
+            Shell.SetTabBarIsVisible(page, false);
     }
 }

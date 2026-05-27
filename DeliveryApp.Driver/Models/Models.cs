@@ -1,6 +1,7 @@
 ﻿// ═══════════════════════════════════════════════════════════════
 // DeliveryApp.Driver / Models / Models.cs
 // ═══════════════════════════════════════════════════════════════
+using DeliveryApp.Driver.Services;
 namespace DeliveryApp.Driver.Models;
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
@@ -78,6 +79,7 @@ public class ActiveOrder
     public List<ActiveOrderItem> Items { get; set; } = new();
 
     public string DeliveryFeeText => $"{DeliveryFee:F0} EGP";
+    public string TotalAmountText => $"{TotalAmount:F0} EGP";
 
     public string StatusText => Status switch
     {
@@ -99,8 +101,8 @@ public class ActiveOrder
     // Next action button
     public string NextActionText => Status switch
     {
-        "ReadyForPickup" => "I Picked Up the Order",
-        "OnTheWay" => "Order Delivered ✓",
+        "ReadyForPickup" => LocalizationService.Get("ActionPickedUp"),
+        "OnTheWay" => LocalizationService.Get("ActionDelivered"),
         _ => ""
     };
 

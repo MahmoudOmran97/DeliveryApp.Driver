@@ -3,13 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:controls="clr-namespace:DeliveryApp.Driver.Controls"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.AvailableOrdersPage"
              x:DataType="vm:AvailableOrdersViewModel"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              BackgroundColor="#F8F9FA">
 
-	<Grid RowDefinitions="Auto,*">
+	<Grid RowDefinitions="Auto,*,Auto">
 
 		<!-- Header -->
         <Grid RowDefinitions="Auto,*">
@@ -24,7 +26,7 @@
 						   FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
 				</VerticalStackLayout>
 				<Button Grid.Column="1"
-						Text="↻ Refresh"
+						Text="{loc:Loc Key=Refresh}"
 						Command="{Binding LoadCommand}"
 						BackgroundColor="Transparent"
 						TextColor="White"
@@ -37,7 +39,7 @@
                      Command="{Binding LoadCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
 			<CollectionView ItemsSource="{Binding Orders}"
-                            EmptyView="No available orders right now. Check back soon! 🕐"
+                            EmptyView="{loc:Loc Key=NoAvailableOrders}"
                             Margin="0,8">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="m:AvailableOrder">
@@ -74,24 +76,24 @@
 								<!-- Stats Row -->
 								<Grid ColumnDefinitions="*,*,*">
 									<VerticalStackLayout Grid.Column="0" Spacing="2">
-										<Label Text="Earning" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+										<Label Text="{loc:Loc Key=OrderEarning}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
 										<Label Text="{Binding DeliveryFeeText}"
                                                FontFamily="CairoBold" FontSize="16" TextColor="#4CAF50"/>
 									</VerticalStackLayout>
 									<VerticalStackLayout Grid.Column="1" Spacing="2">
-										<Label Text="Order Total" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
-										<Label Text="{Binding TotalText}"
+										<Label Text="{loc:Loc Key=OrderTotal}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+										<Label Text="{Binding TotalAmountText}"
                                                FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
 									</VerticalStackLayout>
 									<VerticalStackLayout Grid.Column="2" Spacing="2">
-										<Label Text="Items" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+										<Label Text="{loc:Loc Key=ItemsCount}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
 										<Label Text="{Binding ItemCountText}"
                                                FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
 									</VerticalStackLayout>
 								</Grid>
 
 								<!-- Accept Button -->
-								<Button Text="Accept Order ✓"
+								<Button Text="{loc:Loc Key=AcceptOrder}"
                                         CommandParameter="{Binding .}"
                                         BackgroundColor="#FF5722" TextColor="White"
                                         FontFamily="CairoBold" FontSize="14"
@@ -112,5 +114,7 @@
                                HorizontalOptions="Center" VerticalOptions="Center"/>
 		</Grid>
 
+		<controls:CurvedBottomBar Grid.Row="2" SelectedTab="orders"
+                                 HorizontalOptions="Fill" Margin="0" Padding="0"/>
 	</Grid>
 </ContentPage>

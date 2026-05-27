@@ -57,6 +57,10 @@
 	<data name="HelpAndSupport"  xml:space="preserve"><value>المساعدة والدعم</value></data>
 	<data name="ChatWithUs"      xml:space="preserve"><value>تحدث معنا الآن</value></data>
 	<data name="AboutApp"        xml:space="preserve"><value>عن التطبيق</value></data>
+	<data name="ApiEndpoint"     xml:space="preserve"><value>رابط الـ API</value></data>
+	<data name="SaveApiEndpoint" xml:space="preserve"><value>حفظ الرابط</value></data>
+	<data name="InvalidApiUrl"   xml:space="preserve"><value>من فضلك أدخل رابط API صحيح.</value></data>
+	<data name="ApiUrlSaved"     xml:space="preserve"><value>تم حفظ رابط الـ API بنجاح.</value></data>
 	<data name="Logout"          xml:space="preserve"><value>تسجيل الخروج</value></data>
 	<data name="Rating"          xml:space="preserve"><value>التقييم</value></data>
 	<data name="Deliveries"      xml:space="preserve"><value>الطلبات</value></data>
@@ -71,6 +75,7 @@
 	<data name="Status"              xml:space="preserve"><value>الحالة</value></data>
 	<data name="PendingVerification" xml:space="preserve"><value>⚠️ الحساب في انتظار مراجعة الإدارة</value></data>
 	<data name="ActiveDelivery"      xml:space="preserve"><value>توصيل نشط</value></data>
+	<data name="ActiveDeliveries"    xml:space="preserve"><value>التوصيلات النشطة</value></data>
 	<data name="Restaurant"          xml:space="preserve"><value>المطعم</value></data>
 	<data name="Earning"             xml:space="preserve"><value>الربح</value></data>
 	<data name="ViewDetails"         xml:space="preserve"><value>عرض تفاصيل التوصيل ←</value></data>
@@ -87,13 +92,21 @@
 	<data name="OrderTotal"       xml:space="preserve"><value>إجمالي الطلب</value></data>
 	<data name="ItemsCount"       xml:space="preserve"><value>عدد الأصناف</value></data>
 	<data name="AcceptOrder"      xml:space="preserve"><value>قبول الطلب ✓</value></data>
+	<data name="NoAvailableOrders" xml:space="preserve"><value>لا توجد طلبات متاحة الآن. حاول مرة أخرى بعد قليل 🕐</value></data>
+	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} طلب متاح</value></data>
 
 	<!-- ── Active Delivery ── -->
 	<data name="EarningPrefix"    xml:space="preserve"><value>الربح: </value></data>
+	<data name="OrderTotalPrefix" xml:space="preserve"><value>إجمالي الطلب: </value></data>
 	<data name="OrderItems"       xml:space="preserve"><value>عناصر الطلب</value></data>
 	<data name="CallCustomer"     xml:space="preserve"><value>اتصل بالعميل</value></data>
 	<data name="ChatWithCustomer" xml:space="preserve"><value>محادثة العميل</value></data>
 	<data name="Navigate"         xml:space="preserve"><value>تتبع المسار</value></data>
+	<data name="GoOnline"         xml:space="preserve"><value>اتصل الآن</value></data>
+	<data name="GoOffline"        xml:space="preserve"><value>إيقاف الاتصال</value></data>
+	<data name="OrderDetailsNotAvailable" xml:space="preserve"><value>تفاصيل الطلب غير متاحة حالياً.</value></data>
+	<data name="ActionPickedUp" xml:space="preserve"><value>استلمت الطلب من المطعم</value></data>
+	<data name="ActionDelivered" xml:space="preserve"><value>تم تسليم الطلب ✓</value></data>
 
 	<!-- ── Earnings Page ── -->
 	<data name="MyEarnings"      xml:space="preserve"><value>أرباحي</value></data>

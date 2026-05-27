@@ -3,14 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:controls="clr-namespace:DeliveryApp.Driver.Controls"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.NotificationsPage"
              x:DataType="vm:NotificationsViewModel"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              FlowDirection="{Binding Source={StaticResource LocStrings}, Path=Flow}"
              BackgroundColor="#F8F9FA">
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*,Auto">
 
         <!-- Header (no back button — this is a Tab now) -->
         <Grid Grid.Row="0" BackgroundColor="#FF5722"
@@ -95,5 +97,8 @@
             </CollectionView>
         </RefreshView>
 
+        <controls:CurvedBottomBar Grid.Row="2" SelectedTab="notifications"
+                                 HorizontalOptions="Fill" Margin="0" Padding="0"
+                                 FlowDirection="LeftToRight"/>
     </Grid>
 </ContentPage>

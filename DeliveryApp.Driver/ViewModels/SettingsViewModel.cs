@@ -1,19 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Services;
-using DeliveryApp.Driver.Views;
 
 namespace DeliveryApp.Driver.ViewModels;
 
 public partial class SettingsViewModel : BaseViewModel
 {
-    private readonly IServiceProvider _services;
-
-    public SettingsViewModel(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     // ── Language button colors ────────────────────────────────────
     private string _currentLang => LocalizationService.Current.TwoLetterISOLanguageName;
 
@@ -27,7 +19,6 @@ public partial class SettingsViewModel : BaseViewModel
     public Color EnglishBtnText => _currentLang == "en" ? Colors.White : Color.FromArgb("#212121");
     public Color EnglishSubText => _currentLang == "en" ? Color.FromArgb("#FFCCBC") : Color.FromArgb("#757575");
 
-    // ── Set Language → restart ────────────────────────────────────
     [RelayCommand]
     async Task SetLanguage(string lang)
     {
@@ -55,11 +46,9 @@ public partial class SettingsViewModel : BaseViewModel
     private void RestartApp()
     {
         LocalizationService.Apply(_currentLang);
-        // For Driver app, we might not have SplashPage, so we can just set AppShell
         Application.Current!.MainPage = new AppShell();
     }
 
-    // ── Open Support Chat ─────────────────────────────────────────
     [RelayCommand]
     async Task OpenChat()
     {

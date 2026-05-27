@@ -6,6 +6,7 @@ using Mapsui.Styles;
 using Mapsui.Tiling;
 
 using System.Diagnostics;
+using System.IO;
 using System.Text.Json;
 using static Microsoft.Maui.ApplicationModel.Permissions;
 
@@ -20,9 +21,9 @@ public partial class ActiveDeliveryPage : ContentPage
     MemoryLayer? _routeLayer;
     bool _mapInitialized;
 
-    static readonly string _customerSvg = BuildPinSvg("#2196F3", "#1565C0");
-    static readonly string _restaurantSvg = BuildPinSvg("#4CAF50", "#2E7D32");
-    static readonly string _driverSvg = BuildCircleSvg("#FF5722", "#BF360C");
+    string _customerSvg = BuildPinSvg("#2196F3", "#1565C0");
+    string _restaurantSvg = BuildPinSvg("#4CAF50", "#2E7D32");
+    string _driverSvg = BuildCircleSvg("#FF5722", "#BF360C");
 
     public ActiveDeliveryPage(ActiveDeliveryViewModel vm)
     {
@@ -30,7 +31,33 @@ public partial class ActiveDeliveryPage : ContentPage
         BindingContext = vm;
         _vm = vm;
         SetupMap();
+        _ = LoadMarkerSvgsAsync();
         vm.MapUpdated += OnMapUpdated;
+    }
+
+    async Task LoadMarkerSvgsAsync()
+    {
+        _customerSvg = await TryReadRasterMarkerAsync("marker_user_img.png", _customerSvg);
+        _restaurantSvg = await TryReadRasterMarkerAsync("marker_shop_img.png", _restaurantSvg);
+        _driverSvg = await TryReadRasterMarkerAsync("marker_driver_img.png", _driverSvg);
+
+        MainThread.BeginInvokeOnMainThread(OnMapUpdated);
+    }
+
+    static async Task<string> TryReadRasterMarkerAsync(string fileName, string fallback)
+    {
+        try
+        {
+            using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
+            var markerPath = Path.Combine(FileSystem.CacheDirectory, fileName);
+            using var output = File.Create(markerPath);
+            await stream.CopyToAsync(output);
+            return new Uri(markerPath).AbsoluteUri;
+        }
+        catch
+        {
+            return fallback;
+        }
     }
 
     static string BuildPinSvg(string fill, string dark) =>
@@ -95,12 +122,6 @@ public partial class ActiveDeliveryPage : ContentPage
 
                 if (hasCustomer && hasRestaurant)
                 {
-                    await DrawRouteAsync(
-                        _vm.Order.RestaurantLat, _vm.Order.RestaurantLng,
-                        _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude,
-                        "#FF5722", 5, "RouteLayer",
-                        layer => _routeLayer = layer);
-
                     FitBounds(
                         _vm.Order.RestaurantLat, _vm.Order.RestaurantLng,
                         _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude);
@@ -119,7 +140,26 @@ public partial class ActiveDeliveryPage : ContentPage
             if (_vm.DriverLat != 0 && _vm.DriverLng != 0)
             {
                 DrawImagePin(ref _driverLayer, "DriverLayer",
-                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.9);
+                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.65);
+
+                var targetLat = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLatitude : _vm.Order.RestaurantLat;
+                var targetLng = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLongitude : _vm.Order.RestaurantLng;
+                if (targetLat != 0 && targetLng != 0)
+                {
+                    await DrawRouteAsync(
+                        _vm.DriverLat, _vm.DriverLng,
+                        targetLat, targetLng,
+                        "#FF5722", 5, "RouteLayer",
+                        layer => _routeLayer = layer);
+                }
+            }
+            else if (hasCustomer && hasRestaurant)
+            {
+                await DrawRouteAsync(
+                    _vm.Order.RestaurantLat, _vm.Order.RestaurantLng,
+                    _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude,
+                    "#FF5722", 5, "RouteLayer",
+                    layer => _routeLayer = layer);
             }
 
             MapControl.Refresh();

@@ -6,16 +6,55 @@ namespace DeliveryApp.Driver.Services;
 
 public class ApiService
 {
+    public const string ApiBaseUrlPreferenceKey = "api_base_url";
+    private const string ProductionBaseUrl = "https://deliveryappapi.runasp.net/api";
     private readonly HttpClient _http;
     private readonly AuthService _auth;
     private readonly JsonSerializerOptions _json = new() { PropertyNameCaseInsensitive = true };
-
-    private const string Base = "https://deliveryappapi.runasp.net/api";
+    private string _baseUrl;
 
     public ApiService(AuthService auth)
     {
         _auth = auth;
         _http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+        _baseUrl = ResolveBaseUrl();
+    }
+
+    public string GetBaseUrl() => _baseUrl;
+
+    public void SetBaseUrl(string baseUrl)
+    {
+        var normalized = NormalizeBaseUrl(baseUrl);
+        if (string.IsNullOrWhiteSpace(normalized))
+            return;
+
+        Preferences.Set(ApiBaseUrlPreferenceKey, normalized);
+        _baseUrl = normalized;
+    }
+
+    private static string ResolveBaseUrl()
+    {
+        var preferred = Preferences.Get(ApiBaseUrlPreferenceKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(preferred))
+            return NormalizeBaseUrl(preferred);
+
+        var env = Environment.GetEnvironmentVariable("DELIVERY_API_BASE_URL");
+        if (!string.IsNullOrWhiteSpace(env))
+            return NormalizeBaseUrl(env);
+
+        return ProductionBaseUrl;
+    }
+
+    private static string NormalizeBaseUrl(string? value)
+    {
+        var raw = (value ?? string.Empty).Trim().TrimEnd('/');
+        if (string.IsNullOrWhiteSpace(raw))
+            return string.Empty;
+
+        if (!raw.EndsWith("/api", StringComparison.OrdinalIgnoreCase))
+            raw += "/api";
+
+        return raw;
     }
 
     private void SetAuth()
@@ -36,7 +75,7 @@ public class ApiService
         SetAuth();
         try
         {
-            var r = await _http.GetAsync($"{Base}/{path}");
+            var r = await _http.GetAsync($"{_baseUrl}/{path}");
             if (r.IsSuccessStatusCode)
                 return await r.Content.ReadFromJsonAsync<T>(_json);
         }
@@ -49,7 +88,17 @@ public class ApiService
         SetAuth();
         try
         {
-            var r = await _http.PostAsJsonAsync($"{Base}/{path}", payload);
+            var r = await _http.PostAsJsonAsync($"{_baseUrl}/{path}", payload);
+            if (r.StatusCode == System.Net.HttpStatusCode.NotFound &&
+                path.StartsWith("auth/", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(_baseUrl, ProductionBaseUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                // Safety fallback in case an old dev URL was persisted.
+                _baseUrl = ProductionBaseUrl;
+                Preferences.Set(ApiBaseUrlPreferenceKey, _baseUrl);
+                r = await _http.PostAsJsonAsync($"{_baseUrl}/{path}", payload);
+            }
+
             if (r.IsSuccessStatusCode)
                 return await r.Content.ReadFromJsonAsync<T>(_json);
 
@@ -76,8 +125,8 @@ public class ApiService
         try
         {
             var r = payload != null
-                ? await _http.PutAsJsonAsync($"{Base}/{path}", payload)
-                : await _http.PutAsync($"{Base}/{path}", null);
+                ? await _http.PutAsJsonAsync($"{_baseUrl}/{path}", payload)
+                : await _http.PutAsync($"{_baseUrl}/{path}", null);
             return r.IsSuccessStatusCode;
         }
         catch (Exception ex) { Debug(ex, path); }
@@ -90,8 +139,8 @@ public class ApiService
         try
         {
             var r = payload != null
-                ? await _http.PutAsJsonAsync($"{Base}/{path}", payload)
-                : await _http.PutAsync($"{Base}/{path}", null);
+                ? await _http.PutAsJsonAsync($"{_baseUrl}/{path}", payload)
+                : await _http.PutAsync($"{_baseUrl}/{path}", null);
             if (r.IsSuccessStatusCode)
                 return await r.Content.ReadFromJsonAsync<T>(_json);
         }
@@ -135,7 +184,7 @@ public class ApiService
         SetAuth();
         try
         {
-            var r = await _http.PutAsync($"{Base}/drivers/toggle-online", null);
+            var r = await _http.PutAsync($"{_baseUrl}/drivers/toggle-online", null);
             if (r.IsSuccessStatusCode)
             {
                 var result = await r.Content.ReadFromJsonAsync<JsonElement>(_json);
@@ -171,6 +220,57 @@ public class ApiService
     public Task<ActiveOrder?> GetActiveOrderAsync()
         => GetAsync<ActiveOrder>("drivers/orders/active");
 
+    public async Task<ActiveOrder?> GetOrderDetailsForDriverAsync(int orderId)
+    {
+        SetAuth();
+        try
+        {
+            var response = await _http.GetAsync($"{_baseUrl}/orders/{orderId}");
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            var root = json.RootElement;
+
+            var result = new ActiveOrder
+            {
+                Id = root.TryGetProperty("id", out var id) ? id.GetInt32() : orderId,
+                Status = root.TryGetProperty("status", out var status) ? status.GetString() ?? string.Empty : string.Empty,
+                TotalAmount = root.TryGetProperty("totalAmount", out var total) ? total.GetDecimal() : 0,
+                DeliveryFee = root.TryGetProperty("deliveryFee", out var fee) ? fee.GetDecimal() : 0,
+                DeliveryAddress = root.TryGetProperty("deliveryAddress", out var address) ? address.GetString() ?? string.Empty : string.Empty,
+                DeliveryLatitude = root.TryGetProperty("deliveryLatitude", out var lat) ? lat.GetDouble() : 0,
+                DeliveryLongitude = root.TryGetProperty("deliveryLongitude", out var lng) ? lng.GetDouble() : 0,
+                DeliveryNotes = root.TryGetProperty("deliveryNotes", out var notes) ? notes.GetString() : null,
+                CustomerName = root.TryGetProperty("customerName", out var customerName) ? customerName.GetString() ?? string.Empty : string.Empty
+            };
+
+            if (root.TryGetProperty("restaurant", out var restaurant))
+            {
+                result.RestaurantName = restaurant.TryGetProperty("name", out var rName) ? rName.GetString() ?? string.Empty : string.Empty;
+                result.RestaurantLat = restaurant.TryGetProperty("latitude", out var rLat) ? rLat.GetDouble() : 0;
+                result.RestaurantLng = restaurant.TryGetProperty("longitude", out var rLng) ? rLng.GetDouble() : 0;
+            }
+
+            if (root.TryGetProperty("items", out var items) && items.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in items.EnumerateArray())
+                {
+                    result.Items.Add(new ActiveOrderItem
+                    {
+                        ProductName = item.TryGetProperty("productName", out var productName) ? productName.GetString() ?? string.Empty : string.Empty,
+                        Quantity = item.TryGetProperty("quantity", out var quantity) ? quantity.GetInt32() : 0,
+                        Notes = item.TryGetProperty("notes", out var itemNotes) ? itemNotes.GetString() : null
+                    });
+                }
+            }
+
+            return result;
+        }
+        catch (Exception ex) { Debug(ex, $"orders/{orderId}"); }
+        return null;
+    }
+
     public async Task<bool> StartVoiceCallAsync(int orderId)
     {
         // This is a placeholder for the actual voice call initiation via SignalR or a dedicated endpoint
@@ -189,8 +289,15 @@ public class ApiService
     public async Task<bool> UpdateOrderStatusAsync(int orderId, string status)
         => await PutAsync($"orders/{orderId}/status", new { Status = status });
 
-    public Task<PagedResult<DriverOrder>?> GetMyOrdersAsync(int page = 1)
-        => GetAsync<PagedResult<DriverOrder>>($"orders/my?page={page}");
+    public async Task<PagedResult<DriverOrder>?> GetMyOrdersAsync(int page = 1)
+    {
+        var driverOrders = await GetAsync<PagedResult<DriverOrder>>($"orders/driver/my?page={page}&pageSize=50");
+        if (driverOrders?.Data?.Count > 0)
+            return driverOrders;
+
+        // Backward-compatible fallback for older APIs.
+        return await GetAsync<PagedResult<DriverOrder>>($"orders/my?page={page}&pageSize=50");
+    }
 
     // ─── Notifications ───────────────────────────────────────────────────────
 

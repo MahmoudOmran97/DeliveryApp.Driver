@@ -7,6 +7,7 @@
              x:Class="DeliveryApp.Driver.Views.EarningsPage"
              x:DataType="vm:EarningsViewModel"
              Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
              FlowDirection="{Binding Source={StaticResource LocStrings}, Path=Flow}"
              BackgroundColor="#F8F9FA">
 

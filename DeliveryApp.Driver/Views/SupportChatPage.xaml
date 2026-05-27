@@ -6,7 +6,8 @@
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.SupportChatPage"
              x:DataType="vm:SupportChatViewModel"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False">
 
     <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="White">
 

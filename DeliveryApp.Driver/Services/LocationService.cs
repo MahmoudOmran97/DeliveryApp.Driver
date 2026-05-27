@@ -27,7 +27,7 @@ public class LocationService
         _timer?.Stop();
         _timer?.Dispose();
 
-        _timer = new System.Timers.Timer(8000);
+        _timer = new System.Timers.Timer(3000);
         _timer.Elapsed += async (_, _) => await UpdateLocationAsync();
         _timer.Start();
 
