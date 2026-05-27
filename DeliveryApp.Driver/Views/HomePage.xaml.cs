@@ -25,12 +25,12 @@ public partial class HomePage : ContentPage
         _vm.Cleanup();
     }
 
+   
     private async void OnNotificationsTapped(object sender, TappedEventArgs e)
-        => await Shell.Current.GoToAsync(nameof(NotificationsPage));
-
+        => await Shell.Current.GoToAsync("//NotificationsPage");
     private async void OnAvailableOrdersTapped(object sender, TappedEventArgs e)
         => await Shell.Current.GoToAsync("//AvailableOrdersPage");
 
     private async void OnEarningsTapped(object sender, TappedEventArgs e)
-        => await Shell.Current.GoToAsync("//EarningsPage");
+        => await Shell.Current.GoToAsync(nameof(EarningsPage));
 }

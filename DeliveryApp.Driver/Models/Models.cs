@@ -28,7 +28,9 @@ public class DriverProfile
     public bool IsVerified { get; set; }
     public string? ProfileImage { get; set; }
     public decimal TotalEarnings { get; set; }
-
+    public string LicensePlate { get; set; }
+    public int TotalRatings { get; set; }
+    public string VehicleType { get; set; }
     public string RatingText => $"{Rating:F1} ★";
     public string TotalDeliveriesText => $"{TotalDeliveries} deliveries";
     public string TotalEarningsText => $"{TotalEarnings:F0} EGP";
