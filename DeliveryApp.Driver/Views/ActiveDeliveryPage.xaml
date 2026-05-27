@@ -49,6 +49,15 @@
                            TextColor="#424242"/>
 
 					<HorizontalStackLayout Spacing="8">
+						<Image Source="marker_driver_img.png" WidthRequest="16" HeightRequest="16"/>
+						<Label Text="{loc:Loc Key=MapLegendDriver}"
+                               FontFamily="CairoRegular"
+                               FontSize="11"
+                               TextColor="#424242"
+                               VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+
+					<HorizontalStackLayout Spacing="8">
 						<Image Source="marker_user_img.png" WidthRequest="16" HeightRequest="16"/>
 						<Label Text="{loc:Loc Key=MapLegendCustomer}"
                                FontFamily="CairoRegular"

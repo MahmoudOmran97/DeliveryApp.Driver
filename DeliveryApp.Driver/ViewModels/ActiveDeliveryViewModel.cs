@@ -43,8 +43,21 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
         if (value != null)
         {
             _location.SetOrderId(value.Id);
+            _location.StartTracking(value.Id);
             // ✅ FIX #4 — سجّل الطلب عشان لو العميل بعت رسالة يظهر للدرايفر notification
             _chatNotif.RegisterOrder(value.Id, value.CustomerName);
+            _ = LoadInitialDriverLocationAsync();
+        }
+    }
+
+    async Task LoadInitialDriverLocationAsync()
+    {
+        var current = await _location.GetCurrentLocationAsync();
+        if (current.HasValue)
+        {
+            DriverLat = current.Value.lat;
+            DriverLng = current.Value.lng;
+            MapUpdated?.Invoke();
         }
     }
 
@@ -76,7 +89,11 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
                 {
                     var updated = await _api.GetActiveOrderAsync();
                     if (updated?.Id > 0)
+                    {
+                        if (string.IsNullOrWhiteSpace(updated.CustomerName))
+                            updated.CustomerName = Order.CustomerName;
                         Order = updated;
+                    }
                 }
             }
             else

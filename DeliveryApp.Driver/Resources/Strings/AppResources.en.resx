@@ -108,6 +108,7 @@
 	<data name="ActionPickedUp" xml:space="preserve"><value>I Picked Up the Order</value></data>
 	<data name="ActionDelivered" xml:space="preserve"><value>Order Delivered ✓</value></data>
 	<data name="MapLegendTitle" xml:space="preserve"><value>Map Markers</value></data>
+	<data name="MapLegendDriver" xml:space="preserve"><value>Driver location</value></data>
 	<data name="MapLegendCustomer" xml:space="preserve"><value>Customer location</value></data>
 	<data name="MapLegendShop" xml:space="preserve"><value>Shop location</value></data>
 

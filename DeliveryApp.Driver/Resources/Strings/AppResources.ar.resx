@@ -108,6 +108,7 @@
 	<data name="ActionPickedUp" xml:space="preserve"><value>استلمت الطلب من المطعم</value></data>
 	<data name="ActionDelivered" xml:space="preserve"><value>تم تسليم الطلب ✓</value></data>
 	<data name="MapLegendTitle" xml:space="preserve"><value>علامات الخريطة</value></data>
+	<data name="MapLegendDriver" xml:space="preserve"><value>موقع الدليفري</value></data>
 	<data name="MapLegendCustomer" xml:space="preserve"><value>موقع العميل</value></data>
 	<data name="MapLegendShop" xml:space="preserve"><value>موقع المحل</value></data>
 

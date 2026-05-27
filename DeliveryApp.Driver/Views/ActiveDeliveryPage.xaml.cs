@@ -6,6 +6,7 @@ using Mapsui.Styles;
 using Mapsui.Tiling;
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json;
 using static Microsoft.Maui.ApplicationModel.Permissions;
 
@@ -19,10 +20,11 @@ public partial class ActiveDeliveryPage : ContentPage
     MemoryLayer? _restaurantLayer;
     MemoryLayer? _routeLayer;
     bool _mapInitialized;
+    bool _markerSourcesReady;
 
-    string _customerSvg = "embedded://DeliveryApp.Driver.Resources.Images.marker_user_img.png";
-    string _restaurantSvg = "embedded://DeliveryApp.Driver.Resources.Images.marker_shop_img.png";
-    string _driverSvg = "embedded://DeliveryApp.Driver.Resources.Images.marker_driver_img.png";
+    string _customerSvg = BuildUserMarkerSvg();
+    string _restaurantSvg = BuildShopMarkerSvg();
+    string _driverSvg = BuildDriverMarkerSvg();
 
     public ActiveDeliveryPage(ActiveDeliveryViewModel vm)
     {
@@ -30,8 +32,55 @@ public partial class ActiveDeliveryPage : ContentPage
         BindingContext = vm;
         _vm = vm;
         SetupMap();
+        _ = LoadMarkerSourcesAsync();
         vm.MapUpdated += OnMapUpdated;
     }
+
+    async Task LoadMarkerSourcesAsync()
+    {
+        _customerSvg = await TryReadBase64ImageSourceAsync("marker_user_img.png", _customerSvg);
+        _restaurantSvg = await TryReadBase64ImageSourceAsync("marker_shop_img.png", _restaurantSvg);
+        _driverSvg = await TryReadBase64ImageSourceAsync("marker_driver_img.png", _driverSvg);
+        _markerSourcesReady = true;
+        MainThread.BeginInvokeOnMainThread(OnMapUpdated);
+    }
+
+    static async Task<string> TryReadBase64ImageSourceAsync(string fileName, string fallback)
+    {
+        try
+        {
+            await using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            return $"base64-content://{base64}";
+        }
+        catch
+        {
+            return fallback;
+        }
+    }
+
+    static string BuildDriverMarkerSvg() =>
+        "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
+        "<circle cx='32' cy='32' r='26' fill='#FF5722'/>" +
+        "<circle cx='22' cy='40' r='7' fill='white'/><circle cx='22' cy='40' r='3.2' fill='#263238'/>" +
+        "<circle cx='42' cy='40' r='7' fill='white'/><circle cx='42' cy='40' r='3.2' fill='#263238'/>" +
+        "<path d='M19 33h19l6-7h-8l-3-7h-7l2 7h-9z' fill='#263238'/></svg>";
+
+    static string BuildUserMarkerSvg() =>
+        "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
+        "<path d='M32 2C20.4 2 11 11.4 11 23c0 14 18.2 35.8 20.1 38.1.5.6 1.4.6 1.9 0C34.8 58.8 53 37 53 23 53 11.4 43.6 2 32 2z' fill='#2196F3'/>" +
+        "<circle cx='32' cy='23' r='10' fill='white'/><circle cx='32' cy='20' r='4.6' fill='#2196F3'/>" +
+        "<path d='M24.5 30.5c1.8-3 4.2-4.5 7.5-4.5s5.7 1.5 7.5 4.5' fill='none' stroke='#2196F3' stroke-width='3' stroke-linecap='round'/></svg>";
+
+    static string BuildShopMarkerSvg() =>
+        "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
+        "<path d='M32 2C20.4 2 11 11.4 11 23c0 14 18.2 35.8 20.1 38.1.5.6 1.4.6 1.9 0C34.8 58.8 53 37 53 23 53 11.4 43.6 2 32 2z' fill='#4CAF50'/>" +
+        "<rect x='20' y='16' width='24' height='18' rx='2' fill='white'/>" +
+        "<path d='M20 22h24' stroke='#4CAF50' stroke-width='3'/>" +
+        "<rect x='24' y='25' width='7' height='9' fill='#4CAF50'/>" +
+        "<rect x='34' y='25' width='8' height='6' fill='#4CAF50'/></svg>";
 
     void SetupMap()
     {
@@ -95,15 +144,27 @@ public partial class ActiveDeliveryPage : ContentPage
             if (_vm.DriverLat != 0 && _vm.DriverLng != 0)
             {
                 DrawImagePin(ref _driverLayer, "DriverLayer",
-                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.045);
+                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.065);
 
                 var targetLat = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLatitude : _vm.Order.RestaurantLat;
                 var targetLng = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLongitude : _vm.Order.RestaurantLng;
-                if (targetLat != 0 && targetLng != 0)
+                if (_vm.Order.IsOnTheWay && targetLat != 0 && targetLng != 0)
                 {
                     await DrawRouteAsync(
                         _vm.DriverLat, _vm.DriverLng,
                         targetLat, targetLng,
+                        "#FF5722", 5, "RouteLayer",
+                        layer => _routeLayer = layer);
+                }
+                else if (!_vm.Order.IsOnTheWay && hasRestaurant && hasCustomer)
+                {
+                    await DrawRouteByWaypointsAsync(
+                        new[]
+                        {
+                            (_vm.DriverLat, _vm.DriverLng),
+                            (_vm.Order.RestaurantLat, _vm.Order.RestaurantLng),
+                            (_vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude)
+                        },
                         "#FF5722", 5, "RouteLayer",
                         layer => _routeLayer = layer);
                 }
@@ -160,7 +221,8 @@ public partial class ActiveDeliveryPage : ContentPage
         {
             using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
             var url = $"https://router.project-osrm.org/route/v1/driving/" +
-                      $"{fromLng},{fromLat};{toLng},{toLat}" +
+                      $"{fromLng.ToString(CultureInfo.InvariantCulture)},{fromLat.ToString(CultureInfo.InvariantCulture)};" +
+                      $"{toLng.ToString(CultureInfo.InvariantCulture)},{toLat.ToString(CultureInfo.InvariantCulture)}" +
                       $"?overview=full&geometries=geojson";
 
             var json = await http.GetStringAsync(url);
@@ -200,7 +262,111 @@ public partial class ActiveDeliveryPage : ContentPage
             MapControl.Map.Layers.Insert(insertIdx, newLayer);
             onComplete(newLayer);
         }
-        catch (Exception ex) { Debug.WriteLine($"[Route] {ex.Message}"); }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[Route] {ex.Message}");
+            DrawStraightLine(fromLat, fromLng, toLat, toLng, colorHex, width, layerName, onComplete);
+        }
+    }
+
+    async Task DrawRouteByWaypointsAsync(
+        IEnumerable<(double lat, double lng)> waypoints,
+        string colorHex, double width,
+        string layerName,
+        Action<MemoryLayer> onComplete)
+    {
+        try
+        {
+            var pointsList = waypoints.ToList();
+            if (pointsList.Count < 2) return;
+
+            var coordsParam = string.Join(";",
+                pointsList.Select(p => $"{p.lng.ToString(System.Globalization.CultureInfo.InvariantCulture)},{p.lat.ToString(System.Globalization.CultureInfo.InvariantCulture)}"));
+
+            using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            var url = $"https://router.project-osrm.org/route/v1/driving/{coordsParam}?overview=full&geometries=geojson";
+            var json = await http.GetStringAsync(url);
+            var doc = JsonDocument.Parse(json);
+            var route = doc.RootElement.GetProperty("routes")[0];
+            var coords = route.GetProperty("geometry").GetProperty("coordinates");
+
+            var points = new List<MPoint>();
+            foreach (var c in coords.EnumerateArray())
+            {
+                var (mx, my) = SphericalMercator.FromLonLat(c[0].GetDouble(), c[1].GetDouble());
+                points.Add(new MPoint(mx, my));
+            }
+            if (points.Count < 2) return;
+
+            var existingByName = MapControl.Map.Layers.FirstOrDefault(l => l.Name == layerName);
+            if (existingByName != null) MapControl.Map.Layers.Remove(existingByName);
+
+            var line = new NetTopologySuite.Geometries.LineString(
+                points.Select(p => new NetTopologySuite.Geometries.Coordinate(p.X, p.Y)).ToArray());
+            var feature = new Mapsui.Nts.GeometryFeature(line);
+            feature.Styles = new List<IStyle>
+            {
+                new VectorStyle { Line = new Pen(Mapsui.Styles.Color.FromArgb(50, 0, 0, 0), width + 4) },
+                new VectorStyle { Line = new Pen(Mapsui.Styles.Color.FromString(colorHex), width) },
+                new VectorStyle { Line = new Pen(Mapsui.Styles.Color.White, 1.5f) { PenStyle = PenStyle.Dash } }
+            };
+
+            var newLayer = new MemoryLayer
+            {
+                Name = layerName,
+                Features = new[] { feature },
+                Style = null
+            };
+
+            int insertIdx = Math.Min(1, Math.Max(0, MapControl.Map.Layers.Count - 1));
+            MapControl.Map.Layers.Insert(insertIdx, newLayer);
+            onComplete(newLayer);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[RouteWaypoints] {ex.Message}");
+            var pointsList = waypoints.ToList();
+            if (pointsList.Count >= 2)
+            {
+                DrawStraightLine(pointsList[0].lat, pointsList[0].lng, pointsList[1].lat, pointsList[1].lng, colorHex, width, layerName, onComplete);
+            }
+        }
+    }
+
+    void DrawStraightLine(
+        double fromLat, double fromLng,
+        double toLat, double toLng,
+        string colorHex, double width,
+        string layerName,
+        Action<MemoryLayer> onComplete)
+    {
+        var existingByName = MapControl.Map.Layers.FirstOrDefault(l => l.Name == layerName);
+        if (existingByName != null) MapControl.Map.Layers.Remove(existingByName);
+
+        var (x1, y1) = SphericalMercator.FromLonLat(fromLng, fromLat);
+        var (x2, y2) = SphericalMercator.FromLonLat(toLng, toLat);
+        var line = new NetTopologySuite.Geometries.LineString(new[]
+        {
+            new NetTopologySuite.Geometries.Coordinate(x1, y1),
+            new NetTopologySuite.Geometries.Coordinate(x2, y2)
+        });
+
+        var feature = new Mapsui.Nts.GeometryFeature(line);
+        feature.Styles = new List<IStyle>
+        {
+            new VectorStyle { Line = new Pen(Mapsui.Styles.Color.FromString(colorHex), width) }
+        };
+
+        var newLayer = new MemoryLayer
+        {
+            Name = layerName,
+            Features = new[] { feature },
+            Style = null
+        };
+
+        int insertIdx = Math.Min(1, Math.Max(0, MapControl.Map.Layers.Count - 1));
+        MapControl.Map.Layers.Insert(insertIdx, newLayer);
+        onComplete(newLayer);
     }
 
     void FitBounds(double lat1, double lng1, double lat2, double lng2)
