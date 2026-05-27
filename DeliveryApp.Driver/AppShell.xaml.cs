@@ -8,10 +8,16 @@ public partial class AppShell : Shell
     {
         InitializeComponent();
 
+        // ── Pushed pages (need back button) ──────────────────────
         Routing.RegisterRoute(nameof(ActiveDeliveryPage), typeof(ActiveDeliveryPage));
-        Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
         Routing.RegisterRoute(nameof(CustomerChatPage), typeof(CustomerChatPage));
         Routing.RegisterRoute(nameof(SupportChatPage), typeof(SupportChatPage));
-        Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
+
+        // EarningsPage is now a pushed page (not a tab anymore)
+        Routing.RegisterRoute(nameof(EarningsPage), typeof(EarningsPage));
+
+        // ── Removed from routes (now TabBar items) ───────────────
+        // NotificationsPage → Tab 3
+        // SettingsPage       → Tab 5
     }
 }

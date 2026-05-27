@@ -1,4 +1,5 @@
-﻿<root>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
 	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 		<xsd:element name="root" msdata:IsDataSet="true">
@@ -18,56 +19,99 @@
 		</xsd:element>
 	</xsd:schema>
 
-	<!-- General -->
-	<data name="AppName" xml:space="preserve"><value>Deliver</value></data>
-	<data name="Ok" xml:space="preserve"><value>OK</value></data>
-	<data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
-	<data name="Save" xml:space="preserve"><value>Save</value></data>
-	<data name="Edit" xml:space="preserve"><value>Edit</value></data>
-	<data name="Back" xml:space="preserve"><value>Back</value></data>
-	<data name="Notice" xml:space="preserve"><value>Notice</value></data>
-	<data name="Error" xml:space="preserve"><value>Error</value></data>
-	<data name="Yes" xml:space="preserve"><value>Yes</value></data>
-	<data name="No" xml:space="preserve"><value>No</value></data>
+	<!-- ── General ── -->
+	<data name="AppName"       xml:space="preserve"><value>Deliver</value></data>
+	<data name="Ok"            xml:space="preserve"><value>OK</value></data>
+	<data name="Cancel"        xml:space="preserve"><value>Cancel</value></data>
+	<data name="Save"          xml:space="preserve"><value>Save</value></data>
+	<data name="Edit"          xml:space="preserve"><value>Edit</value></data>
+	<data name="Back"          xml:space="preserve"><value>Back</value></data>
+	<data name="Notice"        xml:space="preserve"><value>Notice</value></data>
+	<data name="Error"         xml:space="preserve"><value>Error</value></data>
+	<data name="Yes"           xml:space="preserve"><value>Yes</value></data>
+	<data name="No"            xml:space="preserve"><value>No</value></data>
+	<data name="Refresh"       xml:space="preserve"><value>Refresh</value></data>
+	<data name="Send"          xml:space="preserve"><value>Send</value></data>
 
-	<!-- Tabs -->
-	<data name="Tab_Home" xml:space="preserve"><value>Home</value></data>
-	<data name="Tab_Orders" xml:space="preserve"><value>Orders</value></data>
-	<data name="Tab_Earnings" xml:space="preserve"><value>Earnings</value></data>
-	<data name="Tab_Profile" xml:space="preserve"><value>Profile</value></data>
+	<!-- ── Tabs ── -->
+	<data name="Tab_Home"          xml:space="preserve"><value>Home</value></data>
+	<data name="Tab_Orders"        xml:space="preserve"><value>Orders</value></data>
+	<data name="Tab_Earnings"      xml:space="preserve"><value>Earnings</value></data>
+	<data name="Tab_Notifications" xml:space="preserve"><value>Alerts</value></data>
+	<data name="Tab_Profile"       xml:space="preserve"><value>Profile</value></data>
+	<data name="Tab_Settings"      xml:space="preserve"><value>Settings</value></data>
 
-	<!-- Profile & Settings -->
-	<data name="Profile" xml:space="preserve"><value>Profile</value></data>
-	<data name="Settings" xml:space="preserve"><value>Settings</value></data>
-	<data name="ChangeLanguage" xml:space="preserve"><value>Change Language</value></data>
-	<data name="HelpAndSupport" xml:space="preserve"><value>Help &amp; Support</value></data>
-	<data name="ChatWithUs" xml:space="preserve"><value>Chat with us now</value></data>
-	<data name="AboutApp" xml:space="preserve"><value>About App</value></data>
-	<data name="Logout" xml:space="preserve"><value>Logout</value></data>
-	<data name="Rating" xml:space="preserve"><value>Rating</value></data>
-	<data name="Deliveries" xml:space="preserve"><value>Deliveries</value></data>
-	<data name="Reviews" xml:space="preserve"><value>Reviews</value></data>
-	<data name="VehicleInfo" xml:space="preserve"><value>Vehicle Info</value></data>
-	<data name="VehicleType" xml:space="preserve"><value>Vehicle Type</value></data>
-	<data name="LicensePlate" xml:space="preserve"><value>License Plate</value></data>
+	<!-- ── Login ── -->
+	<data name="DriverPortal"   xml:space="preserve"><value>Driver Portal</value></data>
+	<data name="SignInToStart"  xml:space="preserve"><value>Sign in to start delivering</value></data>
+	<data name="LoginTitle"     xml:space="preserve"><value>Login</value></data>
+	<data name="Email"          xml:space="preserve"><value>Email</value></data>
+	<data name="Password"       xml:space="preserve"><value>Password</value></data>
+	<data name="LoginBtn"       xml:space="preserve"><value>Login</value></data>
+	<data name="ContactAdmin"   xml:space="preserve"><value>Contact your admin to get an account</value></data>
 
-	<!-- Home -->
-	<data name="DriverApp" xml:space="preserve"><value>Driver App</value></data>
-	<data name="Hello" xml:space="preserve"><value>Hello</value></data>
-	<data name="Status" xml:space="preserve"><value>Status</value></data>
+	<!-- ── Profile &amp; Settings ── -->
+	<data name="Profile"         xml:space="preserve"><value>Profile</value></data>
+	<data name="Settings"        xml:space="preserve"><value>Settings</value></data>
+	<data name="ChangeLanguage"  xml:space="preserve"><value>Change Language</value></data>
+	<data name="HelpAndSupport"  xml:space="preserve"><value>Help &amp; Support</value></data>
+	<data name="ChatWithUs"      xml:space="preserve"><value>Chat with us now</value></data>
+	<data name="AboutApp"        xml:space="preserve"><value>About App</value></data>
+	<data name="Logout"          xml:space="preserve"><value>Logout</value></data>
+	<data name="Rating"          xml:space="preserve"><value>Rating</value></data>
+	<data name="Deliveries"      xml:space="preserve"><value>Deliveries</value></data>
+	<data name="Reviews"         xml:space="preserve"><value>Reviews</value></data>
+	<data name="VehicleInfo"     xml:space="preserve"><value>Vehicle Info</value></data>
+	<data name="VehicleType"     xml:space="preserve"><value>Vehicle Type</value></data>
+	<data name="LicensePlate"    xml:space="preserve"><value>License Plate</value></data>
+
+	<!-- ── Home ── -->
+	<data name="DriverApp"           xml:space="preserve"><value>Driver App</value></data>
+	<data name="Hello"               xml:space="preserve"><value>Hello</value></data>
+	<data name="Status"              xml:space="preserve"><value>Status</value></data>
 	<data name="PendingVerification" xml:space="preserve"><value>⚠️ Account pending verification</value></data>
-	<data name="ActiveDelivery" xml:space="preserve"><value>Active Delivery</value></data>
-	<data name="Restaurant" xml:space="preserve"><value>Restaurant</value></data>
-	<data name="Earning" xml:space="preserve"><value>Earning</value></data>
-	<data name="ViewDetails" xml:space="preserve"><value>View Delivery Details ←</value></data>
-	<data name="TodayStats" xml:space="preserve"><value>Today's Stats</value></data>
-	<data name="QuickActions" xml:space="preserve"><value>Quick Actions</value></data>
-	<data name="Available" xml:space="preserve"><value>Available</value></data>
-	<data name="Orders" xml:space="preserve"><value>Orders</value></data>
-	<data name="My" xml:space="preserve"><value>My</value></data>
-	<data name="Earnings" xml:space="preserve"><value>Earnings</value></data>
+	<data name="ActiveDelivery"      xml:space="preserve"><value>Active Delivery</value></data>
+	<data name="Restaurant"          xml:space="preserve"><value>Restaurant</value></data>
+	<data name="Earning"             xml:space="preserve"><value>Earning</value></data>
+	<data name="ViewDetails"         xml:space="preserve"><value>View Delivery Details ←</value></data>
+	<data name="TodayStats"          xml:space="preserve"><value>Today's Stats</value></data>
+	<data name="QuickActions"        xml:space="preserve"><value>Quick Actions</value></data>
+	<data name="Available"           xml:space="preserve"><value>Available</value></data>
+	<data name="Orders"              xml:space="preserve"><value>Orders</value></data>
+	<data name="My"                  xml:space="preserve"><value>My</value></data>
+	<data name="Earnings"            xml:space="preserve"><value>Earnings</value></data>
 
-	<!-- Chat -->
-	<data name="Support" xml:space="preserve"><value>Support</value></data>
-	<data name="TypeMessage" xml:space="preserve"><value>Type your message...</value></data>
+	<!-- ── Available Orders ── -->
+	<data name="AvailableOrders"  xml:space="preserve"><value>Available Orders</value></data>
+	<data name="OrderEarning"     xml:space="preserve"><value>Earning</value></data>
+	<data name="OrderTotal"       xml:space="preserve"><value>Order Total</value></data>
+	<data name="ItemsCount"       xml:space="preserve"><value>Items</value></data>
+	<data name="AcceptOrder"      xml:space="preserve"><value>Accept Order ✓</value></data>
+
+	<!-- ── Active Delivery ── -->
+	<data name="EarningPrefix"  xml:space="preserve"><value>Earning: </value></data>
+	<data name="OrderItems"     xml:space="preserve"><value>Order Items</value></data>
+	<data name="CallCustomer"   xml:space="preserve"><value>Call Customer</value></data>
+	<data name="ChatWithCustomer" xml:space="preserve"><value>Chat with Customer</value></data>
+	<data name="Navigate"       xml:space="preserve"><value>Navigate</value></data>
+
+	<!-- ── Earnings Page ── -->
+	<data name="MyEarnings"      xml:space="preserve"><value>My Earnings</value></data>
+	<data name="PeriodToday"     xml:space="preserve"><value>Today</value></data>
+	<data name="PeriodWeek"      xml:space="preserve"><value>This Week</value></data>
+	<data name="PeriodMonth"     xml:space="preserve"><value>This Month</value></data>
+	<data name="TotalEarnings"   xml:space="preserve"><value>Total Earnings</value></data>
+	<data name="DeliveryHistory" xml:space="preserve"><value>Delivery History</value></data>
+	<data name="OrderNumber"     xml:space="preserve"><value>Order #</value></data>
+	<data name="EarnedLabel"     xml:space="preserve"><value>earned</value></data>
+
+	<!-- ── Notifications ── -->
+	<data name="NotificationsTitle" xml:space="preserve"><value>Notifications</value></data>
+	<data name="UnreadSuffix"       xml:space="preserve"><value> unread</value></data>
+	<data name="MarkAllRead"        xml:space="preserve"><value>Mark All Read</value></data>
+
+	<!-- ── Chat ── -->
+	<data name="Support"          xml:space="preserve"><value>Support</value></data>
+	<data name="TypeMessage"      xml:space="preserve"><value>Type your message...</value></data>
+	<data name="ChatPlaceholder"  xml:space="preserve"><value>Type a message...</value></data>
 </root>

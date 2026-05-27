@@ -6,16 +6,35 @@
              x:Class="DeliveryApp.Driver.App">
     <Application.Resources>
         <ResourceDictionary>
+
+            <!-- Locale -->
             <converters:LocaleStrings x:Key="LocStrings" />
-            <converters:BoolToLayoutConverter x:Key="BoolToLayoutConverter" />
-            <converters:ChatBubbleColorConverter x:Key="ChatBubbleColorConverter" />
-            <converters:BoolToTextColorConverter x:Key="BoolToTextColorConverter" />
+
+            <!-- ✅ NEW: Online status color (Green/Gray) -->
+            <converters:BoolToOnlineColorConverter x:Key="BoolToOnlineColorConverter" />
+
+            <!-- Bool converters -->
+            <converters:InvertedBoolConverter     x:Key="InvertedBool" />
+            <converters:BoolToColorConverter      x:Key="BoolToColorConverter" />
+
+            <!-- Chat converters -->
+            <converters:BoolToLayoutConverter     x:Key="BoolToLayoutConverter" />
+            <converters:ChatBubbleColorConverter  x:Key="ChatBubbleColorConverter" />
+            <converters:BoolToTextColorConverter  x:Key="BoolToTextColorConverter" />
             <converters:BoolToSubTextColorConverter x:Key="BoolToSubTextColorConverter" />
+
+            <!-- String converters -->
+            <converters:NullOrEmptyToBoolConverter x:Key="StringNotEmpty" />
+
+            <!-- Color converters -->
+            <converters:IsOpenToColorConverter    x:Key="IsOpenColor" />
+            <converters:IsReadToColorConverter    x:Key="IsReadColor" />
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

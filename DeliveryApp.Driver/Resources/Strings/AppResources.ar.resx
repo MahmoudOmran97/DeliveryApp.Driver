@@ -1,4 +1,5 @@
-﻿<root>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
 	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
 		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
 		<xsd:element name="root" msdata:IsDataSet="true">
@@ -18,56 +19,99 @@
 		</xsd:element>
 	</xsd:schema>
 
-	<!-- General -->
-	<data name="AppName" xml:space="preserve"><value>ديليفر</value></data>
-	<data name="Ok" xml:space="preserve"><value>موافق</value></data>
-	<data name="Cancel" xml:space="preserve"><value>إلغاء</value></data>
-	<data name="Save" xml:space="preserve"><value>حفظ</value></data>
-	<data name="Edit" xml:space="preserve"><value>تعديل</value></data>
-	<data name="Back" xml:space="preserve"><value>رجوع</value></data>
-	<data name="Notice" xml:space="preserve"><value>تنبيه</value></data>
-	<data name="Error" xml:space="preserve"><value>خطأ</value></data>
-	<data name="Yes" xml:space="preserve"><value>نعم</value></data>
-	<data name="No" xml:space="preserve"><value>لا</value></data>
+	<!-- ── General ── -->
+	<data name="AppName"       xml:space="preserve"><value>ديليفر</value></data>
+	<data name="Ok"            xml:space="preserve"><value>موافق</value></data>
+	<data name="Cancel"        xml:space="preserve"><value>إلغاء</value></data>
+	<data name="Save"          xml:space="preserve"><value>حفظ</value></data>
+	<data name="Edit"          xml:space="preserve"><value>تعديل</value></data>
+	<data name="Back"          xml:space="preserve"><value>رجوع</value></data>
+	<data name="Notice"        xml:space="preserve"><value>تنبيه</value></data>
+	<data name="Error"         xml:space="preserve"><value>خطأ</value></data>
+	<data name="Yes"           xml:space="preserve"><value>نعم</value></data>
+	<data name="No"            xml:space="preserve"><value>لا</value></data>
+	<data name="Refresh"       xml:space="preserve"><value>تحديث</value></data>
+	<data name="Send"          xml:space="preserve"><value>إرسال</value></data>
 
-	<!-- Tabs -->
-	<data name="Tab_Home" xml:space="preserve"><value>الرئيسية</value></data>
-	<data name="Tab_Orders" xml:space="preserve"><value>الطلبات</value></data>
-	<data name="Tab_Earnings" xml:space="preserve"><value>الأرباح</value></data>
-	<data name="Tab_Profile" xml:space="preserve"><value>حسابي</value></data>
+	<!-- ── Tabs ── -->
+	<data name="Tab_Home"          xml:space="preserve"><value>الرئيسية</value></data>
+	<data name="Tab_Orders"        xml:space="preserve"><value>الطلبات</value></data>
+	<data name="Tab_Earnings"      xml:space="preserve"><value>الأرباح</value></data>
+	<data name="Tab_Notifications" xml:space="preserve"><value>التنبيهات</value></data>
+	<data name="Tab_Profile"       xml:space="preserve"><value>حسابي</value></data>
+	<data name="Tab_Settings"      xml:space="preserve"><value>الإعدادات</value></data>
 
-	<!-- Profile & Settings -->
-	<data name="Profile" xml:space="preserve"><value>حسابي</value></data>
-	<data name="Settings" xml:space="preserve"><value>الإعدادات</value></data>
-	<data name="ChangeLanguage" xml:space="preserve"><value>تغيير اللغة</value></data>
-	<data name="HelpAndSupport" xml:space="preserve"><value>المساعدة والدعم</value></data>
-	<data name="ChatWithUs" xml:space="preserve"><value>تحدث معنا الآن</value></data>
-	<data name="AboutApp" xml:space="preserve"><value>عن التطبيق</value></data>
-	<data name="Logout" xml:space="preserve"><value>تسجيل الخروج</value></data>
-	<data name="Rating" xml:space="preserve"><value>التقييم</value></data>
-	<data name="Deliveries" xml:space="preserve"><value>الطلبات</value></data>
-	<data name="Reviews" xml:space="preserve"><value>المراجعات</value></data>
-	<data name="VehicleInfo" xml:space="preserve"><value>بيانات المركبة</value></data>
-	<data name="VehicleType" xml:space="preserve"><value>نوع المركبة</value></data>
-	<data name="LicensePlate" xml:space="preserve"><value>رقم اللوحة</value></data>
+	<!-- ── Login ── -->
+	<data name="DriverPortal"   xml:space="preserve"><value>بوابة السائق</value></data>
+	<data name="SignInToStart"  xml:space="preserve"><value>سجل دخولك لبدء التوصيل</value></data>
+	<data name="LoginTitle"     xml:space="preserve"><value>تسجيل الدخول</value></data>
+	<data name="Email"          xml:space="preserve"><value>البريد الإلكتروني</value></data>
+	<data name="Password"       xml:space="preserve"><value>كلمة المرور</value></data>
+	<data name="LoginBtn"       xml:space="preserve"><value>دخول</value></data>
+	<data name="ContactAdmin"   xml:space="preserve"><value>تواصل مع المسؤول للحصول على حساب</value></data>
 
-	<!-- Home -->
-	<data name="DriverApp" xml:space="preserve"><value>تطبيق السائق</value></data>
-	<data name="Hello" xml:space="preserve"><value>مرحباً</value></data>
-	<data name="Status" xml:space="preserve"><value>الحالة</value></data>
+	<!-- ── Profile &amp; Settings ── -->
+	<data name="Profile"         xml:space="preserve"><value>حسابي</value></data>
+	<data name="Settings"        xml:space="preserve"><value>الإعدادات</value></data>
+	<data name="ChangeLanguage"  xml:space="preserve"><value>تغيير اللغة</value></data>
+	<data name="HelpAndSupport"  xml:space="preserve"><value>المساعدة والدعم</value></data>
+	<data name="ChatWithUs"      xml:space="preserve"><value>تحدث معنا الآن</value></data>
+	<data name="AboutApp"        xml:space="preserve"><value>عن التطبيق</value></data>
+	<data name="Logout"          xml:space="preserve"><value>تسجيل الخروج</value></data>
+	<data name="Rating"          xml:space="preserve"><value>التقييم</value></data>
+	<data name="Deliveries"      xml:space="preserve"><value>الطلبات</value></data>
+	<data name="Reviews"         xml:space="preserve"><value>المراجعات</value></data>
+	<data name="VehicleInfo"     xml:space="preserve"><value>بيانات المركبة</value></data>
+	<data name="VehicleType"     xml:space="preserve"><value>نوع المركبة</value></data>
+	<data name="LicensePlate"    xml:space="preserve"><value>رقم اللوحة</value></data>
+
+	<!-- ── Home ── -->
+	<data name="DriverApp"           xml:space="preserve"><value>تطبيق السائق</value></data>
+	<data name="Hello"               xml:space="preserve"><value>مرحباً</value></data>
+	<data name="Status"              xml:space="preserve"><value>الحالة</value></data>
 	<data name="PendingVerification" xml:space="preserve"><value>⚠️ الحساب في انتظار مراجعة الإدارة</value></data>
-	<data name="ActiveDelivery" xml:space="preserve"><value>توصيل نشط</value></data>
-	<data name="Restaurant" xml:space="preserve"><value>المطعم</value></data>
-	<data name="Earning" xml:space="preserve"><value>الربح</value></data>
-	<data name="ViewDetails" xml:space="preserve"><value>عرض تفاصيل التوصيل ←</value></data>
-	<data name="TodayStats" xml:space="preserve"><value>إحصائيات اليوم</value></data>
-	<data name="QuickActions" xml:space="preserve"><value>روابط سريعة</value></data>
-	<data name="Available" xml:space="preserve"><value>المتاحة</value></data>
-	<data name="Orders" xml:space="preserve"><value>الطلبات</value></data>
-	<data name="My" xml:space="preserve"><value>أرباحي</value></data>
-	<data name="Earnings" xml:space="preserve"><value>الأرباح</value></data>
+	<data name="ActiveDelivery"      xml:space="preserve"><value>توصيل نشط</value></data>
+	<data name="Restaurant"          xml:space="preserve"><value>المطعم</value></data>
+	<data name="Earning"             xml:space="preserve"><value>الربح</value></data>
+	<data name="ViewDetails"         xml:space="preserve"><value>عرض تفاصيل التوصيل ←</value></data>
+	<data name="TodayStats"          xml:space="preserve"><value>إحصائيات اليوم</value></data>
+	<data name="QuickActions"        xml:space="preserve"><value>روابط سريعة</value></data>
+	<data name="Available"           xml:space="preserve"><value>المتاحة</value></data>
+	<data name="Orders"              xml:space="preserve"><value>الطلبات</value></data>
+	<data name="My"                  xml:space="preserve"><value>أرباحي</value></data>
+	<data name="Earnings"            xml:space="preserve"><value>الأرباح</value></data>
 
-	<!-- Chat -->
-	<data name="Support" xml:space="preserve"><value>الدعم</value></data>
-	<data name="TypeMessage" xml:space="preserve"><value>اكتب رسالتك...</value></data>
+	<!-- ── Available Orders ── -->
+	<data name="AvailableOrders"  xml:space="preserve"><value>الطلبات المتاحة</value></data>
+	<data name="OrderEarning"     xml:space="preserve"><value>الربح</value></data>
+	<data name="OrderTotal"       xml:space="preserve"><value>إجمالي الطلب</value></data>
+	<data name="ItemsCount"       xml:space="preserve"><value>عدد الأصناف</value></data>
+	<data name="AcceptOrder"      xml:space="preserve"><value>قبول الطلب ✓</value></data>
+
+	<!-- ── Active Delivery ── -->
+	<data name="EarningPrefix"    xml:space="preserve"><value>الربح: </value></data>
+	<data name="OrderItems"       xml:space="preserve"><value>عناصر الطلب</value></data>
+	<data name="CallCustomer"     xml:space="preserve"><value>اتصل بالعميل</value></data>
+	<data name="ChatWithCustomer" xml:space="preserve"><value>محادثة العميل</value></data>
+	<data name="Navigate"         xml:space="preserve"><value>تتبع المسار</value></data>
+
+	<!-- ── Earnings Page ── -->
+	<data name="MyEarnings"      xml:space="preserve"><value>أرباحي</value></data>
+	<data name="PeriodToday"     xml:space="preserve"><value>اليوم</value></data>
+	<data name="PeriodWeek"      xml:space="preserve"><value>هذا الأسبوع</value></data>
+	<data name="PeriodMonth"     xml:space="preserve"><value>هذا الشهر</value></data>
+	<data name="TotalEarnings"   xml:space="preserve"><value>إجمالي الأرباح</value></data>
+	<data name="DeliveryHistory" xml:space="preserve"><value>سجل التوصيل</value></data>
+	<data name="OrderNumber"     xml:space="preserve"><value>طلب #</value></data>
+	<data name="EarnedLabel"     xml:space="preserve"><value>مكتسب</value></data>
+
+	<!-- ── Notifications ── -->
+	<data name="NotificationsTitle" xml:space="preserve"><value>الإشعارات</value></data>
+	<data name="UnreadSuffix"       xml:space="preserve"><value> غير مقروء</value></data>
+	<data name="MarkAllRead"        xml:space="preserve"><value>تعليم الكل كمقروء</value></data>
+
+	<!-- ── Chat ── -->
+	<data name="Support"          xml:space="preserve"><value>الدعم</value></data>
+	<data name="TypeMessage"      xml:space="preserve"><value>اكتب رسالتك...</value></data>
+	<data name="ChatPlaceholder"  xml:space="preserve"><value>اكتب رسالة...</value></data>
 </root>

@@ -8,159 +8,144 @@
              Shell.NavBarIsVisible="False"
              BackgroundColor="#F8F9FA">
 
-	<RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
-		<ScrollView>
-			<VerticalStackLayout Spacing="0">
+    <RefreshView Command="{Binding LoadCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Spacing="0">
 
-				<!-- Header -->
-				<Grid BackgroundColor="#FF5722" Padding="20,52,20,80">
-					<VerticalStackLayout HorizontalOptions="Center" Spacing="10">
-						<Border BackgroundColor="#E64A19"
+                <!-- Header -->
+                <Grid BackgroundColor="#FF5722" Padding="20,52,20,80">
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Border BackgroundColor="#E64A19"
                                 StrokeShape="RoundRectangle 44" Stroke="White" StrokeThickness="3"
                                 WidthRequest="88" HeightRequest="88"
                                 HorizontalOptions="Center">
-							<Label Text="🛵" FontSize="44"
+                            <Label Text="🛵" FontSize="44"
                                    HorizontalOptions="Center" VerticalOptions="Center"/>
-						</Border>
-						<Label Text="{Binding UserName}"
+                        </Border>
+                        <Label Text="{Binding UserName}"
                                FontFamily="CairoBold" FontSize="22" TextColor="White"
                                HorizontalOptions="Center"/>
-						<Label Text="{Binding UserEmail}"
+                        <Label Text="{Binding UserEmail}"
                                FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"
                                HorizontalOptions="Center"/>
-					</VerticalStackLayout>
-				</Grid>
+                    </VerticalStackLayout>
+                </Grid>
 
-				<!-- Stats Card -->
-				<Border Margin="16,-44,16,0" BackgroundColor="White"
+                <!-- Stats Card -->
+                <Border Margin="16,-44,16,0" BackgroundColor="White"
                         StrokeShape="RoundRectangle 16" Stroke="Transparent"
                         Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
                         Padding="20,18">
-					<Grid ColumnDefinitions="*,*,*">
+                    <Grid ColumnDefinitions="*,*,*">
 
-						<VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
-							<Label Text="{Binding Profile.RatingText}"
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding Profile.RatingText}"
                                    FontFamily="CairoBold" FontSize="24" TextColor="#FF9800"
                                    HorizontalOptions="Center"/>
-							<Label Text="{loc:Loc Key=Rating}" FontFamily="CairoRegular" FontSize="12"
+                            <Label Text="{loc:Loc Key=Rating}" FontFamily="CairoRegular" FontSize="12"
                                    TextColor="#757575" HorizontalOptions="Center"/>
-						</VerticalStackLayout>
+                        </VerticalStackLayout>
 
-						<BoxView Grid.Column="0" WidthRequest="1" Color="#F0F0F0"
+                        <BoxView Grid.Column="0" WidthRequest="1" Color="#F0F0F0"
                                  HorizontalOptions="End" VerticalOptions="Fill" Margin="0,4"/>
 
-						<VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
-							<Label Text="{Binding Profile.TotalDeliveries}"
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding Profile.TotalDeliveries}"
                                    FontFamily="CairoBold" FontSize="24" TextColor="#FF5722"
                                    HorizontalOptions="Center"/>
-							<Label Text="{loc:Loc Key=Deliveries}" FontFamily="CairoRegular" FontSize="12"
+                            <Label Text="{loc:Loc Key=Deliveries}" FontFamily="CairoRegular" FontSize="12"
                                    TextColor="#757575" HorizontalOptions="Center"/>
-						</VerticalStackLayout>
+                        </VerticalStackLayout>
 
-						<BoxView Grid.Column="1" WidthRequest="1" Color="#F0F0F0"
+                        <BoxView Grid.Column="1" WidthRequest="1" Color="#F0F0F0"
                                  HorizontalOptions="End" VerticalOptions="Fill" Margin="0,4"/>
 
-						<VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
-							<Label Text="{Binding Profile.TotalRatings}"
+                        <VerticalStackLayout Grid.Column="2" Spacing="4" HorizontalOptions="Center">
+                            <Label Text="{Binding Profile.TotalRatings}"
                                    FontFamily="CairoBold" FontSize="24" TextColor="#2196F3"
                                    HorizontalOptions="Center"/>
-							<Label Text="{loc:Loc Key=Reviews}" FontFamily="CairoRegular" FontSize="12"
+                            <Label Text="{loc:Loc Key=Reviews}" FontFamily="CairoRegular" FontSize="12"
                                    TextColor="#757575" HorizontalOptions="Center"/>
-						</VerticalStackLayout>
+                        </VerticalStackLayout>
 
-					</Grid>
-				</Border>
+                    </Grid>
+                </Border>
 
-				<!-- Settings & Support -->
-				<Border Margin="16,16,16,0" BackgroundColor="White"
+                <!-- ✅ Logout only (Settings removed — it has its own tab now) -->
+                <Border Margin="16,16,16,0" BackgroundColor="White"
                         StrokeShape="RoundRectangle 16" Stroke="Transparent"
                         Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
                         Padding="20,8">
-					<VerticalStackLayout Spacing="0">
+                    <VerticalStackLayout Spacing="0">
 
-						<!-- Settings -->
-						<Grid Padding="0,12">
-							<Grid.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding OpenSettingsCommand}"/>
-							</Grid.GestureRecognizers>
-							<HorizontalStackLayout Spacing="14">
-								<Border BackgroundColor="#F5F5F5" StrokeShape="RoundRectangle 10"
+                        <!-- Logout -->
+                        <Grid Padding="0,12">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding LogoutCommand}"/>
+                            </Grid.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="14">
+                                <Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
                                         Stroke="Transparent" WidthRequest="42" HeightRequest="42">
-									<Label Text="⚙️" FontSize="20"
+                                    <Label Text="🚪" FontSize="20"
                                            HorizontalOptions="Center" VerticalOptions="Center"/>
-								</Border>
-								<Label Text="{loc:Loc Key=Settings}" FontFamily="CairoBold"
-                                       FontSize="15" TextColor="#212121" VerticalOptions="Center"/>
-							</HorizontalStackLayout>
-						</Grid>
-
-						<BoxView HeightRequest="1" Color="#F5F5F5"/>
-
-						<!-- Logout -->
-						<Grid Padding="0,12">
-							<Grid.GestureRecognizers>
-								<TapGestureRecognizer Command="{Binding LogoutCommand}"/>
-							</Grid.GestureRecognizers>
-							<HorizontalStackLayout Spacing="14">
-								<Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
-                                        Stroke="Transparent" WidthRequest="42" HeightRequest="42">
-									<Label Text="🚪" FontSize="20"
-                                           HorizontalOptions="Center" VerticalOptions="Center"/>
-								</Border>
-								<Label Text="{loc:Loc Key=Logout}" FontFamily="CairoBold"
+                                </Border>
+                                <Label Text="{loc:Loc Key=Logout}" FontFamily="CairoBold"
                                        FontSize="15" TextColor="#F44336" VerticalOptions="Center"/>
-							</HorizontalStackLayout>
-						</Grid>
+                            </HorizontalStackLayout>
+                        </Grid>
 
-					</VerticalStackLayout>
-				</Border>
+                    </VerticalStackLayout>
+                </Border>
 
-				<!-- Vehicle Info -->
-				<Border Margin="16,16,16,0" BackgroundColor="White"
+                <!-- Vehicle Info -->
+                <Border Margin="16,16,16,0" BackgroundColor="White"
                         StrokeShape="RoundRectangle 16" Stroke="Transparent"
                         Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
                         Padding="20,16">
-					<VerticalStackLayout Spacing="14">
+                    <VerticalStackLayout Spacing="14">
 
-						<Label Text="{loc:Loc Key=VehicleInfo}" FontFamily="CairoBold" FontSize="16" TextColor="#212121"/>
-						<BoxView HeightRequest="1" Color="#F5F5F5"/>
+                        <Label Text="{loc:Loc Key=VehicleInfo}" FontFamily="CairoBold"
+                               FontSize="16" TextColor="#212121"/>
+                        <BoxView HeightRequest="1" Color="#F5F5F5"/>
 
-						<!-- Vehicle Type -->
-						<Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
-							<Border Grid.Column="0" BackgroundColor="#FFF3EF"
+                        <!-- Vehicle Type -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                            <Border Grid.Column="0" BackgroundColor="#FFF3EF"
                                     StrokeShape="RoundRectangle 10" Stroke="Transparent"
                                     WidthRequest="42" HeightRequest="42">
-								<Label Text="🚗" FontSize="22"
+                                <Label Text="🚗" FontSize="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
-							</Border>
-							<VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-								<Label Text="{loc:Loc Key=VehicleType}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
-								<Label Text="{Binding Profile.VehicleType}"
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="{loc:Loc Key=VehicleType}" FontFamily="CairoRegular"
+                                       FontSize="12" TextColor="#9E9E9E"/>
+                                <Label Text="{Binding Profile.VehicleType}"
                                        FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
-							</VerticalStackLayout>
-						</Grid>
+                            </VerticalStackLayout>
+                        </Grid>
 
-						<!-- License Plate -->
-						<Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
-							<Border Grid.Column="0" BackgroundColor="#E8F5E9"
+                        <!-- License Plate -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                            <Border Grid.Column="0" BackgroundColor="#E8F5E9"
                                     StrokeShape="RoundRectangle 10" Stroke="Transparent"
                                     WidthRequest="42" HeightRequest="42">
-								<Label Text="🪪" FontSize="22"
+                                <Label Text="🪪" FontSize="22"
                                        HorizontalOptions="Center" VerticalOptions="Center"/>
-							</Border>
-							<VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-								<Label Text="{loc:Loc Key=LicensePlate}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"/>
-								<Label Text="{Binding Profile.LicensePlate}"
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="{loc:Loc Key=LicensePlate}" FontFamily="CairoRegular"
+                                       FontSize="12" TextColor="#9E9E9E"/>
+                                <Label Text="{Binding Profile.LicensePlate}"
                                        FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
-							</VerticalStackLayout>
-						</Grid>
+                            </VerticalStackLayout>
+                        </Grid>
 
-					</VerticalStackLayout>
-				</Border>
+                    </VerticalStackLayout>
+                </Border>
 
-				<BoxView HeightRequest="30" Color="Transparent"/>
+                <BoxView HeightRequest="30" Color="Transparent"/>
 
-			</VerticalStackLayout>
-		</ScrollView>
-	</RefreshView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

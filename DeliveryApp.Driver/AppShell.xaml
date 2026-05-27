@@ -18,25 +18,35 @@
 
     <TabBar>
 
+        <!-- 1. Home -->
         <ShellContent Title="{loc:Loc Key=Tab_Home}"
-	                      Icon="icon_home.png"
-	                      ContentTemplate="{DataTemplate views:HomePage}"
-	                      Route="HomePage" />
+                      Icon="icon_home.png"
+                      ContentTemplate="{DataTemplate views:HomePage}"
+                      Route="HomePage" />
 
+        <!-- 2. Available Orders -->
         <ShellContent Title="{loc:Loc Key=Tab_Orders}"
-	                      Icon="icon_orders.png"
-	                      ContentTemplate="{DataTemplate views:AvailableOrdersPage}"
-	                      Route="AvailableOrdersPage" />
+                      Icon="icon_orders.png"
+                      ContentTemplate="{DataTemplate views:AvailableOrdersPage}"
+                      Route="AvailableOrdersPage" />
 
-        <ShellContent Title="{loc:Loc Key=Tab_Earnings}"
-	                      Icon="icon_bell.png"
-	                      ContentTemplate="{DataTemplate views:EarningsPage}"
-	                      Route="EarningsPage" />
+        <!-- 3. Notifications (replaces Earnings tab — bell icon fits better) -->
+        <ShellContent Title="{loc:Loc Key=Tab_Notifications}"
+                      Icon="icon_bell.png"
+                      ContentTemplate="{DataTemplate views:NotificationsPage}"
+                      Route="NotificationsPage" />
 
+        <!-- 4. Profile -->
         <ShellContent Title="{loc:Loc Key=Tab_Profile}"
-	                      Icon="icon_profile.png"
-	                      ContentTemplate="{DataTemplate views:ProfilePage}"
-	                      Route="ProfilePage" />
+                      Icon="icon_profile.png"
+                      ContentTemplate="{DataTemplate views:ProfilePage}"
+                      Route="ProfilePage" />
+
+        <!-- 5. Settings -->
+        <ShellContent Title="{loc:Loc Key=Tab_Settings}"
+                      Icon="icon_settings.png"
+                      ContentTemplate="{DataTemplate views:SettingsPage}"
+                      Route="SettingsPage" />
 
     </TabBar>
 
