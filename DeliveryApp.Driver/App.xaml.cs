@@ -16,6 +16,18 @@ public partial class App : Application
         _signalR = signalR;
         _auth = auth;
         MainPage = splash;
+
+        // ✅ CALL FIX — لما مكالمة واردة توصل والأبليكيشن فاتح (foreground/background بس مش مقفول
+        // خالص)، افتح شاشة المكالمة تلقائي زي أي تطبيق اتصال. لو الأبليكيشن مقفول تماماً، ده
+        // بيتوصل عن طريق الـ FCM data push بدل SignalR (شوف Platforms/Android للـ full-screen notification).
+        _signalR.IncomingVoiceCall += (orderId, callerId) =>
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.GoToAsync(
+                    $"CallPage?orderId={orderId}&otherPartyName={Uri.EscapeDataString("العميل")}&isIncoming=true");
+            });
+        };
     }
 
     // ✅ FIX 2 & 3 — لما التطبيق يرجع من الـ background

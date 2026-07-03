@@ -14,6 +14,7 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(ActiveDeliveryPage), typeof(ActiveDeliveryPage));
         Routing.RegisterRoute(nameof(CustomerChatPage), typeof(CustomerChatPage));
         Routing.RegisterRoute(nameof(SupportChatPage), typeof(SupportChatPage));
+        Routing.RegisterRoute(nameof(CallPage), typeof(CallPage));
 
         // EarningsPage is now a pushed page (not a tab anymore)
         Routing.RegisterRoute(nameof(EarningsPage), typeof(EarningsPage));

@@ -52,6 +52,15 @@ public static class MauiProgram
         builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<CustomerChatViewModel>();
         builder.Services.AddTransient<SupportChatViewModel>();
+        builder.Services.AddTransient<CallViewModel>();
+        builder.Services.AddTransient<CallAudioService>();
+#if ANDROID
+        builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IPlatformAudioIO, DeliveryApp.Driver.Platforms.Android.AndroidAudioIO>();
+#elif IOS
+        builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IPlatformAudioIO, DeliveryApp.Driver.Platforms.iOS.IosAudioIO>();
+#endif
+        // ملحوظة: مفيش تسجيل لـ MacCatalyst/Windows — لو الأبليكيشن اتبني لأي منهم، شاشة
+        // المكالمة هترمي خطأ DI. مش هدف أساسي حسب كلامك (Android + iOS)، فسبتها من غير حل دلوقتي.
         builder.Services.AddTransient<SettingsViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
 
@@ -66,6 +75,7 @@ public static class MauiProgram
         builder.Services.AddTransient<NotificationsPage>();
         builder.Services.AddTransient<CustomerChatPage>();
         builder.Services.AddTransient<SupportChatPage>();
+        builder.Services.AddTransient<CallPage>();
         builder.Services.AddTransient<SettingsPage>();
         builder.Services.AddTransient<ProfilePage>();
 

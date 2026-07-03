@@ -14,6 +14,7 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     readonly ApiService _api;
     readonly LocationService _location;
     readonly ChatNotificationService _chatNotif; // ✅ FIX #4
+    readonly SignalRService _signalR; // ✅ FIX #Call — كانت ناقصة، عشانها المكالمة ما كانتش شغالة
 
     [ObservableProperty] ActiveOrder? _order;
     [ObservableProperty] double _driverLat;
@@ -24,11 +25,13 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     public ActiveDeliveryViewModel(
         ApiService api,
         LocationService location,
-        ChatNotificationService chatNotif) // ✅ FIX #4 — inject
+        ChatNotificationService chatNotif, // ✅ FIX #4 — inject
+        SignalRService signalR) // ✅ FIX #Call — inject
     {
         _api = api;
         _location = location;
         _chatNotif = chatNotif;
+        _signalR = signalR;
 
         _location.LocationUpdated += (lat, lng) =>
         {
@@ -118,8 +121,19 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
         if (Order == null) return;
         var confirm = await ConfirmAsync("Do you want to start an in-app voice call with the customer?");
         if (!confirm) return;
-        await _api.StartVoiceCallAsync(Order.Id);
-        await AlertAsync("Calling customer via app... (Voice Call simulation)", "In-App Call");
+
+        if (!_signalR.IsConnected)
+        {
+            await AlertAsync("Not connected to server. Please check your internet connection and try again.", "Call Failed");
+            return;
+        }
+
+        // ✅ FIX — دي كانت بتنادي _api.StartVoiceCallAsync اللي stub فاضي مبيعملش حاجة.
+        // دلوقتي بتنادي SignalRService اللي فعلاً بيبعت الحدث للـ Hub، والـ Hub بيبعت
+        // IncomingVoiceCall + FCM push للعميل حتى لو قافل الأبليكيشن.
+        await _signalR.StartVoiceCallAsync(Order.Id);
+        await Shell.Current.GoToAsync(
+            $"CallPage?orderId={Order.Id}&otherPartyName={Uri.EscapeDataString(Order.CustomerName)}&isIncoming=false");
     }
 
     [RelayCommand]
