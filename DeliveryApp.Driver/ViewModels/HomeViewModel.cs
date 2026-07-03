@@ -26,6 +26,7 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] bool _hasActiveOrder;
     [ObservableProperty] bool _hasActiveOrders;
     [ObservableProperty] bool _isNotVerified;
+    [ObservableProperty] int _unreadNotifications;
     public ObservableCollection<DriverOrder> ActiveOrders { get; } = new();
 
     public HomeViewModel(ApiService api, AuthService auth, SignalRService hub, LocationService location)
@@ -54,6 +55,16 @@ public partial class HomeViewModel : BaseViewModel
                 await LoadActiveOrdersAsync();
             });
         };
+
+        _hub.NotificationReceived += (_, _, _) =>
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var result = await _api.GetNotificationsAsync();
+                if (result?.Data != null)
+                    UnreadNotifications = result.Data.Count(n => !n.IsRead);
+            });
+        };
     }
 
     [RelayCommand]
@@ -66,8 +77,9 @@ public partial class HomeViewModel : BaseViewModel
             var earningsTask = _api.GetEarningsAsync("today");
             var activeTask = _api.GetActiveOrderAsync();
             var myOrdersTask = _api.GetMyOrdersAsync();
+            var notifTask = _api.GetNotificationsAsync();
 
-            await Task.WhenAll(profileTask, earningsTask, activeTask, myOrdersTask);
+            await Task.WhenAll(profileTask, earningsTask, activeTask, myOrdersTask, notifTask);
 
             Profile = profileTask.Result;
             TodayEarnings = earningsTask.Result;
@@ -83,6 +95,10 @@ public partial class HomeViewModel : BaseViewModel
             ActiveOrder = active?.Id > 0 ? active : null;
             HasActiveOrder = ActiveOrder != null;
             UpdateActiveOrders(myOrdersTask.Result?.Data, ActiveOrder);
+
+            var notifs = notifTask.Result;
+            if (notifs?.Data != null)
+                UnreadNotifications = notifs.Data.Count(n => !n.IsRead);
 
             // Start GPS if online
             if (IsOnline)

@@ -5,43 +5,48 @@ namespace DeliveryApp.Driver.Services;
 
 public class SignalRService
 {
+    private readonly ApiService _api;
     private HubConnection? _hub;
-    private const string HubUrl = "https://deliveryappapi.runasp.net/hubs/tracking";
+
+    public SignalRService(ApiService api) => _api = api;
 
     public event Action<int, string>? OrderStatusChanged;
     public event Action<int>? NewOrderAvailable;
     public event Action<int, int, string>? ChatMessageReceived;
     public event Action<int, int>? IncomingVoiceCall;
+    public event Action<string, string, string?>? NotificationReceived;
 
-    // ✅ FIX 1 — بنتحقق من Connected وبس مش من وجود الـ object
     public bool IsConnected => _hub?.State == HubConnectionState.Connected;
 
     public async Task ConnectAsync(string token)
     {
-        // ✅ FIX 1 — لو في connection قديمة مش Connected، نعملها Dispose الأول
         if (_hub != null && _hub.State != HubConnectionState.Disconnected)
         {
-            if (IsConnected) return; // شغالة فعلاً، مفيش لزمة
+            if (IsConnected) return;
         }
 
         if (_hub != null)
         {
-            // نظّف الـ connection القديمة قبل ما نعمل جديدة
             try { await _hub.DisposeAsync(); } catch { }
             _hub = null;
         }
 
+        var hubUrl = _api.GetHubUrl();
+
         _hub = new HubConnectionBuilder()
-            .WithUrl(HubUrl, o => o.AccessTokenProvider = () => Task.FromResult<string?>(token))
+            .WithUrl(hubUrl, o =>
+            {
+                o.AccessTokenProvider = () => Task.FromResult<string?>(token);
+                o.HttpMessageHandlerFactory = _ =>
+                    new HttpClientHandler { ServerCertificateCustomValidationCallback = (_, _, _, _) => true };
+            })
             .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(10) })
             .Build();
 
-        // ✅ FIX 1 — لو انقطع الاتصال، نعرف ونقدر نعمل reconnect يدوي
         _hub.Closed += async (error) =>
         {
             System.Diagnostics.Debug.WriteLine($"[SignalR] Connection closed: {error?.Message}");
             await Task.Delay(3000);
-            // WithAutomaticReconnect هيتولى الموضوع، بس لو مشيش نحاول يدوي
         };
 
         _hub.Reconnected += (connectionId) =>
@@ -81,6 +86,14 @@ public class SignalRService
         {
             var orderId = el.GetProperty("orderId").GetInt32();
             MainThread.BeginInvokeOnMainThread(() => OrderStatusChanged?.Invoke(orderId, "AssignedToDriver"));
+        });
+
+        _hub.On<JsonElement>("NotificationReceived", el =>
+        {
+            var title = el.TryGetProperty("title", out var t) ? t.GetString() ?? "" : "";
+            var body = el.TryGetProperty("body", out var b) ? b.GetString() ?? "" : "";
+            var type = el.TryGetProperty("type", out var ty) ? ty.GetString() : null;
+            MainThread.BeginInvokeOnMainThread(() => NotificationReceived?.Invoke(title, body, type));
         });
 
         try { await _hub.StartAsync(); }

@@ -22,6 +22,14 @@ public class ApiService
 
     public string GetBaseUrl() => _baseUrl;
 
+    public string GetHubUrl()
+    {
+        var root = _baseUrl.EndsWith("/api", StringComparison.OrdinalIgnoreCase)
+            ? _baseUrl[..^4]
+            : _baseUrl.TrimEnd('/');
+        return $"{root}/hubs/tracking";
+    }
+
     public void SetBaseUrl(string baseUrl)
     {
         var normalized = NormalizeBaseUrl(baseUrl);
@@ -59,6 +67,7 @@ public class ApiService
 
     private void SetAuth()
     {
+        _http.DefaultRequestHeaders.Authorization = null;
         var t = _auth.GetToken();
         if (!string.IsNullOrEmpty(t))
             _http.DefaultRequestHeaders.Authorization =

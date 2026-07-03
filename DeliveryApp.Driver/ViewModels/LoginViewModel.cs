@@ -8,12 +8,17 @@ public partial class LoginViewModel : BaseViewModel
 {
     readonly ApiService _api;
     readonly AuthService _auth;
+    readonly SignalRService _signalR;
 
     [ObservableProperty] string _email = string.Empty;
     [ObservableProperty] string _password = string.Empty;
 
-    public LoginViewModel(ApiService api, AuthService auth)
-    { _api = api; _auth = auth; }
+    public LoginViewModel(ApiService api, AuthService auth, SignalRService signalR)
+    {
+        _api = api;
+        _auth = auth;
+        _signalR = signalR;
+    }
 
     [RelayCommand]
     async Task LoginAsync()
@@ -33,6 +38,17 @@ public partial class LoginViewModel : BaseViewModel
                     return;
                 }
                 _auth.SaveUser(r.Token, r.Id, r.FullName, r.Email);
+                await _signalR.ConnectAsync(r.Token);
+
+                var profile = await _api.GetMyProfileAsync();
+                if (profile is null)
+                {
+                    await AlertAsync("Your driver profile is not set up yet. Please contact the administrator.");
+                    _auth.Logout();
+                    await _signalR.DisconnectAsync();
+                    return;
+                }
+
                 var shell = IPlatformApplication.Current!.Services.GetService<AppShell>()!;
                 Application.Current!.MainPage = shell;
             }

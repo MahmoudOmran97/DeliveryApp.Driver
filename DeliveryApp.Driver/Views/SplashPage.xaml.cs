@@ -10,11 +10,15 @@ namespace DeliveryApp.Driver.Views
     public partial class SplashPage : ContentPage
     {
         readonly AuthService _auth;
+        readonly SignalRService _signalR;
+        readonly ApiService _api;
 
-        public SplashPage(AuthService auth)
+        public SplashPage(AuthService auth, SignalRService signalR, ApiService api)
         {
             InitializeComponent();
             _auth = auth;
+            _signalR = signalR;
+            _api = api;
         }
 
         protected override async void OnAppearing()
@@ -24,7 +28,19 @@ namespace DeliveryApp.Driver.Views
 
             if (_auth.IsLoggedIn)
             {
-                // ✅ بنيها هنا بعد ما Resources اتحملت
+                var token = _auth.GetToken();
+                await _signalR.ConnectAsync(token);
+
+                var profile = await _api.GetMyProfileAsync();
+                if (profile is null)
+                {
+                    _auth.Logout();
+                    await _signalR.DisconnectAsync();
+                    var loginPage = IPlatformApplication.Current!.Services.GetService<LoginPage>()!;
+                    Application.Current!.MainPage = new NavigationPage(loginPage);
+                    return;
+                }
+
                 var shell = IPlatformApplication.Current!.Services.GetService<AppShell>()!;
                 Application.Current!.MainPage = shell;
             }
