@@ -323,4 +323,8 @@ public class ApiService
 
     private static void Debug(Exception ex, string path)
         => System.Diagnostics.Debug.WriteLine($"[API] {path}: {ex.Message}");
+
+
+    public Task<List<object>?> GetIceServersAsync()
+        => GetAsync<List<object>>("webrtc/ice-servers");
 }
