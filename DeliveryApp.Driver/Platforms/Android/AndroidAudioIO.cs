@@ -3,7 +3,6 @@ using global::Android.Media;
 using DeliveryApp.Driver.Services.Call;
 
 namespace DeliveryApp.Driver.Platforms.Android;
-
 /// <summary>
 /// التقاط الصوت من المايك وتشغيله على السماعة على أندرويد، باستخدام Android.Media.AudioRecord/
 /// AudioTrack مباشرة (Java APIs متاحة native في .NET Android، مفيش حاجة إضافية لازم تتحمّل).
@@ -90,13 +89,36 @@ public class AndroidAudioIO : IPlatformAudioIO
         int minBufBytes = AudioRecord.GetMinBufferSize(
             SampleRate, ChannelIn.Mono, Encoding.Pcm16bit);
         int bufBytes = Math.Max(minBufBytes, FrameSizeSamples * 2 * 4);
-        _recorder = new AudioRecord(
+
+        var recorder = new AudioRecord(
             AudioSource.VoiceCommunication,
             SampleRate,
             ChannelIn.Mono,
             Encoding.Pcm16bit,
             bufBytes);
+
+        // ⚠️ ده الفحص اللي كان ناقص: لو الـ AudioRecord فشل يتهيّأ (State != Initialized)،
+        // StartRecording() كانت بترمي استثناء ما حدش كان بيمسكه، فيبقى المايك مش شغال
+        // من غير أي رسالة خطأ واضحة — بيظهر كأن "مفيش صوت" من غير سبب.
+        if (recorder.State != State.Initialized)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AudioIO] AudioRecord failed to initialize, state={recorder.State}");
+            recorder.Release();
+            throw new InvalidOperationException($"AudioRecord failed to initialize (state={recorder.State})");
+        }
+
+        _recorder = recorder;
         _recorder.StartRecording();
+
+        if (_recorder.RecordingState != RecordState.Recording)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AudioIO] AudioRecord.StartRecording() did not enter Recording state, actual={_recorder.RecordingState}");
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("[AudioIO] AudioRecord recording started successfully.");
+        }
+
         _captureCts = new CancellationTokenSource();
         var token = _captureCts.Token;
         _captureTask = Task.Run(() =>
@@ -109,6 +131,11 @@ public class AndroidAudioIO : IPlatformAudioIO
                 {
                     var frame = read == buffer.Length ? buffer : buffer[..read];
                     PcmCaptured?.Invoke(frame);
+                }
+                else if (read < 0)
+                {
+                    // قيمة سالبة = error code من AudioRecord.Read (زي ERROR_INVALID_OPERATION)
+                    System.Diagnostics.Debug.WriteLine($"[AudioIO] AudioRecord.Read returned error code {read}");
                 }
             }
         }, token);
@@ -145,8 +172,18 @@ public class AndroidAudioIO : IPlatformAudioIO
             bufBytes,
             AudioTrackMode.Stream,
             AudioManager.AudioSessionIdGenerate);
+
+        if (_player.State != global::Android.Media.AudioTrackState.Initialized)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AudioIO] AudioTrack failed to initialize, state={_player.State}");
+        }
+
         _player.Play();
+        System.Diagnostics.Debug.WriteLine("[AudioIO] AudioTrack playback started.");
     }
+
+    int _playedFrames;
+    DateTime _lastPlayLog = DateTime.UtcNow;
 
     public void StopPlayback()
     {
@@ -158,6 +195,26 @@ public class AndroidAudioIO : IPlatformAudioIO
 
     public void PlayPcm(short[] pcm)
     {
-        _player?.Write(pcm, 0, pcm.Length);
+        if (_player == null)
+        {
+            System.Diagnostics.Debug.WriteLine("[AudioIO] PlayPcm called but _player is null!");
+            return;
+        }
+        int written = _player.Write(pcm, 0, pcm.Length);
+        if (written < 0)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AudioIO] AudioTrack.Write returned error code {written}");
+        }
+        else
+        {
+            _playedFrames++;
+        }
+
+        if ((DateTime.UtcNow - _lastPlayLog).TotalSeconds >= 1)
+        {
+            System.Diagnostics.Debug.WriteLine($"[AudioIO] Last 1s summary: framesWrittenToSpeaker={_playedFrames}");
+            _playedFrames = 0;
+            _lastPlayLog = DateTime.UtcNow;
+        }
     }
 }

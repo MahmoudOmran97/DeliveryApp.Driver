@@ -138,7 +138,6 @@ public class CallAudioService
             };
             _pc = new RTCPeerConnection(fallbackConfig);
         }
-
         var audioTrack = new MediaStreamTrack(
             new List<AudioFormat> { new AudioFormat(AudioCodecsEnum.OPUS, OpusPayloadType, SampleRate, Channels, "useinbandfec=1") },
             MediaStreamStatusEnum.SendRecv);
@@ -151,9 +150,33 @@ public class CallAudioService
             _ = _signalR.SendIceCandidateAsync(_orderId, json);
         };
 
+        // ─── DIAGNOSTIC: تتبع حالة الـ ICE/Connection عشان نعرف هل فعلاً بيوصل connected ───
+        _pc.oniceconnectionstatechange += state =>
+            System.Diagnostics.Debug.WriteLine($"[Call][ICE] iceConnectionState -> {state}");
+        _pc.onconnectionstatechange += state =>
+            System.Diagnostics.Debug.WriteLine($"[Call][PC] connectionState -> {state}");
+
+        int rtpAudioPacketsSeen = 0;
+        int rtpDecodeOk = 0;
+        int rtpDecodeFail = 0;
+        var lastLog = DateTime.UtcNow;
+
         _pc.OnRtpPacketReceived += (rep, mediaType, rtpPacket) =>
         {
-            if (mediaType != SDPMediaTypesEnum.audio || _decoder == null) return;
+            if (mediaType != SDPMediaTypesEnum.audio)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Call][RTP] Non-audio packet received, mediaType={mediaType}");
+                return;
+            }
+
+            rtpAudioPacketsSeen++;
+
+            if (_decoder == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[Call][RTP] Audio packet arrived but decoder is null!");
+                return;
+            }
+
             try
             {
                 var opusPayload = rtpPacket.Payload;
@@ -161,30 +184,67 @@ public class CallAudioService
                 int decoded = _decoder.Decode(opusPayload, 0, opusPayload.Length, pcmShort, 0, FrameSamples, false);
                 if (decoded > 0)
                 {
+                    rtpDecodeOk++;
                     var frame = new short[decoded];
                     Array.Copy(pcmShort, frame, decoded);
                     _audio.PlayPcm(frame);
                 }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Call][RTP] Decode returned {decoded} samples (payloadLen={opusPayload.Length})");
+                }
             }
-            catch (Exception ex) { OnError?.Invoke(ex); }
+            catch (Exception ex)
+            {
+                rtpDecodeFail++;
+                System.Diagnostics.Debug.WriteLine($"[Call][RTP] Decode EXCEPTION: {ex.GetType().Name}: {ex.Message}");
+                OnError?.Invoke(ex);
+            }
+
+            // كل ثانية تقريبًا نطبع ملخص عشان مانغرقش اللوج بباكيت باكيت
+            if ((DateTime.UtcNow - lastLog).TotalSeconds >= 1)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[Call][RTP] Last 1s summary: audioPacketsSeen={rtpAudioPacketsSeen}, decodeOk={rtpDecodeOk}, decodeFail={rtpDecodeFail}");
+                rtpAudioPacketsSeen = 0;
+                rtpDecodeOk = 0;
+                rtpDecodeFail = 0;
+                lastLog = DateTime.UtcNow;
+            }
         };
 
         _encoder = new OpusEncoder(SampleRate, Channels, OpusApplication.OPUS_APPLICATION_VOIP);
         _decoder = new OpusDecoder(SampleRate, Channels);
     }
 
+    int _sentFrames;
+    DateTime _lastSendLog = DateTime.UtcNow;
+
     async Task StartMediaAsync()
     {
-        var status = await Permissions.RequestAsync<Permissions.Microphone>();
-        if (status != PermissionStatus.Granted)
+        try
         {
-            OnError?.Invoke(new Exception("Microphone permission was not granted."));
-            return;
-        }
+            var status = await Permissions.RequestAsync<Permissions.Microphone>();
+            if (status != PermissionStatus.Granted)
+            {
+                System.Diagnostics.Debug.WriteLine("[Call][Media] Microphone permission NOT granted.");
+                OnError?.Invoke(new Exception("Microphone permission was not granted."));
+                return;
+            }
 
-        _audio.PcmCaptured += OnPcmCaptured;
-        _audio.StartCapture();
-        _audio.StartPlayback();
+            _audio.PcmCaptured += OnPcmCaptured;
+            _audio.StartCapture();
+            _audio.StartPlayback();
+            System.Diagnostics.Debug.WriteLine("[Call][Media] StartCapture/StartPlayback called successfully.");
+        }
+        catch (Exception ex)
+        {
+            // ⚠️ ده أهم سطر log مضاف — لو الـ AudioRecord/AudioTrack فشلوا يفتحوا (مثلاً
+            // تعارض مع تطبيق تاني بيستخدم المايك)، كان بيحصل throw هنا وميحصلش أي تسجيل
+            // لأي حاجة، فتحس إن "مفيش صوت" من غير أي سبب ظاهر.
+            System.Diagnostics.Debug.WriteLine($"[Call][Media] StartMediaAsync FAILED: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}");
+            OnError?.Invoke(ex);
+        }
     }
 
     void OnPcmCaptured(short[] pcm)
@@ -197,8 +257,20 @@ public class CallAudioService
             var payload = new byte[len];
             Array.Copy(opusBuf, payload, len);
             _pc.SendAudio((uint)pcm.Length, payload);
+            _sentFrames++;
         }
-        catch (Exception ex) { OnError?.Invoke(ex); }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Call][Send] Encode/Send EXCEPTION: {ex.GetType().Name}: {ex.Message}");
+            OnError?.Invoke(ex);
+        }
+
+        if ((DateTime.UtcNow - _lastSendLog).TotalSeconds >= 1)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Call][Send] Last 1s summary: framesSent={_sentFrames}");
+            _sentFrames = 0;
+            _lastSendLog = DateTime.UtcNow;
+        }
     }
 
     public void Hangup()
