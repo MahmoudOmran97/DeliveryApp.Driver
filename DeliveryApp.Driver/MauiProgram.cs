@@ -53,11 +53,12 @@ public static class MauiProgram
         builder.Services.AddTransient<CustomerChatViewModel>();
         builder.Services.AddTransient<SupportChatViewModel>();
         builder.Services.AddTransient<CallViewModel>();
-        builder.Services.AddTransient<CallAudioService>();
+       // builder.Services.AddTransient<CallAudioService>();
 #if ANDROID
-        builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IPlatformAudioIO, DeliveryApp.Driver.Platforms.Android.AndroidAudioIO>();
+        builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IAgoraCallService, DeliveryApp.Driver.Platforms.Android.AgoraCallServiceAndroid>();
+        
 #elif IOS
-        builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IPlatformAudioIO, DeliveryApp.Driver.Platforms.iOS.IosAudioIO>();
+     //   builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IPlatformAudioIO, DeliveryApp.Driver.Platforms.iOS.IosAudioIO>();
 #endif
         // ملحوظة: مفيش تسجيل لـ MacCatalyst/Windows — لو الأبليكيشن اتبني لأي منهم، شاشة
         // المكالمة هترمي خطأ DI. مش هدف أساسي حسب كلامك (Android + iOS)، فسبتها من غير حل دلوقتي.

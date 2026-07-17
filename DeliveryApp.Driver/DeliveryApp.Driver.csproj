@@ -115,4 +115,10 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
+	  <PackageReference Include="Anjo.Android.AgoraFull">
+	    <Version>4.5.2</Version>
+	  </PackageReference>
+	</ItemGroup>
+
 </Project>

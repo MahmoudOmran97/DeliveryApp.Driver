@@ -5,6 +5,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Services;
+using DeliveryApp.Driver.Services.Call;
+//using Xamarin.KotlinX.Coroutines.Sync;
 
 namespace DeliveryApp.Driver.ViewModels;
 
@@ -16,7 +18,8 @@ public enum CallState { Ringing, Calling, Connected, Ended }
 public partial class CallViewModel : BaseViewModel, IDisposable
 {
     readonly SignalRService _signalR;
-    readonly CallAudioService _callAudio;
+    readonly ApiService _api;
+    readonly IAgoraCallService _agora;
     System.Timers.Timer? _durationTimer;
     int _secondsElapsed;
     bool _navigatedAway;
@@ -26,6 +29,8 @@ public partial class CallViewModel : BaseViewModel, IDisposable
     [ObservableProperty] CallState _state;
     [ObservableProperty] string _statusText = "";
     [ObservableProperty] string _durationText = "00:00";
+    [ObservableProperty] bool _isMuted;
+    [ObservableProperty] bool _isSpeakerOn = true;
 
     public string IsIncomingRaw
     {
@@ -36,22 +41,20 @@ public partial class CallViewModel : BaseViewModel, IDisposable
     public bool IsCalling => State == CallState.Calling;
     public bool IsConnected => State == CallState.Connected;
 
-    public CallViewModel(SignalRService signalR, CallAudioService callAudio)
+    public CallViewModel(SignalRService signalR, ApiService api, IAgoraCallService agora)
     {
         _signalR = signalR;
-        _callAudio = callAudio;
+        _api = api;
+        _agora = agora;
+
         _signalR.VoiceCallAccepted += OnAccepted;
         _signalR.VoiceCallRejected += OnRejected;
         _signalR.VoiceCallEnded += OnEnded;
-        _signalR.CallOfferReceived += OnOfferReceived;
-        _signalR.CallAnswerReceived += OnAnswerReceived;
-        _signalR.IceCandidateReceived += OnIceCandidateReceived;
-        _callAudio.OnError += ex => System.Diagnostics.Debug.WriteLine($"[Call] Audio error: {ex.Message}");
-    }
 
-    string? _pendingOfferSdp;
-    readonly List<string> _pendingIceCandidates = new();
-    bool _remoteReady;
+        _agora.RemoteUserJoined += OnRemoteJoined;
+        _agora.RemoteUserLeft += OnRemoteLeft;
+        _agora.CallError += ex => System.Diagnostics.Debug.WriteLine($"[Call] Agora error: {ex.Message}");
+    }
 
     partial void OnStateChanged(CallState value)
     {
@@ -67,23 +70,8 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         OnPropertyChanged(nameof(IsCalling));
         OnPropertyChanged(nameof(IsConnected));
 
-        // ✅ لو إحنا اللي بندي المكالمة، ابعت عرض SDP (offer) فوراً — الصوت مش هيشتغل غير
-        // بعد ما الطرف التاني يقبل ويوصل الـ Answer (شوف OnAnswerReceived).
         if (value == CallState.Calling)
-        {
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var sdp = await _callAudio.CreateOfferAsync(OrderId);
-                    await _signalR.SendCallOfferAsync(OrderId, sdp);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"[Call] CreateOffer failed: {ex.Message}");
-                }
-            });
-        }
+            _ = JoinAgoraChannelAsync();
     }
 
     [RelayCommand]
@@ -92,13 +80,7 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         await _signalR.AcceptVoiceCallAsync(OrderId);
         State = CallState.Connected;
         StartTimer();
-
-        if (_pendingOfferSdp != null)
-        {
-            await _callAudio.HandleRemoteOfferAsync(OrderId, _pendingOfferSdp);
-            foreach (var c in _pendingIceCandidates) await _callAudio.AddRemoteIceCandidateAsync(c);
-            _pendingIceCandidates.Clear();
-        }
+        await JoinAgoraChannelAsync();
     }
 
     [RelayCommand]
@@ -122,6 +104,42 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         await CloseAsync();
     }
 
+    [RelayCommand]
+    void ToggleMute()
+    {
+        IsMuted = !IsMuted;
+        _agora.MuteLocalAudio(IsMuted);
+    }
+
+    [RelayCommand]
+    void ToggleSpeaker()
+    {
+        IsSpeakerOn = !IsSpeakerOn;
+        _agora.EnableSpeakerphone(IsSpeakerOn);
+    }
+
+    async Task JoinAgoraChannelAsync()
+    {
+        try
+        {
+            // اسم القناة = رقم الأوردر، ثابت بين الطرفين
+            var channelName = $"order-{OrderId}";
+            var tokenResult = await _api.GetAgoraTokenAsync(channelName);
+            if (tokenResult == null)
+            {
+                await AlertAsync("تعذّر بدء المكالمة، حاول تاني");
+                await CloseAsync();
+                return;
+            }
+
+            await _agora.JoinChannelAsync(tokenResult.AppId, tokenResult.Token, tokenResult.ChannelName, tokenResult.Uid);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Call] JoinAgoraChannel failed: {ex.Message}");
+        }
+    }
+
     void OnAccepted(int orderId, int byUserId)
     {
         if (orderId != OrderId || State != CallState.Calling) return;
@@ -129,8 +147,6 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         {
             State = CallState.Connected;
             StartTimer();
-            // الصوت الفعلي بيبدأ لما الـ Answer يوصل (OnAnswerReceived)، مش هنا بالظبط —
-            // بس بصرياً الشاشة بتتحول "متصل" أول ما الطرف التاني يضغط قبول.
         });
     }
 
@@ -139,7 +155,7 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         if (orderId != OrderId) return;
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            await AlertAsync("الطرف التاني رفض المكالمة", "المكالمة انتهت");
+            await AlertAsync("الطرف التاني رفض المكالمة");
             await CloseAsync();
         });
     }
@@ -150,31 +166,11 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         MainThread.BeginInvokeOnMainThread(async () => await CloseAsync());
     }
 
-    void OnOfferReceived(int orderId, int fromUserId, string sdp)
-    {
-        if (orderId != OrderId) return;
-        // بنخزن العرض ونستنى المستخدم يضغط "قبول" فعلياً قبل ما نشغّل المايك (خصوصية).
-        _pendingOfferSdp = sdp;
-    }
+    void OnRemoteJoined() { /* ممكن تستخدمها لو حابب تأكيد إضافي إن الصوت اتوصل فعليًا */ }
 
-    void OnAnswerReceived(int orderId, int fromUserId, string sdp)
+    void OnRemoteLeft()
     {
-        if (orderId != OrderId) return;
-        _ = Task.Run(async () =>
-        {
-            await _callAudio.HandleRemoteAnswerAsync(sdp);
-            foreach (var c in _pendingIceCandidates) await _callAudio.AddRemoteIceCandidateAsync(c);
-            _pendingIceCandidates.Clear();
-        });
-    }
-
-    void OnIceCandidateReceived(int orderId, int fromUserId, string candidateJson)
-    {
-        if (orderId != OrderId) return;
-        // لو الـ peer connection لسه مش جاهزة (لسه ما اتقبلتش المكالمة)، خزّن الـ candidate
-        // وابعته بعدين، عشان addIceCandidate محتاج remote description متظبطة الأول.
-        _pendingIceCandidates.Add(candidateJson);
-        _ = _callAudio.AddRemoteIceCandidateAsync(candidateJson);
+        MainThread.BeginInvokeOnMainThread(async () => await CloseAsync());
     }
 
     void StartTimer()
@@ -202,12 +198,11 @@ public partial class CallViewModel : BaseViewModel, IDisposable
     {
         _durationTimer?.Stop();
         _durationTimer?.Dispose();
-        _callAudio.Hangup();
+        _agora.LeaveChannel();
         _signalR.VoiceCallAccepted -= OnAccepted;
         _signalR.VoiceCallRejected -= OnRejected;
         _signalR.VoiceCallEnded -= OnEnded;
-        _signalR.CallOfferReceived -= OnOfferReceived;
-        _signalR.CallAnswerReceived -= OnAnswerReceived;
-        _signalR.IceCandidateReceived -= OnIceCandidateReceived;
+        _agora.RemoteUserJoined -= OnRemoteJoined;
+        _agora.RemoteUserLeft -= OnRemoteLeft;
     }
 }

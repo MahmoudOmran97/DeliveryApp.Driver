@@ -13,9 +13,7 @@ public class SignalRService
     public event Action<int, int, string>? ChatMessageReceived;
     public event Action<int, int>? IncomingVoiceCall;
     public event Action<int, int>? VoiceCallAccepted; // orderId, byUserId
-    public event Action<int, int, string>? CallOfferReceived;      // orderId, fromUserId, sdp
-    public event Action<int, int, string>? CallAnswerReceived;     // orderId, fromUserId, sdp
-    public event Action<int, int, string>? IceCandidateReceived;   // orderId, fromUserId, candidateJson
+  
     public event Action<int, int>? VoiceCallRejected; // orderId, byUserId
     public event Action<int, int>? VoiceCallEnded;    // orderId, byUserId
 
@@ -83,29 +81,7 @@ public class SignalRService
             MainThread.BeginInvokeOnMainThread(() => IncomingVoiceCall?.Invoke(orderId, callerId));
         });
 
-        _hub.On<JsonElement>("CallOfferReceived", el =>
-        {
-            var orderId = el.GetProperty("orderId").GetInt32();
-            var fromUserId = el.GetProperty("fromUserId").GetInt32();
-            var sdp = el.GetProperty("sdp").GetString() ?? "";
-            MainThread.BeginInvokeOnMainThread(() => CallOfferReceived?.Invoke(orderId, fromUserId, sdp));
-        });
-
-        _hub.On<JsonElement>("CallAnswerReceived", el =>
-        {
-            var orderId = el.GetProperty("orderId").GetInt32();
-            var fromUserId = el.GetProperty("fromUserId").GetInt32();
-            var sdp = el.GetProperty("sdp").GetString() ?? "";
-            MainThread.BeginInvokeOnMainThread(() => CallAnswerReceived?.Invoke(orderId, fromUserId, sdp));
-        });
-
-        _hub.On<JsonElement>("IceCandidateReceived", el =>
-        {
-            var orderId = el.GetProperty("orderId").GetInt32();
-            var fromUserId = el.GetProperty("fromUserId").GetInt32();
-            var candidateJson = el.GetProperty("candidateJson").GetString() ?? "";
-            MainThread.BeginInvokeOnMainThread(() => IceCandidateReceived?.Invoke(orderId, fromUserId, candidateJson));
-        });
+       
 
         _hub.On<JsonElement>("VoiceCallAccepted", el =>
         {
@@ -170,20 +146,7 @@ public class SignalRService
         if (IsConnected) await _hub!.InvokeAsync("AcceptVoiceCall", orderId);
     }
 
-    public async Task SendCallOfferAsync(int orderId, string sdp)
-    {
-        if (IsConnected) await _hub!.InvokeAsync("SendCallOffer", orderId, sdp);
-    }
-
-    public async Task SendCallAnswerAsync(int orderId, string sdp)
-    {
-        if (IsConnected) await _hub!.InvokeAsync("SendCallAnswer", orderId, sdp);
-    }
-
-    public async Task SendIceCandidateAsync(int orderId, string candidateJson)
-    {
-        if (IsConnected) await _hub!.InvokeAsync("SendIceCandidate", orderId, candidateJson);
-    }
+   
 
     public async Task RejectVoiceCallAsync(int orderId)
     {

@@ -327,4 +327,19 @@ public class ApiService
 
     public Task<List<object>?> GetIceServersAsync()
         => GetAsync<List<object>>("webrtc/ice-servers");
+    public Task<AgoraTokenResult?> GetAgoraTokenAsync(string channelName, uint uid = 0)
+    => GetAsync<AgoraTokenResult>($"agora/token?channelName={channelName}&uid={uid}");
+
+
+    // وضيف الكلاس ده فى أي مكان مناسب (مثلاً جوه Models/AgoraTokenResult.cs ملف جديد)
+
+   
+}
+public class AgoraTokenResult
+{
+    public string AppId { get; set; } = string.Empty;
+    public string ChannelName { get; set; } = string.Empty;
+    public uint Uid { get; set; }
+    public string Token { get; set; } = string.Empty;
+    public int ExpiresInSeconds { get; set; }
 }
