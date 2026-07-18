@@ -72,6 +72,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
 		<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.7" />
+		<PackageReference Include="Plugin.Firebase.CloudMessaging" Version="4.0.1" />
 		<PackageReference Include="SIPSorcery" Version="10.0.1" />
 		<PackageReference Include="SIPSorceryMedia.Abstractions" Version="10.0.11" />
 	</ItemGroup>

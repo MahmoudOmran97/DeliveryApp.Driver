@@ -15,6 +15,7 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     readonly LocationService _location;
     readonly ChatNotificationService _chatNotif; // ✅ FIX #4
     readonly SignalRService _signalR; // ✅ FIX #Call — كانت ناقصة، عشانها المكالمة ما كانتش شغالة
+    readonly AuthService _auth; // ✅ FIX #CallGroup — عشان نقدر نعمل ConnectAsync لو مش متصل
 
     [ObservableProperty] ActiveOrder? _order;
     [ObservableProperty] double _driverLat;
@@ -26,12 +27,14 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
         ApiService api,
         LocationService location,
         ChatNotificationService chatNotif, // ✅ FIX #4 — inject
-        SignalRService signalR) // ✅ FIX #Call — inject
+        SignalRService signalR, // ✅ FIX #Call — inject
+        AuthService auth) // ✅ FIX #CallGroup — inject
     {
         _api = api;
         _location = location;
         _chatNotif = chatNotif;
         _signalR = signalR;
+        _auth = auth;
 
         _location.LocationUpdated += (lat, lng) =>
         {
@@ -39,6 +42,11 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
             DriverLng = lng;
             MapUpdated?.Invoke();
         };
+
+        // ✅ FIX #CallGroup — لو الاتصال يتقطع ويرجع (SignalR AutomaticReconnect)،
+        // الـ ConnectionId بيتغيّر والسيرفر بينسى إن الدرايفر كان جوه جروب الطلب،
+        // فلازم نرجع نضم نفسنا تاني عشان تفضل المكالمات والشات شغالة.
+        _signalR.Reconnected += () => _ = JoinOrderGroupAsync();
     }
 
     partial void OnOrderChanged(ActiveOrder? value)
@@ -50,7 +58,26 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
             // ✅ FIX #4 — سجّل الطلب عشان لو العميل بعت رسالة يظهر للدرايفر notification
             _chatNotif.RegisterOrder(value.Id, value.CustomerName);
             _ = LoadInitialDriverLocationAsync();
+
+            // ✅ FIX #CallGroup — دي كانت الـ bug الرئيسية: الدرايفر مكنش بينضم أبداً لجروب
+            // "order_{orderId}" على الـ Hub، فكل الأحداث اللي بتتبعت بالـ Group
+            // (IncomingVoiceCall / VoiceCallAccepted / VoiceCallRejected / VoiceCallEnded)
+            // مكنتش توصله خالص. عشان كده:
+            //  - لما العميل يتصل، الدرايفر مكنش بيرن.
+            //  - لما الدرايفر يتصل والعميل يقبل، الدرايفر كان فاضل واقف على "جارِ الاتصال"
+            //    لأن VoiceCallAccepted مكنش بيوصله، رغم إن العميل دخل فعلاً.
+            _ = JoinOrderGroupAsync();
         }
+    }
+
+    async Task JoinOrderGroupAsync()
+    {
+        if (Order == null) return;
+
+        if (!_signalR.IsConnected)
+            await _signalR.ConnectAsync(_auth.GetToken());
+
+        await _signalR.JoinOrderAsync(Order.Id);
     }
 
     async Task LoadInitialDriverLocationAsync()

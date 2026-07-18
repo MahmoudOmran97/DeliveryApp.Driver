@@ -330,6 +330,41 @@ public class ApiService
     public Task<AgoraTokenResult?> GetAgoraTokenAsync(string channelName, uint uid = 0)
     => GetAsync<AgoraTokenResult>($"agora/token?channelName={channelName}&uid={uid}");
 
+    // ─── FCM Token ────────────────────────────────────────────────────────────
+    public async Task UpdateFcmTokenAsync(string token)
+    {
+        try
+        {
+            SetAuth();
+            if (string.IsNullOrEmpty(_auth.GetToken()))
+            {
+                System.Diagnostics.Debug.WriteLine("[API] user/fcm-token skipped — not logged in");
+                return;
+            }
+
+            var body = System.Net.Http.Json.JsonContent.Create(new { token });
+            var response = await _http.PutAsync($"{_baseUrl}/user/fcm-token", body);
+
+            if (response.IsSuccessStatusCode)
+                System.Diagnostics.Debug.WriteLine("[API] FCM token saved to backend");
+            else
+                System.Diagnostics.Debug.WriteLine($"[API] user/fcm-token failed: {(int)response.StatusCode} {response.ReasonPhrase}");
+        }
+        catch (Exception ex) { Debug(ex, "user/fcm-token"); }
+    }
+
+    // ✅ بيستخدمها زرار "رفض" الأحمر في نوتيفيكيشن المكالمة الواردة لما التطبيق يكون
+    // مقفول تمامًا (مفيش SignalR متصل)، بيبعت الرفض مباشرة عن طريق REST بدل الـ Hub.
+    public async Task<bool> RejectVoiceCallRestAsync(int orderId)
+    {
+        try
+        {
+            SetAuth();
+            var response = await _http.PostAsync($"{_baseUrl}/voicecall/reject/{orderId}", null);
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex) { Debug(ex, "voicecall/reject"); return false; }
+    }
 
     // وضيف الكلاس ده فى أي مكان مناسب (مثلاً جوه Models/AgoraTokenResult.cs ملف جديد)
 

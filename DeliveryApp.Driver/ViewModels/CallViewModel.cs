@@ -15,11 +15,13 @@ public enum CallState { Ringing, Calling, Connected, Ended }
 [QueryProperty(nameof(OrderId), "orderId")]
 [QueryProperty(nameof(OtherPartyName), "otherPartyName")]
 [QueryProperty(nameof(IsIncomingRaw), "isIncoming")]
+[QueryProperty(nameof(AutoAcceptRaw), "autoAccept")]
 public partial class CallViewModel : BaseViewModel, IDisposable
 {
     readonly SignalRService _signalR;
     readonly ApiService _api;
     readonly IAgoraCallService _agora;
+    readonly IRingtoneService _ringtone;
     System.Timers.Timer? _durationTimer;
     int _secondsElapsed;
     bool _navigatedAway;
@@ -37,15 +39,35 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         set => State = value == "true" ? CallState.Ringing : CallState.Calling;
     }
 
+    // ✅ لما الدرايفر يدوس على زرار "قبول" الأخضر في نوتيفيكيشن المكالمة والتطبيق مقفول،
+    // بيتفتح على شاشة المكالمة ومعاه العلامة دي، فبنقبل المكالمة أوتوماتيك.
+    public string AutoAcceptRaw
+    {
+        set
+        {
+            if (value != "true") return;
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(400);
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    if (State == CallState.Ringing)
+                        await AcceptCommand.ExecuteAsync(null);
+                });
+            });
+        }
+    }
+
     public bool IsRinging => State == CallState.Ringing;
     public bool IsCalling => State == CallState.Calling;
     public bool IsConnected => State == CallState.Connected;
 
-    public CallViewModel(SignalRService signalR, ApiService api, IAgoraCallService agora)
+    public CallViewModel(SignalRService signalR, ApiService api, IAgoraCallService agora, IRingtoneService ringtone)
     {
         _signalR = signalR;
         _api = api;
         _agora = agora;
+        _ringtone = ringtone;
 
         _signalR.VoiceCallAccepted += OnAccepted;
         _signalR.VoiceCallRejected += OnRejected;
@@ -69,6 +91,13 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         OnPropertyChanged(nameof(IsRinging));
         OnPropertyChanged(nameof(IsCalling));
         OnPropertyChanged(nameof(IsConnected));
+
+        // ✅ رنة المكالمة الواردة: تشتغل بس لما تكون Ringing (مكالمة واردة قبل الرد)
+        // وتقف في أي حالة تانية (اتقفل، اتقبلت، إلخ)
+        if (value == CallState.Ringing)
+            _ringtone.Start();
+        else
+            _ringtone.Stop();
 
         if (value == CallState.Calling)
             _ = JoinAgoraChannelAsync();
@@ -122,6 +151,17 @@ public partial class CallViewModel : BaseViewModel, IDisposable
     {
         try
         {
+            // ✅ FIX #Mic — من غير طلب إذن المايك وقت التشغيل (runtime permission)، الـ RtcEngine
+            // بيفشل يفتح مسار الصوت بالكامل (تسجيل واستقبال) حتى لو الإذن متعرّف
+            // في الـ Manifest، فبيبقى مفيش أي صوت خالص من الطرفين.
+            var micStatus = await Permissions.RequestAsync<Permissions.Microphone>();
+            if (micStatus != PermissionStatus.Granted)
+            {
+                await AlertAsync("محتاجين إذن الميكروفون عشان تقدر تعمل مكالمة صوتية. من فضلك فعّله من إعدادات التطبيق.");
+                await CloseAsync();
+                return;
+            }
+
             // اسم القناة = رقم الأوردر، ثابت بين الطرفين
             var channelName = $"order-{OrderId}";
             var tokenResult = await _api.GetAgoraTokenAsync(channelName);
@@ -196,6 +236,7 @@ public partial class CallViewModel : BaseViewModel, IDisposable
 
     public void Dispose()
     {
+        _ringtone.Stop();
         _durationTimer?.Stop();
         _durationTimer?.Dispose();
         _agora.LeaveChannel();

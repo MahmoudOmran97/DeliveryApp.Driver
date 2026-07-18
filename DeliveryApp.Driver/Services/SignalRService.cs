@@ -13,9 +13,14 @@ public class SignalRService
     public event Action<int, int, string>? ChatMessageReceived;
     public event Action<int, int>? IncomingVoiceCall;
     public event Action<int, int>? VoiceCallAccepted; // orderId, byUserId
-  
+
     public event Action<int, int>? VoiceCallRejected; // orderId, byUserId
     public event Action<int, int>? VoiceCallEnded;    // orderId, byUserId
+
+    // ✅ FIX #CallGroup — بتتنادي بعد أي Reconnect تلقائي، عشان اللي مستخدم الـ Hub
+    // (زي ActiveDeliveryViewModel) يقدر يرجع يعمل JoinOrderTracking تاني، لأن
+    // الجروبات بتتفقد لما الـ ConnectionId يتغيّر بعد انقطاع/رجوع الاتصال.
+    public event Action? Reconnected;
 
     // ✅ FIX 1 — بنتحقق من Connected وبس مش من وجود الـ object
     public bool IsConnected => _hub?.State == HubConnectionState.Connected;
@@ -51,6 +56,7 @@ public class SignalRService
         _hub.Reconnected += (connectionId) =>
         {
             System.Diagnostics.Debug.WriteLine($"[SignalR] Reconnected: {connectionId}");
+            Reconnected?.Invoke(); // ✅ FIX #CallGroup — نبّه المشتركين يرجعوا ينضموا لجروبات الطلبات
             return Task.CompletedTask;
         };
 
@@ -81,7 +87,7 @@ public class SignalRService
             MainThread.BeginInvokeOnMainThread(() => IncomingVoiceCall?.Invoke(orderId, callerId));
         });
 
-       
+
 
         _hub.On<JsonElement>("VoiceCallAccepted", el =>
         {
@@ -146,7 +152,7 @@ public class SignalRService
         if (IsConnected) await _hub!.InvokeAsync("AcceptVoiceCall", orderId);
     }
 
-   
+
 
     public async Task RejectVoiceCallAsync(int orderId)
     {

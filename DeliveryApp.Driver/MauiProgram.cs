@@ -42,6 +42,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<LocationService>();
         builder.Services.AddSingleton<LocaleStrings>();
         builder.Services.AddSingleton<ChatNotificationService>(); // ✅ FIX #4
+        builder.Services.AddSingleton<FcmTokenService>();
 
         // ── ViewModels ────────────────────────────────────────────────────────
         builder.Services.AddTransient<LoginViewModel>();
@@ -53,10 +54,11 @@ public static class MauiProgram
         builder.Services.AddTransient<CustomerChatViewModel>();
         builder.Services.AddTransient<SupportChatViewModel>();
         builder.Services.AddTransient<CallViewModel>();
-       // builder.Services.AddTransient<CallAudioService>();
+        // builder.Services.AddTransient<CallAudioService>();
 #if ANDROID
         builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IAgoraCallService, DeliveryApp.Driver.Platforms.Android.AgoraCallServiceAndroid>();
-        
+        builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IRingtoneService, DeliveryApp.Driver.Platforms.Android.RingtoneServiceAndroid>();
+
 #elif IOS
      //   builder.Services.AddSingleton<DeliveryApp.Driver.Services.Call.IPlatformAudioIO, DeliveryApp.Driver.Platforms.iOS.IosAudioIO>();
 #endif

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "296587663969",
+    "project_id": "tawseela-da760",
+    "storage_bucket": "tawseela-da760.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296587663969:android:eeb970700658971744e820",
+        "android_client_info": {
+          "package_name": "com.companyname.deliveryapp.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYbsO4026CZQwpZwYuPVVO6E74Ow350kM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296587663969:android:909325b5ed223bf844e820",
+        "android_client_info": {
+          "package_name": "com.companyname.deliveryapp.driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYbsO4026CZQwpZwYuPVVO6E74Ow350kM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
