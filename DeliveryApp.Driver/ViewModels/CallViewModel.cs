@@ -75,6 +75,7 @@ public partial class CallViewModel : BaseViewModel, IDisposable
 
         _agora.RemoteUserJoined += OnRemoteJoined;
         _agora.RemoteUserLeft += OnRemoteLeft;
+        _agora.LocalUserJoined += OnLocalJoined;
         _agora.CallError += ex => System.Diagnostics.Debug.WriteLine($"[Call] Agora error: {ex.Message}");
     }
 
@@ -206,7 +207,16 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         MainThread.BeginInvokeOnMainThread(async () => await CloseAsync());
     }
 
-    void OnRemoteJoined() { /* ممكن تستخدمها لو حابب تأكيد إضافي إن الصوت اتوصل فعليًا */ }
+    void OnLocalJoined()
+    {
+        // بعد ما ندخل القناة بنأكد إن السماعة الخارجية شغالة (مش سماعة الأذن)
+        MainThread.BeginInvokeOnMainThread(() => _agora.EnableSpeakerphone(IsSpeakerOn));
+    }
+
+    void OnRemoteJoined()
+    {
+        System.Diagnostics.Debug.WriteLine("[Call] Remote user joined Agora channel — media path ready");
+    }
 
     void OnRemoteLeft()
     {
@@ -245,5 +255,6 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         _signalR.VoiceCallEnded -= OnEnded;
         _agora.RemoteUserJoined -= OnRemoteJoined;
         _agora.RemoteUserLeft -= OnRemoteLeft;
+        _agora.LocalUserJoined -= OnLocalJoined;
     }
 }
