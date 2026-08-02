@@ -8,6 +8,10 @@ public partial class App : Application
     private readonly LocationService _location;
     private readonly SignalRService _signalR;
     private readonly AuthService _auth;
+    private int? _navigatingIncomingCallOrderId;
+
+    /// <summary>true لما التطبيق ظاهر قدام المستخدم — عشان نقرر نفتح CallPage ولا شاشة الرنين الخارجية.</summary>
+    public static bool IsInForeground { get; private set; }
 
     public App(SplashPage splash, LocationService location, SignalRService signalR, AuthService auth,
         FcmTokenService fcmToken)
@@ -31,57 +35,95 @@ public partial class App : Application
                 await _signalR.ConnectAsync(_auth.GetToken());
             }
 
-            // ✅ لو التطبيق اتفتح لسه (cold start) بسبب دوس على زرار "قبول" في نوتيفيكيشن
-            // مكالمة واردة، انقل الدرايفر مباشرة لصفحة المكالمة مع قبول تلقائي.
-            var pendingCall = Services.PendingCallNavigation.TakePending();
-            if (pendingCall != null)
-            {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Shell.Current.GoToAsync(
-                        $"CallPage?orderId={pendingCall.Value.orderId}&otherPartyName={Uri.EscapeDataString(pendingCall.Value.callerName)}&isIncoming=true&autoAccept=true");
-                });
-            }
+            TryNavigatePendingCall();
         });
 
-        // ✅ CALL FIX — لما مكالمة واردة توصل والأبليكيشن فاتح (foreground/background بس مش مقفول
-        // خالص)، افتح شاشة المكالمة تلقائي زي أي تطبيق اتصال. لو الأبليكيشن مقفول تماماً، ده
-        // بيتوصل عن طريق الـ FCM data push بدل SignalR (Platforms/Android/IncomingCallNotificationHelper).
+        // مكالمة واردة:
+        // - التطبيق ظاهر → CallPage جوه الأبليكيشن
+        // - التطبيق في الخلفية/مقفول → IncomingCallActivity فوق الشاشة (زي واتساب)
         _signalR.IncomingVoiceCall += (orderId, callerId) =>
         {
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await Shell.Current.GoToAsync(
-                    $"CallPage?orderId={orderId}&otherPartyName={Uri.EscapeDataString("العميل")}&isIncoming=true");
+                if (_navigatingIncomingCallOrderId == orderId) return;
+                _navigatingIncomingCallOrderId = orderId;
+
+#if ANDROID
+                if (!IsInForeground)
+                {
+                    try
+                    {
+                        Platforms.Android.IncomingCallNotificationHelper.Show(
+                            Android.App.Application.Context, orderId, "العميل");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[Call] Show incoming UI failed: {ex.Message}");
+                        _navigatingIncomingCallOrderId = null;
+                    }
+                    return;
+                }
+#endif
+                try
+                {
+                    await Shell.Current.GoToAsync(
+                        $"CallPage?orderId={orderId}&otherPartyName={Uri.EscapeDataString("العميل")}&isIncoming=true");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[Call] Navigate failed: {ex.Message}");
+                    _navigatingIncomingCallOrderId = null;
+                }
             });
         };
     }
 
-    // ✅ FIX 2 & 3 — لما التطبيق يرجع من الـ background
     protected override void OnResume()
     {
         base.OnResume();
+        IsInForeground = true;
         System.Diagnostics.Debug.WriteLine("[App] OnResume");
 
-        // أعد تشغيل GPS tracking لو كان شغال
         _location.OnAppResumed();
+        TryNavigatePendingCall();
 
-        // أعد الاتصال بـ SignalR لو كان متصل
         if (_auth.IsLoggedIn)
         {
             _ = Task.Run(async () =>
             {
-                await Task.Delay(500); // استنى الـ UI يرجع
+                await Task.Delay(500);
                 await _signalR.ConnectAsync(_auth.GetToken());
             });
         }
     }
 
-    // ✅ FIX 2 — لما التطبيق يروح الـ background
     protected override void OnSleep()
     {
         base.OnSleep();
+        IsInForeground = false;
         System.Diagnostics.Debug.WriteLine("[App] OnSleep");
         _location.OnAppSleeping();
+    }
+
+    void TryNavigatePendingCall()
+    {
+        var pendingCall = PendingCallNavigation.TakePending();
+        if (pendingCall == null) return;
+
+        var (orderId, callerName, autoAccept) = pendingCall.Value;
+        var autoAcceptFlag = autoAccept ? "true" : "false";
+
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            try
+            {
+                await Shell.Current.GoToAsync(
+                    $"CallPage?orderId={orderId}&otherPartyName={Uri.EscapeDataString(callerName)}&isIncoming=true&autoAccept={autoAcceptFlag}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Call] Pending navigate failed: {ex.Message}");
+            }
+        });
     }
 }

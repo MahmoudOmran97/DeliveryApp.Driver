@@ -65,6 +65,15 @@ public partial class HomeViewModel : BaseViewModel
                     UnreadNotifications = result.Data.Count(n => !n.IsRead);
             });
         };
+
+        _hub.Reconnected += () =>
+        {
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await LoadActiveOrdersAsync();
+                await JoinActiveOrderGroupsAsync();
+            });
+        };
     }
 
     [RelayCommand]
@@ -105,9 +114,23 @@ public partial class HomeViewModel : BaseViewModel
             {
                 _location.StartTracking(ActiveOrder?.Id);
                 await _hub.ConnectAsync(_auth.GetToken());
+                await JoinActiveOrderGroupsAsync();
             }
         }
         finally { IsBusy = false; }
+    }
+
+    async Task JoinActiveOrderGroupsAsync()
+    {
+        // عشان المكالمات توصل حتى لو الدرايفر مش على شاشة الأوردر
+        foreach (var order in ActiveOrders)
+        {
+            try { await _hub.JoinOrderAsync(order.Id); }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[Call] JoinOrder {order.Id} failed: {ex.Message}");
+            }
+        }
     }
 
     private async Task LoadActiveOrderAsync()

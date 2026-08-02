@@ -8,7 +8,8 @@ namespace DeliveryApp.Driver.Platforms.Android;
 
 internal static class IncomingCallNotificationHelper
 {
-    public const string CallChannelId = "incoming_calls";
+    // قناة جديدة Importance.Max — القناة القديمة مش ممكن نرفع أهميتها بعد الإنشاء
+    public const string CallChannelId = "incoming_calls_v2";
     public const string ActionAccept = "com.companyname.deliveryapp.driver.ACTION_ACCEPT_CALL";
     public const string ActionReject = "com.companyname.deliveryapp.driver.ACTION_REJECT_CALL";
 
@@ -19,13 +20,14 @@ internal static class IncomingCallNotificationHelper
         var manager = (NotificationManager?)context.GetSystemService(Context.NotificationService);
         if (manager?.GetNotificationChannel(CallChannelId) != null) return;
 
-        var channel = new NotificationChannel(CallChannelId, "مكالمات واردة", NotificationImportance.High)
+        var channel = new NotificationChannel(CallChannelId, "مكالمات واردة", NotificationImportance.Max)
         {
-            Description = "تنبيهات المكالمات الصوتية داخل التطبيق",
+            Description = "رنة المكالمات الصوتية فوق الشاشة زي واتساب",
             LockscreenVisibility = NotificationVisibility.Public
         };
         channel.EnableVibration(true);
         channel.EnableLights(true);
+        channel.SetBypassDnd(true);
 
         var ringtoneUri = RingtoneManager.GetActualDefaultRingtoneUri(context, RingtoneType.Ringtone);
         if (ringtoneUri != null)
@@ -62,17 +64,13 @@ internal static class IncomingCallNotificationHelper
             var rejectPending = PendingIntent.GetBroadcast(context, notifId * 10 + 2, rejectIntent,
                 PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
 
-            PendingIntent? fullScreenPending = null;
-            var launch = context.PackageManager?.GetLaunchIntentForPackage(context.PackageName ?? "");
-            if (launch != null)
-            {
-                launch.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTop);
-                launch.PutExtra("tawseela_call_action", "accept");
-                launch.PutExtra("tawseela_order_id", orderId);
-                launch.PutExtra("tawseela_caller_name", callerName);
-                fullScreenPending = PendingIntent.GetActivity(context, notifId, launch,
-                    PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
-            }
+            // Full-screen → IncomingCallActivity فوق القفل (مش الـ MainActivity)
+            var fullScreen = new Intent(context, typeof(IncomingCallActivity));
+            fullScreen.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTop | ActivityFlags.SingleTop);
+            fullScreen.PutExtra("orderId", orderId);
+            fullScreen.PutExtra("callerName", callerName);
+            var fullScreenPending = PendingIntent.GetActivity(context, notifId, fullScreen,
+                PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
 
             var builder = new NotificationCompat.Builder(context, CallChannelId)
                 .SetSmallIcon(Resource.Drawable.ic_notification)
@@ -80,16 +78,14 @@ internal static class IncomingCallNotificationHelper
                 .SetContentText($"{callerName} بيكلمك دلوقتي")
                 .SetPriority(NotificationCompat.PriorityMax)
                 .SetCategory(NotificationCompat.CategoryCall)
+                .SetVisibility(NotificationCompat.VisibilityPublic)
                 .SetAutoCancel(true)
                 .SetOngoing(true)
+                .SetTimeoutAfter(60_000)
                 .AddAction(new NotificationCompat.Action(Resource.Drawable.ic_call_accept, "قبول", acceptPending))
-                .AddAction(new NotificationCompat.Action(Resource.Drawable.ic_call_reject, "رفض", rejectPending));
-
-            if (fullScreenPending != null)
-            {
-                builder.SetFullScreenIntent(fullScreenPending, true);
-                builder.SetContentIntent(fullScreenPending);
-            }
+                .AddAction(new NotificationCompat.Action(Resource.Drawable.ic_call_reject, "رفض", rejectPending))
+                .SetFullScreenIntent(fullScreenPending, true)
+                .SetContentIntent(fullScreenPending);
 
             NotificationHelper.ApplyBranding(builder, context);
             NotificationManagerCompat.From(context).Notify(notifId, builder.Build());

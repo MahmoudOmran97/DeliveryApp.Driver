@@ -34,6 +34,9 @@ public partial class CallViewModel : BaseViewModel, IDisposable
     [ObservableProperty] bool _isMuted;
     [ObservableProperty] bool _isSpeakerOn = true;
 
+    public string MuteButtonText => IsMuted ? "فتح المايك" : "كتم المايك";
+    public string SpeakerButtonText => IsSpeakerOn ? "سماعة الأذن" : "سماعة خارجية";
+
     public string IsIncomingRaw
     {
         set => State = value == "true" ? CallState.Ringing : CallState.Calling;
@@ -147,6 +150,9 @@ public partial class CallViewModel : BaseViewModel, IDisposable
         IsSpeakerOn = !IsSpeakerOn;
         _agora.EnableSpeakerphone(IsSpeakerOn);
     }
+
+    partial void OnIsMutedChanged(bool value) => OnPropertyChanged(nameof(MuteButtonText));
+    partial void OnIsSpeakerOnChanged(bool value) => OnPropertyChanged(nameof(SpeakerButtonText));
 
     async Task JoinAgoraChannelAsync()
     {

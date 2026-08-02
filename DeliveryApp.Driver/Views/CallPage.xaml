@@ -47,10 +47,21 @@
                 IsVisible="{Binding IsCalling}"
                 Command="{Binding CancelCommand}"/>
 
-        <!-- Connected: End call -->
-        <Button Grid.Row="1" Text="إنهاء المكالمة" BackgroundColor="#E53935" TextColor="White"
-                FontFamily="CairoBold" CornerRadius="30" HeightRequest="60"
-                IsVisible="{Binding IsConnected}"
-                Command="{Binding EndCallCommand}"/>
+        <!-- Connected: mute / speaker / end -->
+        <VerticalStackLayout Grid.Row="1" Spacing="14" IsVisible="{Binding IsConnected}">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                <Button Grid.Column="0" Text="{Binding MuteButtonText}"
+                        BackgroundColor="#424242" TextColor="White"
+                        FontFamily="CairoBold" CornerRadius="30" HeightRequest="56"
+                        Command="{Binding ToggleMuteCommand}"/>
+                <Button Grid.Column="1" Text="{Binding SpeakerButtonText}"
+                        BackgroundColor="#424242" TextColor="White"
+                        FontFamily="CairoBold" CornerRadius="30" HeightRequest="56"
+                        Command="{Binding ToggleSpeakerCommand}"/>
+            </Grid>
+            <Button Text="إنهاء المكالمة" BackgroundColor="#E53935" TextColor="White"
+                    FontFamily="CairoBold" CornerRadius="30" HeightRequest="60"
+                    Command="{Binding EndCallCommand}"/>
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

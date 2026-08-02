@@ -51,10 +51,11 @@ namespace DeliveryApp.Driver
 
             FirebaseCloudMessagingImplementation.OnNewIntent(intent);
 
-            // ✅ لو التطبيق اتفتح من نوتيفيكيشن المكالمة الواردة (زرار قبول أو جسم
-            // النوتيفيكيشن نفسه)، خزّن بيانات المكالمة عشان الـ App.xaml.cs ينقل
-            // المستخدم لصفحة المكالمة أول ما الـ Shell يخلص يتظبط.
-            if (intent.GetStringExtra("tawseela_call_action") == "accept")
+            // ✅ لو التطبيق اتفتح من نوتيفيكيشن المكالمة الواردة:
+            // - accept = زرار قبول → افتح المكالمة مع قبول تلقائي
+            // - incoming = full-screen / جسم النوتيفيكيشن → افتح شاشة الرنين بس
+            var callAction = intent.GetStringExtra("tawseela_call_action");
+            if (callAction is "accept" or "incoming")
             {
                 var orderId = intent.GetIntExtra("tawseela_order_id", 0);
                 var callerName = intent.GetStringExtra("tawseela_caller_name") ?? "";
@@ -62,6 +63,7 @@ namespace DeliveryApp.Driver
                 {
                     DeliveryApp.Driver.Services.PendingCallNavigation.OrderId = orderId;
                     DeliveryApp.Driver.Services.PendingCallNavigation.CallerName = callerName;
+                    DeliveryApp.Driver.Services.PendingCallNavigation.AutoAccept = callAction == "accept";
                 }
             }
         }
@@ -152,6 +154,28 @@ namespace DeliveryApp.Driver
                 const string permission = "android.permission.POST_NOTIFICATIONS";
                 if (ContextCompat.CheckSelfPermission(this, permission) != Permission.Granted)
                     ActivityCompat.RequestPermissions(this, new[] { permission }, NotificationPermissionRequestCode);
+            }
+
+            // Android 14+: إذن ظهور المكالمة فوق الشاشة (Full-Screen Intent) زي واتساب
+            RequestFullScreenIntentPermissionIfNeeded();
+        }
+
+        private void RequestFullScreenIntentPermissionIfNeeded()
+        {
+            if (Build.VERSION.SdkInt < BuildVersionCodes.UpsideDownCake) return;
+
+            try
+            {
+                var manager = GetSystemService(NotificationService) as NotificationManager;
+                if (manager == null || manager.CanUseFullScreenIntent()) return;
+
+                var intent = new Intent(Android.Provider.Settings.ActionManageAppUseFullScreenIntent);
+                intent.SetData(Android.Net.Uri.Parse($"package:{PackageName}"));
+                StartActivity(intent);
+            }
+            catch (Exception ex)
+            {
+                Android.Util.Log.Warn("IncomingCall", $"FSI permission request failed: {ex.Message}");
             }
         }
     }
