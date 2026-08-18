@@ -20,7 +20,7 @@
 	</xsd:schema>
 
 	<!-- ── General ── -->
-	<data name="AppName"       xml:space="preserve"><value>ديليفر</value></data>
+	
 	<data name="Ok"            xml:space="preserve"><value>موافق</value></data>
 	<data name="Cancel"        xml:space="preserve"><value>إلغاء</value></data>
 	<data name="Save"          xml:space="preserve"><value>حفظ</value></data>
@@ -131,4 +131,11 @@
 	<data name="Support"          xml:space="preserve"><value>الدعم</value></data>
 	<data name="TypeMessage"      xml:space="preserve"><value>اكتب رسالتك...</value></data>
 	<data name="ChatPlaceholder"  xml:space="preserve"><value>اكتب رسالة...</value></data>
+	<data name="AppName">
+		<value>تالى</value>
+	</data>
+	<!-- Splash -->
+	<data name="SplashSubtitle">
+		<value>أسرع توصيل</value>
+	</data>
 </root>

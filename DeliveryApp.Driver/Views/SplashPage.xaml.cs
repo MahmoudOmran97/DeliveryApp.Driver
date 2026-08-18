@@ -1,6 +1,7 @@
 ﻿using DeliveryApp.Driver.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,13 @@ namespace DeliveryApp.Driver.Views
             _auth = auth;
             _signalR = signalR;
             _api = api;
+            FlowDirection = LocalizationService.Flow;
+
+            string lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+            imgLogo.Source = lang == "ar"
+                ? "logo_ar.png"
+                : "logo_en.png";
         }
 
         protected override async void OnAppearing()

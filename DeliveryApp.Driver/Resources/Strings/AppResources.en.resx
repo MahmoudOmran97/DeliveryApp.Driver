@@ -20,7 +20,7 @@
 	</xsd:schema>
 
 	<!-- ── General ── -->
-	<data name="AppName"       xml:space="preserve"><value>Deliver</value></data>
+	
 	<data name="Ok"            xml:space="preserve"><value>OK</value></data>
 	<data name="Cancel"        xml:space="preserve"><value>Cancel</value></data>
 	<data name="Save"          xml:space="preserve"><value>Save</value></data>
@@ -131,4 +131,10 @@
 	<data name="Support"          xml:space="preserve"><value>Support</value></data>
 	<data name="TypeMessage"      xml:space="preserve"><value>Type your message...</value></data>
 	<data name="ChatPlaceholder"  xml:space="preserve"><value>Type a message...</value></data>
+	<data name="SplashSubtitle">
+		<value>Fastest delivery</value>
+	</data>
+	<data name="AppName">
+		<value>Taly</value>
+	</data>
 </root>
