@@ -20,11 +20,13 @@ public partial class ActiveDeliveryPage : ContentPage
     MemoryLayer? _restaurantLayer;
     MemoryLayer? _routeLayer;
     bool _mapInitialized;
-    bool _markerSourcesReady;
 
-    string _customerSvg = BuildUserMarkerSvg();
-    string _restaurantSvg = BuildShopMarkerSvg();
-    string _driverSvg = BuildDriverMarkerSvg();
+    // ✅ FIX: نفس تعريفات الـ SVG بالظبط اللي في تطبيق الكاستمر (نفس الألوان والأشكال)
+    // بدل ما كنا بنحاول نحمّل صور PNG وقت التشغيل (FileSystem.OpenAppPackageFileAsync) اللي كانت
+    // بتفشل أحياناً أو بتطلع بمقاس غلط، فكانت الأيقونة بتظهر مختلفة أو صغيرة جداً عن الكاستمر.
+    static readonly string _customerSvg = "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 2C20.4 2 11 11.4 11 23c0 14 18.2 35.8 20.1 38.1.5.6 1.4.6 1.9 0C34.8 58.8 53 37 53 23 53 11.4 43.6 2 32 2z' fill='#2196F3'/><circle cx='32' cy='23' r='10' fill='#FFFFFF'/><circle cx='32' cy='20' r='4.6' fill='#2196F3'/><path d='M24.5 30.5c1.8-3 4.2-4.5 7.5-4.5s5.7 1.5 7.5 4.5' fill='none' stroke='#2196F3' stroke-width='3' stroke-linecap='round'/></svg>";
+    static readonly string _restaurantSvg = "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 2C20.4 2 11 11.4 11 23c0 14 18.2 35.8 20.1 38.1.5.6 1.4.6 1.9 0C34.8 58.8 53 37 53 23 53 11.4 43.6 2 32 2z' fill='#4CAF50'/><rect x='20' y='16' width='24' height='18' rx='2' fill='#FFFFFF'/><path d='M20 22h24' stroke='#4CAF50' stroke-width='3'/><rect x='24' y='25' width='7' height='9' fill='#4CAF50'/><rect x='34' y='25' width='8' height='6' fill='#4CAF50'/></svg>";
+    static readonly string _driverSvg = "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='30' fill='#FF5722'/><circle cx='22' cy='43' r='8' fill='#FFFFFF'/><circle cx='22' cy='43' r='3.5' fill='#263238'/><circle cx='44' cy='43' r='8' fill='#FFFFFF'/><circle cx='44' cy='43' r='3.5' fill='#263238'/><path d='M18 36h18l8-8h-9l-4-8h-7l3 8h-9z' fill='#263238'/><circle cx='41' cy='24' r='4' fill='#FFFFFF'/></svg>";
 
     public ActiveDeliveryPage(ActiveDeliveryViewModel vm)
     {
@@ -32,55 +34,8 @@ public partial class ActiveDeliveryPage : ContentPage
         BindingContext = vm;
         _vm = vm;
         SetupMap();
-        _ = LoadMarkerSourcesAsync();
         vm.MapUpdated += OnMapUpdated;
     }
-
-    async Task LoadMarkerSourcesAsync()
-    {
-        _customerSvg = await TryReadBase64ImageSourceAsync("marker_user_img.png", _customerSvg);
-        _restaurantSvg = await TryReadBase64ImageSourceAsync("marker_shop_img.png", _restaurantSvg);
-        _driverSvg = await TryReadBase64ImageSourceAsync("marker_driver_img.png", _driverSvg);
-        _markerSourcesReady = true;
-        MainThread.BeginInvokeOnMainThread(OnMapUpdated);
-    }
-
-    static async Task<string> TryReadBase64ImageSourceAsync(string fileName, string fallback)
-    {
-        try
-        {
-            await using var stream = await FileSystem.OpenAppPackageFileAsync(fileName);
-            using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            var base64 = Convert.ToBase64String(ms.ToArray());
-            return $"base64-content://{base64}";
-        }
-        catch
-        {
-            return fallback;
-        }
-    }
-
-    static string BuildDriverMarkerSvg() =>
-        "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
-        "<circle cx='32' cy='32' r='26' fill='#FF5722'/>" +
-        "<circle cx='22' cy='40' r='7' fill='white'/><circle cx='22' cy='40' r='3.2' fill='#263238'/>" +
-        "<circle cx='42' cy='40' r='7' fill='white'/><circle cx='42' cy='40' r='3.2' fill='#263238'/>" +
-        "<path d='M19 33h19l6-7h-8l-3-7h-7l2 7h-9z' fill='#263238'/></svg>";
-
-    static string BuildUserMarkerSvg() =>
-        "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
-        "<path d='M32 2C20.4 2 11 11.4 11 23c0 14 18.2 35.8 20.1 38.1.5.6 1.4.6 1.9 0C34.8 58.8 53 37 53 23 53 11.4 43.6 2 32 2z' fill='#2196F3'/>" +
-        "<circle cx='32' cy='23' r='10' fill='white'/><circle cx='32' cy='20' r='4.6' fill='#2196F3'/>" +
-        "<path d='M24.5 30.5c1.8-3 4.2-4.5 7.5-4.5s5.7 1.5 7.5 4.5' fill='none' stroke='#2196F3' stroke-width='3' stroke-linecap='round'/></svg>";
-
-    static string BuildShopMarkerSvg() =>
-        "svg-content://<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>" +
-        "<path d='M32 2C20.4 2 11 11.4 11 23c0 14 18.2 35.8 20.1 38.1.5.6 1.4.6 1.9 0C34.8 58.8 53 37 53 23 53 11.4 43.6 2 32 2z' fill='#4CAF50'/>" +
-        "<rect x='20' y='16' width='24' height='18' rx='2' fill='white'/>" +
-        "<path d='M20 22h24' stroke='#4CAF50' stroke-width='3'/>" +
-        "<rect x='24' y='25' width='7' height='9' fill='#4CAF50'/>" +
-        "<rect x='34' y='25' width='8' height='6' fill='#4CAF50'/></svg>";
 
     void SetupMap()
     {
@@ -118,11 +73,11 @@ public partial class ActiveDeliveryPage : ContentPage
 
                 if (hasCustomer)
                     DrawImagePin(ref _customerLayer, "CustomerLayer",
-                        _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude, _customerSvg, 0.04);
+                        _vm.Order.DeliveryLatitude, _vm.Order.DeliveryLongitude, _customerSvg, 0.8);
 
                 if (hasRestaurant)
                     DrawImagePin(ref _restaurantLayer, "RestaurantLayer",
-                        _vm.Order.RestaurantLat, _vm.Order.RestaurantLng, _restaurantSvg, 0.04);
+                        _vm.Order.RestaurantLat, _vm.Order.RestaurantLng, _restaurantSvg, 0.8);
 
                 if (hasCustomer && hasRestaurant)
                 {
@@ -144,7 +99,7 @@ public partial class ActiveDeliveryPage : ContentPage
             if (_vm.DriverLat != 0 && _vm.DriverLng != 0)
             {
                 DrawImagePin(ref _driverLayer, "DriverLayer",
-                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.065);
+                    _vm.DriverLat, _vm.DriverLng, _driverSvg, 0.8);
 
                 var targetLat = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLatitude : _vm.Order.RestaurantLat;
                 var targetLng = _vm.Order.IsOnTheWay ? _vm.Order.DeliveryLongitude : _vm.Order.RestaurantLng;
@@ -196,8 +151,8 @@ public partial class ActiveDeliveryPage : ContentPage
             {
                 Image = svgSource,
                 SymbolScale = scale,
-                // Keep marker center locked to geographic coordinate.
-                RelativeOffset = new RelativeOffset(0.0, 0.0)
+                // نفس ضبط المرساة اللي في تطبيق الكاستمر عشان الأيقونة تتمركز صح فوق الإحداثية
+                RelativeOffset = new RelativeOffset(0.0, 0.5)
             }
         };
 

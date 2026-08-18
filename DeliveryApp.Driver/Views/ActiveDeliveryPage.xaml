@@ -35,44 +35,24 @@
 			<mapsui:MapControl x:Name="MapControl"/>
 
 			<!-- Map Legend -->
-			<Border BackgroundColor="#CCFFFFFF"
-                    Stroke="#E0E0E0"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="10,8"
-                    Margin="12"
-                    HorizontalOptions="Start"
-                    VerticalOptions="Start">
-				<VerticalStackLayout Spacing="6">
-					<Label Text="{loc:Loc Key=MapLegendTitle}"
-                           FontFamily="CairoBold"
-                           FontSize="11"
-                           TextColor="#424242"/>
-
+			<Border BackgroundColor="#EEFFFFFF" StrokeShape="RoundRectangle 12" Stroke="Transparent"
+                    Padding="10,8" Margin="0,52,12,0"
+                    HorizontalOptions="End" VerticalOptions="Start">
+				<VerticalStackLayout Spacing="8">
 					<HorizontalStackLayout Spacing="8">
-						<Image Source="marker_driver_img.png" WidthRequest="16" HeightRequest="16"/>
+						<Image Source="marker_driver" WidthRequest="20" HeightRequest="20"/>
 						<Label Text="{loc:Loc Key=MapLegendDriver}"
-                               FontFamily="CairoRegular"
-                               FontSize="11"
-                               TextColor="#424242"
-                               VerticalOptions="Center"/>
+                               FontFamily="CairoRegular" FontSize="11" TextColor="#212121" VerticalOptions="Center"/>
 					</HorizontalStackLayout>
-
 					<HorizontalStackLayout Spacing="8">
-						<Image Source="marker_user_img.png" WidthRequest="16" HeightRequest="16"/>
-						<Label Text="{loc:Loc Key=MapLegendCustomer}"
-                               FontFamily="CairoRegular"
-                               FontSize="11"
-                               TextColor="#424242"
-                               VerticalOptions="Center"/>
-					</HorizontalStackLayout>
-
-					<HorizontalStackLayout Spacing="8">
-						<Image Source="marker_shop_img.png" WidthRequest="16" HeightRequest="16"/>
+						<Image Source="marker_shop" WidthRequest="20" HeightRequest="20"/>
 						<Label Text="{loc:Loc Key=MapLegendShop}"
-                               FontFamily="CairoRegular"
-                               FontSize="11"
-                               TextColor="#424242"
-                               VerticalOptions="Center"/>
+                               FontFamily="CairoRegular" FontSize="11" TextColor="#212121" VerticalOptions="Center"/>
+					</HorizontalStackLayout>
+					<HorizontalStackLayout Spacing="8">
+						<Image Source="marker_user" WidthRequest="20" HeightRequest="20"/>
+						<Label Text="{loc:Loc Key=MapLegendCustomer}"
+                               FontFamily="CairoRegular" FontSize="11" TextColor="#212121" VerticalOptions="Center"/>
 					</HorizontalStackLayout>
 				</VerticalStackLayout>
 			</Border>
