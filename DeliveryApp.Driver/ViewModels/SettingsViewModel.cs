@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Services;
+using DeliveryApp.Driver.Views;
 
 namespace DeliveryApp.Driver.ViewModels;
 
@@ -50,8 +51,8 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    async Task OpenChat()
-    {
-        await Shell.Current.GoToAsync("SupportChatPage");
-    }
+    async Task OpenChat() => await Shell.Current.GoToAsync(nameof(SupportChatPage));
+
+    [RelayCommand]
+    async Task OpenComplaints() => await Shell.Current.GoToAsync(nameof(ComplaintsPage));
 }

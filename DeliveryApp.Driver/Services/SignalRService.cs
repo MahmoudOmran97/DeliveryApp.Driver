@@ -13,6 +13,7 @@ public class SignalRService
     public event Action<int, int, string>? ChatMessageReceived;
     public event Action<int, int>? IncomingVoiceCall;
     public event Action<int, int>? VoiceCallAccepted; // orderId, byUserId
+    public event Action<int, string>? SupportMessageReceived;
 
     public event Action<int, int>? VoiceCallRejected; // orderId, byUserId
     public event Action<int, int>? VoiceCallEnded;    // orderId, byUserId
@@ -70,6 +71,13 @@ public class SignalRService
         _hub.On<int>("NewOrder", id =>
         {
             MainThread.BeginInvokeOnMainThread(() => NewOrderAvailable?.Invoke(id));
+        });
+
+        _hub.On<JsonElement>("SupportMessageReceived", el =>
+        {
+            var sessionId = el.GetProperty("id").GetInt32();
+            var message = el.GetProperty("message").GetString() ?? "";
+            MainThread.BeginInvokeOnMainThread(() => SupportMessageReceived?.Invoke(sessionId, message));
         });
 
         _hub.On<JsonElement>("ChatMessageReceived", el =>

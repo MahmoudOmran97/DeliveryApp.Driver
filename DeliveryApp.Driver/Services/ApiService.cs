@@ -321,6 +321,11 @@ public class ApiService
     public Task<List<ChatMessage>?> GetChatMessagesAsync(int orderId)
         => GetAsync<List<ChatMessage>>($"chatmessages/{orderId}");
 
+    public Task<SupportSessionDto?> GetOrCreateSupportSessionAsync() => GetAsync<SupportSessionDto>("supportchat/session");
+    public Task<SupportSendResult?> SendSupportMessageAsync(int sessionId, string message) => PostAsync<SupportSendResult>($"supportchat/{sessionId}/messages", new { Message = message, Language = LocalizationService.Current.TwoLetterISOLanguageName });
+    public Task<ComplaintCreatedResult?> CreateComplaintAsync(string subject, string description, int? orderId = null) => PostAsync<ComplaintCreatedResult>("complaints", new { Subject = subject, Description = description, OrderId = orderId });
+    public Task<List<ComplaintDto>?> GetMyComplaintsAsync() => GetAsync<List<ComplaintDto>>("complaints/my");
+
     private static void Debug(Exception ex, string path)
         => System.Diagnostics.Debug.WriteLine($"[API] {path}: {ex.Message}");
 

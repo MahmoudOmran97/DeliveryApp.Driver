@@ -221,3 +221,9 @@ public class DriverOrder
         _ => Color.FromArgb("#FF9800")
     };
 }
+public class SupportSessionMessage { public int Id { get; set; } public string SenderRole { get; set; } = "Driver"; public string Message { get; set; } = string.Empty; public DateTime CreatedAt { get; set; } public bool IsMine => SenderRole == "Driver"; }
+public class SupportSessionDto { public int Id { get; set; } public string Status { get; set; } = "AI"; public List<SupportSessionMessage> Messages { get; set; } = new(); }
+public class SupportSendResult { public int Id { get; set; } public SupportSessionMessage? AiReply { get; set; } public bool Escalated { get; set; } public int? ComplaintId { get; set; } }
+public class ComplaintDto { public int Id { get; set; } public string Subject { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public string Status { get; set; } = "Open"; public string Source { get; set; } = "Driver"; public int? OrderId { get; set; } public string? AdminNote { get; set; } public DateTime CreatedAt { get; set; } public DateTime? ResolvedAt { get; set; } }
+public class ComplaintCreatedResult { public int Id { get; set; } public string Status { get; set; } = "Open"; }
+public class SupportChatMessage { public string Text { get; set; } = string.Empty; public bool IsFromAi { get; set; } public bool IsFromUser => !IsFromAi; public DateTime Time { get; set; } = DateTime.Now; public string TimeDisplay => Time.ToString("hh:mm tt"); }

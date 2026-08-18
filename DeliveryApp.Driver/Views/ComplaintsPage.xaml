@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             xmlns:models="clr-namespace:DeliveryApp.Driver.Models"
+             x:Class="DeliveryApp.Driver.Views.ComplaintsPage"
+             x:DataType="vm:ComplaintsViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="16,48,16,16">
+            <Grid ColumnDefinitions="44,*,44">
+                <Image Grid.Column="0" Source="icon_back.png" WidthRequest="38" HeightRequest="38" VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <Label Grid.Column="1" Text="{loc:Loc Key=MyComplaints}"
+                       FontFamily="CairoBold" FontSize="17" TextColor="White"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+                <Image Grid.Column="2" Source="icon_add.png" WidthRequest="38" HeightRequest="38" VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleFormCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </Grid>
+        </Grid>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadCommand}">
+            <ScrollView>
+                <VerticalStackLayout Padding="16" Spacing="14">
+
+                    <!-- New complaint form -->
+                    <Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                            Stroke="#E0E0E0" StrokeThickness="1" Padding="16"
+                            IsVisible="{Binding IsFormOpen}">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="{loc:Loc Key=NewComplaint}" FontFamily="CairoBold"
+                                   FontSize="15" TextColor="#212121"/>
+                            <Border BackgroundColor="#F5F5F5" StrokeShape="RoundRectangle 10"
+                                    Stroke="#E0E0E0" StrokeThickness="1" Padding="12,0">
+                                <Entry Text="{Binding NewSubject}"
+                                       Placeholder="{loc:Loc Key=ComplaintSubject}"
+                                       PlaceholderColor="#BDBDBD" FontFamily="CairoRegular"
+                                       FontSize="14" TextColor="#212121" HeightRequest="44"
+                                       BackgroundColor="Transparent"/>
+                            </Border>
+                            <Border BackgroundColor="#F5F5F5" StrokeShape="RoundRectangle 10"
+                                    Stroke="#E0E0E0" StrokeThickness="1" Padding="12,8">
+                                <Editor Text="{Binding NewDescription}"
+                                        Placeholder="{loc:Loc Key=ComplaintDescription}"
+                                        PlaceholderColor="#BDBDBD" FontFamily="CairoRegular"
+                                        FontSize="14" TextColor="#212121" HeightRequest="90"
+                                        BackgroundColor="Transparent" AutoSize="TextChanges"/>
+                            </Border>
+                            <Button Text="{loc:Loc Key=SubmitComplaint}"
+                                    Command="{Binding SubmitCommand}"
+                                    IsEnabled="{Binding IsSubmitting, Converter={StaticResource InvertedBool}}"
+                                    BackgroundColor="#FF5722" TextColor="White"
+                                    FontFamily="CairoBold" FontSize="14"
+                                    CornerRadius="10" HeightRequest="46"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Feedback banner -->
+                    <Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
+                            Stroke="Transparent" Padding="14,10"
+                            IsVisible="{Binding HasFeedback}">
+                        <Label Text="{Binding FeedbackMessage}" FontFamily="CairoRegular"
+                               FontSize="13" TextColor="#FF5722"/>
+                    </Border>
+
+                    <!-- Empty state -->
+                    <VerticalStackLayout Spacing="10" Margin="0,40,0,0"
+                                         IsVisible="{Binding HasComplaints, Converter={StaticResource InvertedBool}}">
+                        <Label Text="📝" FontSize="46" HorizontalOptions="Center"/>
+                        <Label Text="{loc:Loc Key=NoComplaintsYet}" FontFamily="CairoRegular"
+                               FontSize="14" TextColor="#757575" HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
+
+                    <!-- Complaints list -->
+                    <CollectionView ItemsSource="{Binding Complaints}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:ComplaintDto">
+                                <Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                                        Stroke="#E0E0E0" StrokeThickness="1" Padding="16" Margin="0,0,0,10">
+                                    <VerticalStackLayout Spacing="8">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <Label Grid.Column="0" Text="{Binding Subject}"
+                                                   FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+                                            <Border Grid.Column="1" BackgroundColor="#FFF3EF"
+                                                    StrokeShape="RoundRectangle 8" Stroke="Transparent"
+                                                    Padding="8,4">
+                                                <Label Text="{Binding Status}" FontFamily="CairoBold"
+                                                       FontSize="11" TextColor="#FF5722"/>
+                                            </Border>
+                                        </Grid>
+                                        <Label Text="{Binding Description}" FontFamily="CairoRegular"
+                                               FontSize="13" TextColor="#616161"/>
+                                        <Label Text="{Binding AdminNote}" FontFamily="CairoRegular"
+                                               FontSize="12" TextColor="#4CAF50"
+                                               IsVisible="{Binding AdminNote, Converter={StaticResource StringNotEmpty}}"/>
+                                        <Label Text="{Binding CreatedAt, StringFormat='{0:dd/MM/yyyy hh:mm tt}'}"
+                                               FontFamily="CairoRegular" FontSize="11" TextColor="#BDBDBD"/>
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

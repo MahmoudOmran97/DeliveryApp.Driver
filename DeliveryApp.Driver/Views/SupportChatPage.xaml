@@ -1,53 +1,71 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
-             xmlns:models="clr-namespace:DeliveryApp.Driver.Models"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             xmlns:models="clr-namespace:DeliveryApp.Driver.Models"
              x:Class="DeliveryApp.Driver.Views.SupportChatPage"
              x:DataType="vm:SupportChatViewModel"
-             Shell.NavBarIsVisible="False"
-             Shell.TabBarIsVisible="False">
+             Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="White">
+    <Grid RowDefinitions="Auto,*,Auto" BackgroundColor="#F5F5F5">
 
-        <!-- ✅ Header with icon_back.png (was back_white.png which didn't exist) -->
-        <Grid Grid.Row="0" BackgroundColor="#FF5722"
-              Padding="20,52,20,20"
-              ColumnDefinitions="44,*">
-
-            <Image Grid.Column="0"
-                   Source="icon_back.png"
-                   WidthRequest="38" HeightRequest="38"
-                   VerticalOptions="Center">
-                <Image.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
-                </Image.GestureRecognizers>
-            </Image>
-
-            <Label Grid.Column="1"
-                   Text="{loc:Loc Key=Support}"
-                   FontFamily="CairoBold" FontSize="18" TextColor="White"
-                   HorizontalOptions="Center" VerticalOptions="Center"/>
+        <!-- Header -->
+        <Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="16,48,16,16">
+            <Grid ColumnDefinitions="44,*,44">
+                <Image Grid.Column="0" Source="icon_back.png" WidthRequest="38" HeightRequest="38" VerticalOptions="Center">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+                <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
+                    <Label Text="{loc:Loc Key=SupportChatTitle}"
+                           FontFamily="CairoBold" FontSize="17" TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="{loc:Loc Key=AiOnline}"
+                           FontFamily="CairoRegular" FontSize="11" TextColor="#FFCCBC" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
         </Grid>
 
         <!-- Messages List -->
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Messages}" Margin="16">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12"/>
-            </CollectionView.ItemsLayout>
+        <CollectionView Grid.Row="1"
+                        x:Name="ChatList"
+                        ItemsSource="{Binding Messages}"
+                        Margin="0,4,0,0">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:ChatMessage">
-                    <Grid HorizontalOptions="{Binding IsFromMe, Converter={StaticResource BoolToLayoutConverter}}">
-                        <Border BackgroundColor="{Binding IsFromMe, Converter={StaticResource ChatBubbleColorConverter}}"
-                                StrokeShape="RoundRectangle 12" Padding="12,8" MaximumWidthRequest="280">
+                <DataTemplate x:DataType="models:SupportChatMessage">
+                    <Grid Margin="12,4">
+                        <!-- AI message (left) -->
+                        <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 18,18,18,4"
+                                Stroke="#E0E0E0" StrokeThickness="1"
+                                Padding="14,10"
+                                MaximumWidthRequest="280"
+                                HorizontalOptions="Start"
+                                IsVisible="{Binding IsFromAi}">
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding Text}"
-                                       TextColor="{Binding IsFromMe, Converter={StaticResource BoolToTextColorConverter}}"
-                                       FontFamily="CairoRegular" FontSize="14"/>
-                                <Label Text="{Binding TimeText}"
-                                       TextColor="{Binding IsFromMe, Converter={StaticResource BoolToSubTextColorConverter}}"
-                                       FontSize="10" HorizontalOptions="End"/>
+                                <Label Text="{loc:Loc Key=AiLabel}"
+                                       FontFamily="CairoBold" FontSize="11" TextColor="#FF5722"/>
+                                <Label Text="{Binding Text}" FontFamily="CairoRegular"
+                                       FontSize="14" TextColor="#212121"/>
+                                <Label Text="{Binding TimeDisplay}" FontFamily="CairoRegular"
+                                       FontSize="10" TextColor="#BDBDBD" HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- User message (right) -->
+                        <Border BackgroundColor="#FF5722"
+                                StrokeShape="RoundRectangle 18,18,4,18"
+                                Stroke="Transparent" StrokeThickness="0"
+                                Padding="14,10"
+                                MaximumWidthRequest="280"
+                                HorizontalOptions="End"
+                                IsVisible="{Binding IsFromUser}">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding Text}" FontFamily="CairoRegular"
+                                       FontSize="14" TextColor="White"/>
+                                <Label Text="{Binding TimeDisplay}" FontFamily="CairoRegular"
+                                       FontSize="10" TextColor="#FFCCBC" HorizontalOptions="End"/>
                             </VerticalStackLayout>
                         </Border>
                     </Grid>
@@ -55,21 +73,51 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- Input Area -->
-        <Border Grid.Row="2" Padding="16,12" BackgroundColor="#F5F5F5" StrokeThickness="0">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                <Border Grid.Column="0" BackgroundColor="White"
-                        StrokeShape="RoundRectangle 22" Padding="16,0">
-                    <Entry Placeholder="{loc:Loc Key=TypeMessage}"
+        <!-- Typing Indicator -->
+        <HorizontalStackLayout Grid.Row="1" VerticalOptions="End"
+                               Margin="20,0,0,8" Spacing="6"
+                               IsVisible="{Binding IsTyping}">
+            <Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                    Stroke="#E0E0E0" Padding="14,10">
+                <Label Text="{loc:Loc Key=AiTyping}"
+                       FontFamily="CairoRegular" FontSize="13" TextColor="#757575"/>
+            </Border>
+        </HorizontalStackLayout>
+
+        <!-- Input Bar -->
+        <Border Grid.Row="2" BackgroundColor="White"
+                StrokeShape="RoundRectangle 0"
+                Stroke="#E0E0E0" StrokeThickness="1"
+                Padding="12,10,12,30">
+            <Grid ColumnDefinitions="*,56" ColumnSpacing="10">
+                <Border Grid.Column="0"
+                        BackgroundColor="#F5F5F5"
+                        StrokeShape="RoundRectangle 24"
+                        Stroke="#E0E0E0" StrokeThickness="1"
+                        Padding="16,0">
+                    <Entry x:Name="MessageEntry"
                            Text="{Binding InputText}"
-                           FontFamily="CairoRegular" FontSize="14"
-                           VerticalOptions="Center"/>
+                           Placeholder="{loc:Loc Key=ChatPlaceholder}"
+                           PlaceholderColor="#BDBDBD"
+                           FontFamily="CairoRegular"
+                           FontSize="14"
+                           TextColor="#212121"
+                           BackgroundColor="Transparent"
+                           HeightRequest="46"
+                           ReturnCommand="{Binding SendCommand}"/>
                 </Border>
-                <Button Grid.Column="1"
-                        Text="Send"
-                        Command="{Binding SendCommand}"
-                        BackgroundColor="#FF5722" TextColor="White"
-                        CornerRadius="22" WidthRequest="80" HeightRequest="44"/>
+                <Border Grid.Column="1"
+                        BackgroundColor="#FF5722"
+                        StrokeShape="RoundRectangle 28"
+                        Stroke="Transparent"
+                        WidthRequest="50" HeightRequest="50"
+                        VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SendCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="➤" FontSize="20" TextColor="White"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
             </Grid>
         </Border>
 

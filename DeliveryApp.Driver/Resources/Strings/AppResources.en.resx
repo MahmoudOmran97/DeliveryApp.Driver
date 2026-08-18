@@ -137,4 +137,15 @@
 	<data name="AppName">
 		<value>Taly</value>
 	</data>
-</root>
+		<data name="SupportChatTitle" xml:space="preserve"><value>Support Chat</value></data>
+		<data name="AiOnline" xml:space="preserve"><value>AI assistant is online</value></data>
+		<data name="AiLabel" xml:space="preserve"><value>Support Assistant</value></data>
+		<data name="AiTyping" xml:space="preserve"><value>Thinking...</value></data>
+		<data name="MyComplaints" xml:space="preserve"><value>My Complaints</value></data>
+		<data name="MyComplaintsSubtitle" xml:space="preserve"><value>Track your complaints and reports</value></data>
+		<data name="NewComplaint" xml:space="preserve"><value>New Complaint</value></data>
+		<data name="ComplaintSubject" xml:space="preserve"><value>Complaint subject</value></data>
+		<data name="ComplaintDescription" xml:space="preserve"><value>Describe the problem</value></data>
+		<data name="SubmitComplaint" xml:space="preserve"><value>Submit complaint</value></data>
+		<data name="NoComplaintsYet" xml:space="preserve"><value>No complaints yet</value></data>
+	</root>

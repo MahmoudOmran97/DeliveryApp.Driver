@@ -124,6 +124,27 @@
                     </VerticalStackLayout>
                 </Border>
 
+                <!-- Complaints shortcut -->
+                <Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
+                        Stroke="#E0E0E0" StrokeThickness="1" Padding="16,16">
+                    <Grid Padding="0,2">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenComplaintsCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="14">
+                            <Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
+                                    Stroke="Transparent" WidthRequest="42" HeightRequest="42">
+                                <Label Text="📝" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="2" HorizontalOptions="StartAndExpand">
+                                <Label Text="{loc:Loc Key=MyComplaints}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+                                <Label Text="{loc:Loc Key=MyComplaintsSubtitle}" FontFamily="CairoRegular" FontSize="12" TextColor="#757575"/>
+                            </VerticalStackLayout>
+                            <Label Text="›" FontFamily="CairoBold" FontSize="24" TextColor="#BDBDBD" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </Grid>
+                </Border>
+
                 <!-- About Section -->
                 <Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
                         Stroke="#E0E0E0" StrokeThickness="1" Padding="16,16">

@@ -138,4 +138,15 @@
 	<data name="SplashSubtitle">
 		<value>أسرع توصيل</value>
 	</data>
-</root>
+		<data name="SupportChatTitle" xml:space="preserve"><value>محادثة الدعم</value></data>
+		<data name="AiOnline" xml:space="preserve"><value>المساعد الذكي متاح الآن</value></data>
+		<data name="AiLabel" xml:space="preserve"><value>مساعد الدعم</value></data>
+		<data name="AiTyping" xml:space="preserve"><value>جاري التفكير...</value></data>
+		<data name="MyComplaints" xml:space="preserve"><value>شكاواي</value></data>
+		<data name="MyComplaintsSubtitle" xml:space="preserve"><value>تابع الشكاوى والبلاغات الخاصة بك</value></data>
+		<data name="NewComplaint" xml:space="preserve"><value>شكوى جديدة</value></data>
+		<data name="ComplaintSubject" xml:space="preserve"><value>عنوان الشكوى</value></data>
+		<data name="ComplaintDescription" xml:space="preserve"><value>اكتب تفاصيل المشكلة</value></data>
+		<data name="SubmitComplaint" xml:space="preserve"><value>إرسال الشكوى</value></data>
+		<data name="NoComplaintsYet" xml:space="preserve"><value>لا توجد شكاوى حتى الآن</value></data>
+	</root>
