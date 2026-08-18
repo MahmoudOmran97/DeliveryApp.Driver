@@ -18,6 +18,9 @@ public class SignalRService
     public event Action<int, int>? VoiceCallRejected; // orderId, byUserId
     public event Action<int, int>? VoiceCallEnded;    // orderId, byUserId
 
+    // ✅ بيتبعت لما الأدمن يوقف حساب الطيار — لازم الأبليكيشن يعمل logout فوري
+    public event Action? AccountDeactivated;
+
     // ✅ FIX #CallGroup — بتتنادي بعد أي Reconnect تلقائي، عشان اللي مستخدم الـ Hub
     // (زي ActiveDeliveryViewModel) يقدر يرجع يعمل JoinOrderTracking تاني، لأن
     // الجروبات بتتفقد لما الـ ConnectionId يتغيّر بعد انقطاع/رجوع الاتصال.
@@ -122,6 +125,14 @@ public class SignalRService
         {
             var orderId = el.GetProperty("orderId").GetInt32();
             MainThread.BeginInvokeOnMainThread(() => OrderStatusChanged?.Invoke(orderId, "AssignedToDriver"));
+        });
+
+        // ✅ لما الأدمن يوقف/يفعّل حساب الطيار، السيرفر بيبعت الحالة الجديدة فوراً
+        _hub.On<JsonElement>("AccountStatusChanged", el =>
+        {
+            var isActive = el.TryGetProperty("isActive", out var ia) && ia.GetBoolean();
+            if (!isActive)
+                MainThread.BeginInvokeOnMainThread(() => AccountDeactivated?.Invoke());
         });
         _hub.On<JsonElement>("NotificationReceived", el =>
         {

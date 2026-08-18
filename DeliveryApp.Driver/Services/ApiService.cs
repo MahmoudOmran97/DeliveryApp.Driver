@@ -79,6 +79,30 @@ public class ApiService
         public ApiException(string message) : base(message) { }
     }
 
+    // ✅ بيتبعت مرة واحدة بس لما أي طلب يرجع 401 بكود ACCOUNT_DEACTIVATED،
+    // عشان الأبليكيشن يعمل logout فوري بغض النظر عن مكان الاستدعاء.
+    public event Action? AccountDeactivated;
+
+    // بيفحص لو الـ 401 راجع بسبب إن الحساب موقوف، ولو كده بيطلق الحدث ويرجع true
+    private bool CheckAccountDeactivated(System.Net.HttpStatusCode statusCode, string body)
+    {
+        if (statusCode != System.Net.HttpStatusCode.Unauthorized)
+            return false;
+
+        try
+        {
+            var doc = JsonDocument.Parse(body);
+            if (doc.RootElement.TryGetProperty("code", out var code) &&
+                code.GetString() == "ACCOUNT_DEACTIVATED")
+            {
+                AccountDeactivated?.Invoke();
+                return true;
+            }
+        }
+        catch { }
+        return false;
+    }
+
     private async Task<T?> GetAsync<T>(string path)
     {
         SetAuth();
@@ -87,6 +111,9 @@ public class ApiService
             var r = await _http.GetAsync($"{_baseUrl}/{path}");
             if (r.IsSuccessStatusCode)
                 return await r.Content.ReadFromJsonAsync<T>(_json);
+
+            var errorBody = await r.Content.ReadAsStringAsync();
+            CheckAccountDeactivated(r.StatusCode, errorBody);
         }
         catch (Exception ex) { Debug(ex, path); }
         return default;
@@ -112,6 +139,10 @@ public class ApiService
                 return await r.Content.ReadFromJsonAsync<T>(_json);
 
             var errorBody = await r.Content.ReadAsStringAsync();
+
+            if (CheckAccountDeactivated(r.StatusCode, errorBody))
+                throw new ApiException("Account is deactivated");
+
             try
             {
                 var doc = JsonDocument.Parse(errorBody);
@@ -136,6 +167,13 @@ public class ApiService
             var r = payload != null
                 ? await _http.PutAsJsonAsync($"{_baseUrl}/{path}", payload)
                 : await _http.PutAsync($"{_baseUrl}/{path}", null);
+
+            if (!r.IsSuccessStatusCode)
+            {
+                var errorBody = await r.Content.ReadAsStringAsync();
+                CheckAccountDeactivated(r.StatusCode, errorBody);
+            }
+
             return r.IsSuccessStatusCode;
         }
         catch (Exception ex) { Debug(ex, path); }
@@ -150,8 +188,12 @@ public class ApiService
             var r = payload != null
                 ? await _http.PutAsJsonAsync($"{_baseUrl}/{path}", payload)
                 : await _http.PutAsync($"{_baseUrl}/{path}", null);
+
             if (r.IsSuccessStatusCode)
                 return await r.Content.ReadFromJsonAsync<T>(_json);
+
+            var errorBody = await r.Content.ReadAsStringAsync();
+            CheckAccountDeactivated(r.StatusCode, errorBody);
         }
         catch (Exception ex) { Debug(ex, path); }
         return default;
@@ -203,6 +245,7 @@ public class ApiService
             }
 
             var errorBody = await r.Content.ReadAsStringAsync();
+            CheckAccountDeactivated(r.StatusCode, errorBody);
             try
             {
                 var doc = JsonDocument.Parse(errorBody);

@@ -1,5 +1,6 @@
 ﻿using DeliveryApp.Driver.Services;
 using DeliveryApp.Driver.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DeliveryApp.Driver;
 
@@ -9,18 +10,46 @@ public partial class App : Application
     private readonly SignalRService _signalR;
     private readonly AuthService _auth;
     private int? _navigatingIncomingCallOrderId;
+    private bool _loggedOutDueToDeactivation;
 
     /// <summary>true لما التطبيق ظاهر قدام المستخدم — عشان نقرر نفتح CallPage ولا شاشة الرنين الخارجية.</summary>
     public static bool IsInForeground { get; private set; }
 
     public App(SplashPage splash, LocationService location, SignalRService signalR, AuthService auth,
-        FcmTokenService fcmToken)
+        FcmTokenService fcmToken, ApiService api, IServiceProvider services)
     {
         InitializeComponent();
         _location = location;
         _signalR = signalR;
         _auth = auth;
         MainPage = splash;
+
+        // ✅ لو الأدمن أوقف حساب الطيار — نعمل logout فوري ونرجعه لشاشة الدخول،
+        // بنفس المنطق المستخدم في تطبيق الكاستمر (401/ACCOUNT_DEACTIVATED، SignalR،
+        // أو FCM push، أيهما وصل الأول).
+        async Task HandleAccountDeactivatedAsync()
+        {
+            if (_loggedOutDueToDeactivation) return;
+            _loggedOutDueToDeactivation = true;
+
+            try { await signalR.DisconnectAsync(); } catch { }
+            _location.OnAppSleeping();
+            auth.Logout();
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                var loginPage = services.GetRequiredService<LoginPage>();
+                MainPage = new NavigationPage(loginPage);
+                await MainPage.DisplayAlert(
+                    "الحساب موقوف",
+                    "تم إيقاف حسابك من قبل الإدارة. تواصل مع الدعم لمزيد من التفاصيل.",
+                    "حسنًا");
+            });
+        }
+
+        signalR.AccountDeactivated += () => _ = HandleAccountDeactivatedAsync();
+        api.AccountDeactivated += () => _ = HandleAccountDeactivatedAsync();
+        fcmToken.AccountDeactivated += () => _ = HandleAccountDeactivatedAsync();
 
         fcmToken.ListenForTokenRefresh();
         fcmToken.ListenForMessages();

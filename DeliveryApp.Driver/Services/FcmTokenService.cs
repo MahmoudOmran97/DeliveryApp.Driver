@@ -9,6 +9,10 @@ public class FcmTokenService
     private readonly ApiService _api;
     private readonly AuthService _auth;
 
+    // ✅ بيتبعت لما توصل نوتيفيكيشن الحساب الموقوف عن طريق الـ FCM (يغطي حالة
+    // الأبليكيشن في الخلفية أو لسه بيفتح من جديد بعد ما كان مقفول تماماً)
+    public event Action? AccountDeactivated;
+
     public FcmTokenService(ApiService api, AuthService auth)
     {
         _api = api;
@@ -62,6 +66,13 @@ public class FcmTokenService
             var title = args.Notification?.Title ?? "New Notification";
             var body  = args.Notification?.Body  ?? "";
             var data  = args.Notification?.Data;
+
+            // ✅ الحساب موقوف — لازم logout فوري بدل عرضه كإشعار عادي بس
+            if (data != null && data.TryGetValue("type", out var accType) && accType == "AccountDeactivated")
+            {
+                MainThread.BeginInvokeOnMainThread(() => AccountDeactivated?.Invoke());
+                return;
+            }
 
             // ✅ لو الـ push ده تنبيه مكالمة واردة، افتح شاشة المكالمة مباشرة (تغطية حالة
             // الأبليكيشن في الخلفية؛ حالة القفل التام بيتكفّل بيها MainActivity full-screen

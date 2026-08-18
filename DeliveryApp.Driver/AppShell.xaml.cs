@@ -1,3 +1,4 @@
+using DeliveryApp.Driver.Services;
 using DeliveryApp.Driver.Views;
 
 namespace DeliveryApp.Driver;
@@ -7,6 +8,9 @@ public partial class AppShell : Shell
     public AppShell()
     {
         InitializeComponent();
+        // ✅ FIX (لغة) — عشان اتجاه الشاشة (RTL/LTR) يتحدث كمان لما نبني Shell جديد
+        // بعد تغيير اللغة، زي ما بيحصل بالظبط في تطبيق الكاستمر.
+        FlowDirection = LocalizationService.Flow;
         Shell.SetTabBarIsVisible(this, false);
         Navigated += OnShellNavigated;
 

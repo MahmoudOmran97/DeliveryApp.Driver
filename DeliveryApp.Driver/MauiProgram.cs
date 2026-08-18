@@ -70,10 +70,13 @@ public static class MauiProgram
         builder.Services.AddTransient<ProfileViewModel>();
 
         // ── Pages ─────────────────────────────────────────────────────────────
-        builder.Services.AddSingleton<AppShell>();
+        // ✅ FIX (لغة) — كانوا Singleton فكانت نفس نسخة الصفحة القديمة (باللغة القديمة)
+        // بترجع تظهر تاني بعد RestartApp بدل ما تتبني من جديد باللغة الجديدة، زي ما
+        // بيحصل في تطبيق الكاستمر (Transient) بالظبط.
+        builder.Services.AddTransient<AppShell>();
         builder.Services.AddSingleton<SplashPage>();
         builder.Services.AddTransient<LoginPage>();
-        builder.Services.AddSingleton<HomePage>();
+        builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<AvailableOrdersPage>();
         builder.Services.AddTransient<ActiveDeliveryPage>();
         builder.Services.AddTransient<EarningsPage>();
