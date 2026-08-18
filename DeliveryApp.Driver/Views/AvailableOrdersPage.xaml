@@ -25,12 +25,18 @@
 					<Label Text="{Binding OrdersCount}"
 						   FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
 				</VerticalStackLayout>
-				<Button Grid.Column="1"
-						Text="{loc:Loc Key=Refresh}"
-						Command="{Binding LoadCommand}"
-						BackgroundColor="Transparent"
-						TextColor="White"
-						FontFamily="CairoBold" FontSize="14"/>
+                <Border Grid.Column="1" Padding="10,6"
+         StrokeShape="RoundRectangle 12"
+         Stroke="#FFCCBC" StrokeThickness="1"
+         BackgroundColor="#33FFFFFF"
+         VerticalOptions="Center">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding LoadCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="{loc:Loc Key=Refresh}" FontFamily="CairoBold" FontSize="13"
+            TextColor="White" VerticalOptions="Center"/>
+                </Border>
+               
 			</Grid>
 		</Grid>
 

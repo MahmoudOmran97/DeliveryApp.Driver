@@ -33,13 +33,17 @@
                 </Label>
             </VerticalStackLayout>
 
-            <!-- Mark All Read -->
-            <Button Grid.Column="1"
-                    Text="{loc:Loc Key=MarkAllRead}"
-                    Command="{Binding MarkAllReadCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontFamily="CairoBold" FontSize="13"/>
+            <Border Grid.Column="1" Padding="10,6"
+         StrokeShape="RoundRectangle 12"
+         Stroke="#FFCCBC" StrokeThickness="1"
+         BackgroundColor="#33FFFFFF"
+         VerticalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding MarkAllReadCommand}"/>
+                </Border.GestureRecognizers>
+                <Label Text="{loc:Loc Key=MarkAllRead}" FontFamily="CairoBold" FontSize="13"
+            TextColor="White" VerticalOptions="Center"/>
+            </Border>
         </Grid>
 
         <!-- Notifications List -->
@@ -65,7 +69,7 @@
                                         StrokeShape="RoundRectangle 22" Stroke="Transparent"
                                         WidthRequest="44" HeightRequest="44"
                                         HorizontalOptions="Center" VerticalOptions="Center">
-                                    <Label Text="📦" FontSize="20"
+                                    <Label Text="🔔" FontSize="20"
                                            HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Border>
 
