@@ -95,6 +95,11 @@ public class ActiveOrder
     public double RestaurantLng { get; set; }
     public List<ActiveOrderItem> Items { get; set; } = new();
 
+    // ── لاستخدامها في حساب العداد اللحظي (زي تطبيق الكاستمر) ──
+    public DateTime CreatedAt { get; set; }
+    public DateTime? AcceptedAt { get; set; }
+    public DateTime? PickedUpAt { get; set; }
+
     public string DeliveryFeeText => $"{DeliveryFee:F0} EGP";
     public string TotalAmountText => $"{TotalAmount:F0} EGP";
 

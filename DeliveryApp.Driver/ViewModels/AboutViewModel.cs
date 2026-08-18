@@ -34,12 +34,12 @@ public partial class AboutViewModel : BaseViewModel
                 switch (link.Key.Trim().ToLowerInvariant())
                 {
                     case "website":
-                    case "site": _websiteUrl= link.Url; break;
-                    case "facebook": _facebookUrl = link.Url; break;
-                    case "instagram": _instagramUrl = link.Url; break;
+                    case "site": WebsiteUrl = link.Url; break;
+                    case "facebook": FacebookUrl = link.Url; break;
+                    case "instagram": InstagramUrl = link.Url; break;
                     case "x":
-                    case "twitter": _xUrl = link.Url; break;
-                    case "tiktok": _tikTokUrl = link.Url; break;
+                    case "twitter": XUrl = link.Url; break;
+                    case "tiktok": TikTokUrl = link.Url; break;
                 }
             }
         }

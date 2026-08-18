@@ -173,6 +173,8 @@
 	<data name="About_Developer" xml:space="preserve"><value>جميع الحقوق محفوظة © تالي</value></data>
 	<data name="Distance" xml:space="preserve"><value>المسافة</value></data>
 	<data name="PreparationTime" xml:space="preserve"><value>وقت التجهيز</value></data>
+	<data name="Timer_DeliveryTitle" xml:space="preserve"><value>الوقت المتبقي للتوصيل</value></data>
+	<data name="Timer_DeliveryHint" xml:space="preserve"><value>الوقت التقديري للوصول لعنوان العميل</value></data>
 	<data name="OrderStatus" xml:space="preserve"><value>الحالة</value></data>
 	<data name="OrderPreparing" xml:space="preserve"><value>جاري التجهيز</value></data>
 	<data name="OrderReadyForPickup" xml:space="preserve"><value>جاهز للاستلام</value></data>

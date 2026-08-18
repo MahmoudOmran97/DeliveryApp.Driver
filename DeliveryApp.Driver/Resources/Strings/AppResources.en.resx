@@ -172,6 +172,8 @@
 	<data name="About_Developer" xml:space="preserve"><value>All rights reserved © Taly</value></data>
 	<data name="Distance" xml:space="preserve"><value>Distance</value></data>
 	<data name="PreparationTime" xml:space="preserve"><value>Preparation time</value></data>
+	<data name="Timer_DeliveryTitle" xml:space="preserve"><value>Time remaining to deliver</value></data>
+	<data name="Timer_DeliveryHint" xml:space="preserve"><value>Estimated time to the customer's address</value></data>
 	<data name="OrderStatus" xml:space="preserve"><value>Status</value></data>
 	<data name="OrderPreparing" xml:space="preserve"><value>Preparing</value></data>
 	<data name="OrderReadyForPickup" xml:space="preserve"><value>Ready for pickup</value></data>

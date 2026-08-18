@@ -21,6 +21,21 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     [ObservableProperty] double _driverLat;
     [ObservableProperty] double _driverLng;
 
+    // ── العداد اللحظي (زي تطبيق الكاستمر بالظبط) ──
+    System.Timers.Timer? _countdownTimer;
+    DateTime? _prepStartUtc;
+    DateTime? _prepTargetUtc;
+    DateTime? _deliveryStartUtc;
+    DateTime? _deliveryTargetUtc;
+
+    [ObservableProperty] bool _isPrepTimerVisible;
+    [ObservableProperty] string _prepCountdownText = "00:00";
+    [ObservableProperty] double _prepTimerProgress;
+
+    [ObservableProperty] bool _isDeliveryTimerVisible;
+    [ObservableProperty] string _deliveryCountdownText = "00:00";
+    [ObservableProperty] double _deliveryTimerProgress;
+
     public event Action? MapUpdated;
 
     public ActiveDeliveryViewModel(
@@ -59,6 +74,19 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
             _chatNotif.RegisterOrder(value.Id, value.CustomerName);
             _ = LoadInitialDriverLocationAsync();
 
+            ConfigurePrepCountdown(value);
+            ConfigureDeliveryCountdown(value);
+            if (_countdownTimer == null)
+            {
+                _countdownTimer = new System.Timers.Timer(1_000);
+                _countdownTimer.Elapsed += (_, _) => MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    UpdatePrepCountdown();
+                    UpdateDeliveryCountdown();
+                });
+                _countdownTimer.Start();
+            }
+
             // ✅ FIX #CallGroup — دي كانت الـ bug الرئيسية: الدرايفر مكنش بينضم أبداً لجروب
             // "order_{orderId}" على الـ Hub، فكل الأحداث اللي بتتبعت بالـ Group
             // (IncomingVoiceCall / VoiceCallAccepted / VoiceCallRejected / VoiceCallEnded)
@@ -78,6 +106,87 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
             await _signalR.ConnectAsync(_auth.GetToken());
 
         await _signalR.JoinOrderAsync(Order.Id);
+    }
+
+    // ── يظهر عداد التحضير طول ما الأوردر لسة "Preparing" (نفس منطق تطبيق الكاستمر) ──
+    void ConfigurePrepCountdown(ActiveOrder order)
+    {
+        IsPrepTimerVisible = false;
+
+        if (order.Status != "Preparing") return;
+
+        _prepStartUtc = order.AcceptedAt ?? order.CreatedAt;
+        var prepMinutes = Math.Clamp(order.EstimatedDeliveryMax ?? 25, 10, 90);
+        _prepTargetUtc = _prepStartUtc.Value.AddMinutes(prepMinutes);
+        IsPrepTimerVisible = true;
+        UpdatePrepCountdown();
+    }
+
+    void UpdatePrepCountdown()
+    {
+        if (!IsPrepTimerVisible || !_prepStartUtc.HasValue || !_prepTargetUtc.HasValue) return;
+
+        var now = DateTime.UtcNow;
+        var total = Math.Max(1, (_prepTargetUtc.Value - _prepStartUtc.Value).TotalSeconds);
+        var remaining = Math.Max(0, (_prepTargetUtc.Value - now).TotalSeconds);
+        PrepCountdownText = FormatCountdown(remaining);
+        PrepTimerProgress = Math.Clamp(1 - remaining / total, 0, 1);
+    }
+
+    // ── يظهر عداد التوصيل من لحظة ما الدريفر يستلم الطلب فعلياً (OnTheWay) ──
+    void ConfigureDeliveryCountdown(ActiveOrder order)
+    {
+        if (order.Status != "OnTheWay")
+        {
+            IsDeliveryTimerVisible = false;
+            _deliveryStartUtc = null;
+            _deliveryTargetUtc = null;
+            return;
+        }
+
+        // ??= عشان لو الأوردر اتحدّث تاني وهو لسه OnTheWay، ميعملش reset للعداد من الأول
+        _deliveryStartUtc ??= order.PickedUpAt ?? DateTime.UtcNow;
+        var deliveryMinutes = Math.Max(10, order.EstimatedDeliveryMax ?? 25);
+        _deliveryTargetUtc ??= _deliveryStartUtc.Value.AddMinutes(deliveryMinutes);
+        IsDeliveryTimerVisible = true;
+        UpdateDeliveryCountdown();
+    }
+
+    void UpdateDeliveryCountdown()
+    {
+        if (!IsDeliveryTimerVisible || !_deliveryStartUtc.HasValue || !_deliveryTargetUtc.HasValue) return;
+
+        var now = DateTime.UtcNow;
+        var total = Math.Max(1, (_deliveryTargetUtc.Value - _deliveryStartUtc.Value).TotalSeconds);
+        var remaining = Math.Max(0, (_deliveryTargetUtc.Value - now).TotalSeconds);
+        DeliveryCountdownText = FormatCountdown(remaining);
+        DeliveryTimerProgress = Math.Clamp(1 - remaining / total, 0, 1);
+    }
+
+    // ← بيتنادى من صفحة الماب لما مسار OSRM الحقيقي يرجع مدة أدق من الـ estimate الثابت
+    public void UpdateDeliveryEta(double durationSeconds)
+    {
+        if (durationSeconds <= 0 || Order?.Status != "OnTheWay") return;
+
+        _deliveryStartUtc ??= Order.PickedUpAt ?? DateTime.UtcNow;
+        _deliveryTargetUtc = _deliveryStartUtc.Value.AddSeconds(Math.Max(60, durationSeconds));
+        MainThread.BeginInvokeOnMainThread(UpdateDeliveryCountdown);
+    }
+
+    static string FormatCountdown(double seconds)
+    {
+        var total = Math.Max(0, (int)Math.Ceiling(seconds));
+        var hours = total / 3600;
+        var minutes = (total % 3600) / 60;
+        var secs = total % 60;
+        return hours > 0 ? $"{hours:00}:{minutes:00}:{secs:00}" : $"{minutes:00}:{secs:00}";
+    }
+
+    public void Cleanup()
+    {
+        _countdownTimer?.Stop();
+        _countdownTimer?.Dispose();
+        _countdownTimer = null;
     }
 
     async Task LoadInitialDriverLocationAsync()

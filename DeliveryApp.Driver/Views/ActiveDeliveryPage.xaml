@@ -91,11 +91,53 @@
                            HorizontalOptions="Center"/>
 				</Border>
 
-									<!-- Preparation time while the restaurant is working -->
-					<Border IsVisible="{Binding Order.IsPreparing}" BackgroundColor="#FFF3E0" Stroke="#FFCC80" StrokeThickness="1" StrokeShape="RoundRectangle 12" Padding="12,10">
-						<Grid ColumnDefinitions="*,Auto">
-							<Label Text="{loc:Loc Key=PreparationTime}" FontFamily="CairoRegular" FontSize="13" TextColor="#6D4C41"/>
-							<Label Grid.Column="1" Text="{Binding Order.PreparationTimeText}" FontFamily="CairoBold" FontSize="14" TextColor="#E65100"/>
+									<!-- Preparation live countdown while the restaurant is working (زي تطبيق الكاستمر) -->
+					<Border IsVisible="{Binding IsPrepTimerVisible}"
+                            BackgroundColor="#FFF7F2" Stroke="#FFE0D2"
+                            StrokeShape="RoundRectangle 18" Padding="16,14">
+						<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="9">
+							<HorizontalStackLayout Grid.Row="0" Spacing="9">
+								<Border BackgroundColor="#FF5722" Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 13" WidthRequest="38" HeightRequest="38">
+									<Label Text="📦" FontSize="19" HorizontalOptions="Center" VerticalOptions="Center"/>
+								</Border>
+								<VerticalStackLayout Spacing="1" VerticalOptions="Center">
+									<Label Text="{loc:Loc Key=PreparationTime}"
+                                           FontFamily="CairoBold" FontSize="13" TextColor="#2D2521"/>
+									<Label Text="{Binding Order.PreparationTimeText}"
+                                           FontFamily="CairoRegular" FontSize="10" TextColor="#8D7770"/>
+								</VerticalStackLayout>
+							</HorizontalStackLayout>
+							<Label Grid.Column="1" Grid.Row="0" Text="{Binding PrepCountdownText}"
+                                   FontFamily="CairoBold" FontSize="23" TextColor="#FF5722"
+                                   VerticalOptions="Center"/>
+							<ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Progress="{Binding PrepTimerProgress}"
+                                         ProgressColor="#FF5722" BackgroundColor="#FFE5DB" HeightRequest="6"/>
+						</Grid>
+					</Border>
+
+					<!-- Delivery live countdown من لحظة استلام الطلب (OnTheWay) -->
+					<Border IsVisible="{Binding IsDeliveryTimerVisible}"
+                            BackgroundColor="#F2F8FF" Stroke="#D8E9FF"
+                            StrokeShape="RoundRectangle 18" Padding="16,14">
+						<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="9">
+							<HorizontalStackLayout Grid.Row="0" Spacing="9">
+								<Border BackgroundColor="#1976D2" Stroke="Transparent"
+                                        StrokeShape="RoundRectangle 13" WidthRequest="38" HeightRequest="38">
+									<Label Text="🛵" FontSize="19" HorizontalOptions="Center" VerticalOptions="Center"/>
+								</Border>
+								<VerticalStackLayout Spacing="1" VerticalOptions="Center">
+									<Label Text="{loc:Loc Key=Timer_DeliveryTitle}"
+                                           FontFamily="CairoBold" FontSize="13" TextColor="#1F2A35"/>
+									<Label Text="{loc:Loc Key=Timer_DeliveryHint}"
+                                           FontFamily="CairoRegular" FontSize="10" TextColor="#71859A"/>
+								</VerticalStackLayout>
+							</HorizontalStackLayout>
+							<Label Grid.Column="1" Grid.Row="0" Text="{Binding DeliveryCountdownText}"
+                                   FontFamily="CairoBold" FontSize="23" TextColor="#1976D2"
+                                   VerticalOptions="Center"/>
+							<ProgressBar Grid.Row="1" Grid.ColumnSpan="2" Progress="{Binding DeliveryTimerProgress}"
+                                         ProgressColor="#1976D2" BackgroundColor="#DDEEFF" HeightRequest="6"/>
 						</Grid>
 					</Border>
 
@@ -203,31 +245,46 @@
 						<Border Grid.Column="0" BackgroundColor="White"
 								StrokeShape="RoundRectangle 12" Stroke="#E0E0E0"
 								Padding="0" HeightRequest="50">
-							<Button Text="{loc:Loc Key=CallCustomer}"
-									Command="{Binding CallCustomerCommand}"
-									BackgroundColor="Transparent" TextColor="#212121"
-									FontFamily="CairoBold" FontSize="13"/>
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding CallCustomerCommand}"/>
+							</Border.GestureRecognizers>
+							<HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+								<Label Text="📞" FontSize="16" VerticalOptions="Center"/>
+								<Label Text="{loc:Loc Key=CallCustomer}"
+									   TextColor="#212121" FontFamily="CairoBold" FontSize="13"
+									   VerticalOptions="Center"/>
+							</HorizontalStackLayout>
 						</Border>
 
 						<!-- Chat with Customer -->
 						<Border Grid.Column="1" BackgroundColor="White"
 								StrokeShape="RoundRectangle 12" Stroke="#E0E0E0"
 								Padding="0" HeightRequest="50">
-							<Button Text="{loc:Loc Key=ChatWithCustomer}"
-									Command="{Binding OpenChatCommand}"
-									BackgroundColor="Transparent" TextColor="#212121"
-									FontFamily="CairoBold" FontSize="13"/>
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer Command="{Binding OpenChatCommand}"/>
+							</Border.GestureRecognizers>
+							<HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+								<Label Text="💬" FontSize="16" VerticalOptions="Center"/>
+								<Label Text="{loc:Loc Key=ChatWithCustomer}"
+									   TextColor="#212121" FontFamily="CairoBold" FontSize="13"
+									   VerticalOptions="Center"/>
+							</HorizontalStackLayout>
 						</Border>
 					</Grid>
 
-					<!-- Open Maps -->
+					<!-- Open Maps / Track -->
 					<Border Grid.Row="1" BackgroundColor="White"
 							StrokeShape="RoundRectangle 12" Stroke="#E0E0E0"
 							Padding="0" HeightRequest="50">
-						<Button Text="{loc:Loc Key=Navigate}"
-								Command="{Binding OpenMapCommand}"
-								BackgroundColor="Transparent" TextColor="#212121"
-								FontFamily="CairoBold" FontSize="13"/>
+						<Border.GestureRecognizers>
+							<TapGestureRecognizer Command="{Binding OpenMapCommand}"/>
+						</Border.GestureRecognizers>
+						<HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8">
+							<Label Text="🧭" FontSize="16" VerticalOptions="Center"/>
+							<Label Text="{loc:Loc Key=Navigate}"
+								   TextColor="#212121" FontFamily="CairoBold" FontSize="13"
+								   VerticalOptions="Center"/>
+						</HorizontalStackLayout>
 					</Border>
 				</Grid>
 

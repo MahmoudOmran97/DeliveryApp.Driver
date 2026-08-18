@@ -48,7 +48,7 @@ public partial class AvailableOrdersViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var ok = await _api.AssignOrderAsync(order.Id);
+            var (ok, message) = await _api.AssignOrderWithMessageAsync(order.Id);
             if (ok)
             {
                 _location.SetOrderId(order.Id);
@@ -58,7 +58,11 @@ public partial class AvailableOrdersViewModel : BaseViewModel
             }
             else
             {
-                await AlertAsync("This order is no longer available. It may have been taken by another driver.");
+                // لو السيرفر رافض لأن عندك طلب شغال بالفعل، نوضح ده للدريفر بدل رسالة عامة
+                var text = !string.IsNullOrWhiteSpace(message) && message.Contains("active order", StringComparison.OrdinalIgnoreCase)
+                    ? "You already have an active order. Deliver it before accepting a new one."
+                    : "This order is no longer available. It may have been taken by another driver.";
+                await AlertAsync(text);
                 await LoadAsync();
             }
         }

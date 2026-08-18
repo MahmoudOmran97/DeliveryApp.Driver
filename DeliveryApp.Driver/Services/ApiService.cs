@@ -251,7 +251,12 @@ public class ApiService
                 DeliveryLatitude = root.TryGetProperty("deliveryLatitude", out var lat) ? lat.GetDouble() : 0,
                 DeliveryLongitude = root.TryGetProperty("deliveryLongitude", out var lng) ? lng.GetDouble() : 0,
                 DeliveryNotes = root.TryGetProperty("deliveryNotes", out var notes) ? notes.GetString() : null,
-                CustomerName = root.TryGetProperty("customerName", out var customerName) ? customerName.GetString() ?? string.Empty : string.Empty
+                CustomerName = root.TryGetProperty("customerName", out var customerName) ? customerName.GetString() ?? string.Empty : string.Empty,
+                EstimatedDeliveryMin = root.TryGetProperty("estimatedDeliveryMin", out var estMin) && estMin.ValueKind != JsonValueKind.Null ? estMin.GetInt32() : null,
+                EstimatedDeliveryMax = root.TryGetProperty("estimatedDeliveryMax", out var estMax) && estMax.ValueKind != JsonValueKind.Null ? estMax.GetInt32() : null,
+                CreatedAt = root.TryGetProperty("createdAt", out var createdAt) && createdAt.ValueKind != JsonValueKind.Null ? createdAt.GetDateTime() : DateTime.UtcNow,
+                AcceptedAt = root.TryGetProperty("acceptedAt", out var acceptedAt) && acceptedAt.ValueKind != JsonValueKind.Null ? acceptedAt.GetDateTime() : null,
+                PickedUpAt = root.TryGetProperty("pickedUpAt", out var pickedUpAt) && pickedUpAt.ValueKind != JsonValueKind.Null ? pickedUpAt.GetDateTime() : null
             };
 
             if (root.TryGetProperty("restaurant", out var restaurant))
@@ -296,6 +301,27 @@ public class ApiService
 
     public async Task<bool> AssignOrderAsync(int orderId)
         => await PutAsync($"orders/{orderId}/assign-driver");
+
+    // بيرجع سبب الفشل من السيرفر (زي "عندك طلب شغال بالفعل") عشان نعرضه للدريفر
+    public async Task<(bool Success, string? Message)> AssignOrderWithMessageAsync(int orderId)
+    {
+        SetAuth();
+        try
+        {
+            var r = await _http.PutAsync($"{_baseUrl}/orders/{orderId}/assign-driver", null);
+            string? message = null;
+            try
+            {
+                var body = await r.Content.ReadFromJsonAsync<JsonElement>(_json);
+                if (body.TryGetProperty("message", out var m))
+                    message = m.GetString();
+            }
+            catch { /* ignore parse errors */ }
+            return (r.IsSuccessStatusCode, message);
+        }
+        catch (Exception ex) { Debug(ex, $"orders/{orderId}/assign-driver"); }
+        return (false, null);
+    }
 
     public async Task<bool> UpdateOrderStatusAsync(int orderId, string status)
         => await PutAsync($"orders/{orderId}/status", new { Status = status });

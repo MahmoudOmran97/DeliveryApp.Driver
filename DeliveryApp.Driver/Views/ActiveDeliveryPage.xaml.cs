@@ -154,7 +154,8 @@ public partial class ActiveDeliveryPage : ContentPage
                         _vm.DriverLat, _vm.DriverLng,
                         targetLat, targetLng,
                         "#FF5722", 5, "RouteLayer",
-                        layer => _routeLayer = layer);
+                        layer => _routeLayer = layer,
+                        onEta: seconds => _vm.UpdateDeliveryEta(seconds));
                 }
                 else if (!_vm.Order.IsOnTheWay && hasRestaurant && hasCustomer)
                 {
@@ -215,11 +216,15 @@ public partial class ActiveDeliveryPage : ContentPage
         double toLat, double toLng,
         string colorHex, double width,
         string layerName,
-        Action<MemoryLayer> onComplete)
+        Action<MemoryLayer> onComplete,
+        Action<double>? onEta = null)
     {
         try
         {
             using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            // ✅ FIX: من غير User-Agent السيرفر العام بتاع OSRM بيرفض جزء كبير من الطلبات
+            // فكان بيقع دايماً في fallback (خط مستقيم) بدل المسار الحقيقي، زي ما اتصلح في الكاستمر.
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36");
             var url = $"https://router.project-osrm.org/route/v1/driving/" +
                       $"{fromLng.ToString(CultureInfo.InvariantCulture)},{fromLat.ToString(CultureInfo.InvariantCulture)};" +
                       $"{toLng.ToString(CultureInfo.InvariantCulture)},{toLat.ToString(CultureInfo.InvariantCulture)}" +
@@ -228,6 +233,9 @@ public partial class ActiveDeliveryPage : ContentPage
             var json = await http.GetStringAsync(url);
             var doc = JsonDocument.Parse(json);
             var route = doc.RootElement.GetProperty("routes")[0];
+
+            if (onEta != null && route.TryGetProperty("duration", out var durationEl))
+                onEta(durationEl.GetDouble());
 
             var coords = route.GetProperty("geometry").GetProperty("coordinates");
             var points = new List<MPoint>();
@@ -284,6 +292,7 @@ public partial class ActiveDeliveryPage : ContentPage
                 pointsList.Select(p => $"{p.lng.ToString(System.Globalization.CultureInfo.InvariantCulture)},{p.lat.ToString(System.Globalization.CultureInfo.InvariantCulture)}"));
 
             using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36");
             var url = $"https://router.project-osrm.org/route/v1/driving/{coordsParam}?overview=full&geometries=geojson";
             var json = await http.GetStringAsync(url);
             var doc = JsonDocument.Parse(json);
@@ -393,6 +402,7 @@ public partial class ActiveDeliveryPage : ContentPage
     {
         base.OnDisappearing();
         _vm.MapUpdated -= OnMapUpdated;
+        _vm.Cleanup();
     }
 
     private async void OnBackTapped(object sender, TappedEventArgs e)
