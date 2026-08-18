@@ -156,5 +156,23 @@
 		<data name="AboutFeature2" xml:space="preserve"><value>Track order status and location</value></data>
 		<data name="AboutFeature3" xml:space="preserve"><value>Communicate with customers and support</value></data>
 		<data name="AboutFeature4" xml:space="preserve"><value>Manage your account and earnings easily</value></data>
+
 		<data name="AboutCopyright" xml:space="preserve"><value>All rights reserved © Taly</value></data>
-	</root>
+		<data name="About_VersionText" xml:space="preserve"><value>Version 1.0.0</value></data>
+	<data name="About_Desc" xml:space="preserve"><value>Taly Driver helps you manage deliveries, receive orders, and communicate with customers easily.</value></data>
+	<data name="Features" xml:space="preserve"><value>App features</value></data>
+	<data name="About_Feature1" xml:space="preserve"><value>Receive and manage delivery orders</value></data>
+	<data name="About_Feature2" xml:space="preserve"><value>Track order status and location</value></data>
+	<data name="About_Feature3" xml:space="preserve"><value>Communicate with customers and support</value></data>
+	<data name="About_Feature4" xml:space="preserve"><value>Manage your account and earnings easily</value></data>
+	<data name="About_Connect" xml:space="preserve"><value>Connect with us</value></data>
+	<data name="About_Website" xml:space="preserve"><value>Official website</value></data>
+	<data name="About_PrivacyPolicy" xml:space="preserve"><value>Privacy policy</value></data>
+	<data name="About_Terms" xml:space="preserve"><value>Terms and conditions</value></data>
+	<data name="About_Developer" xml:space="preserve"><value>All rights reserved © Taly</value></data>
+	<data name="Distance" xml:space="preserve"><value>Distance</value></data>
+	<data name="PreparationTime" xml:space="preserve"><value>Preparation time</value></data>
+	<data name="OrderStatus" xml:space="preserve"><value>Status</value></data>
+	<data name="OrderPreparing" xml:space="preserve"><value>Preparing</value></data>
+	<data name="OrderReadyForPickup" xml:space="preserve"><value>Ready for pickup</value></data>
+</root>

@@ -79,8 +79,15 @@
                                            LineBreakMode="WordWrap" HorizontalOptions="FillAndExpand"/>
 								</HorizontalStackLayout>
 
-								<!-- Stats Row -->
-								<Grid ColumnDefinitions="*,*,*">
+									<!-- Status, distance, and preparation time -->
+									<Grid ColumnDefinitions="*,*,*" Margin="0,0,0,2">
+										<VerticalStackLayout Grid.Column="0" Spacing="2"><Label Text="{loc:Loc Key=OrderStatus}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding StatusText}" FontFamily="CairoBold" FontSize="13" TextColor="#FF5722"/></VerticalStackLayout>
+										<VerticalStackLayout Grid.Column="1" Spacing="2"><Label Text="{loc:Loc Key=Distance}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding DistanceText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/></VerticalStackLayout>
+										<VerticalStackLayout Grid.Column="2" Spacing="2"><Label Text="{loc:Loc Key=PreparationTime}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding PreparationTimeText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/></VerticalStackLayout>
+									</Grid>
+
+									<!-- Stats Row -->
+									<Grid ColumnDefinitions="*,*,*">
 									<VerticalStackLayout Grid.Column="0" Spacing="2">
 										<Label Text="{loc:Loc Key=OrderEarning}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
 										<Label Text="{Binding DeliveryFeeText}"

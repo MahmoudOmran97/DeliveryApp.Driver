@@ -18,13 +18,11 @@ public partial class AvailableOrdersPage : ContentPage
     {
         base.OnAppearing();
         _ = _vm.LoadCommand.ExecuteAsync(null);
-        _vm.StartAutoRefresh();
     }
 
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
-        _vm.StopAutoRefresh();
     }
 
     private void OnAcceptClicked(object sender, EventArgs e)

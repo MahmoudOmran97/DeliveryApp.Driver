@@ -10,7 +10,6 @@ public partial class AvailableOrdersViewModel : BaseViewModel
 {
     readonly ApiService _api;
     readonly LocationService _location;
-    System.Timers.Timer? _timer;
 
     [ObservableProperty] bool _isRefreshing;
     [ObservableProperty] string _ordersCount = "0 orders";
@@ -66,17 +65,4 @@ public partial class AvailableOrdersViewModel : BaseViewModel
         finally { IsBusy = false; }
     }
 
-    public void StartAutoRefresh()
-    {
-        _timer = new System.Timers.Timer(15000);
-        _timer.Elapsed += (_, _) => MainThread.BeginInvokeOnMainThread(async () => await LoadAsync());
-        _timer.Start();
-    }
-
-    public void StopAutoRefresh()
-    {
-        _timer?.Stop();
-        _timer?.Dispose();
-        _timer = null;
-    }
 }

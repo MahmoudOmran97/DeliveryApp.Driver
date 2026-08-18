@@ -52,10 +52,22 @@ public class AvailableOrder
     public int ItemCount { get; set; }
     public decimal TotalAmount { get; set; }
     public double? DistanceKm { get; set; }
+    public int? EstimatedDeliveryMin { get; set; }
+    public int? EstimatedDeliveryMax { get; set; }
+    public string Status { get; set; } = string.Empty;
 
     public string DeliveryFeeText => $"{DeliveryFee:F0} EGP";
     public string TotalAmountText => $"{TotalAmount:F0} EGP";
     public string DistanceText => DistanceKm.HasValue ? $"{DistanceKm:F1} km" : "--";
+    public string PreparationTimeText => EstimatedDeliveryMin.HasValue && EstimatedDeliveryMax.HasValue
+        ? $"{EstimatedDeliveryMin}-{EstimatedDeliveryMax} min"
+        : "--";
+    public string StatusText => Status switch
+    {
+        "Preparing" => LocalizationService.Get("OrderPreparing"),
+        "ReadyForPickup" => LocalizationService.Get("OrderReadyForPickup"),
+        _ => Status
+    };
     public string ItemCountText => $"{ItemCount} items";
 }
 
@@ -68,6 +80,11 @@ public class ActiveOrder
     public decimal TotalAmount { get; set; }
     public decimal DeliveryFee { get; set; }
     public string DeliveryAddress { get; set; } = string.Empty;
+    public int? EstimatedDeliveryMin { get; set; }
+    public int? EstimatedDeliveryMax { get; set; }
+    public string PreparationTimeText => EstimatedDeliveryMin.HasValue && EstimatedDeliveryMax.HasValue
+        ? $"{EstimatedDeliveryMin}-{EstimatedDeliveryMax} min"
+        : "--";
     public double DeliveryLatitude { get; set; }
     public double DeliveryLongitude { get; set; }
     public string? DeliveryNotes { get; set; }
@@ -83,10 +100,13 @@ public class ActiveOrder
 
     public string StatusText => Status switch
     {
+        "Preparing" => LocalizationService.Get("OrderPreparing"),
         "ReadyForPickup" => "Go to Restaurant 🏪",
         "OnTheWay" => "Deliver to Customer 📦",
         _ => Status
     };
+
+    public bool IsPreparing => Status == "Preparing";
 
     public Color StatusColor => Status switch
     {
@@ -227,3 +247,12 @@ public class SupportSendResult { public int Id { get; set; } public SupportSessi
 public class ComplaintDto { public int Id { get; set; } public string Subject { get; set; } = string.Empty; public string Description { get; set; } = string.Empty; public string Status { get; set; } = "Open"; public string Source { get; set; } = "Driver"; public int? OrderId { get; set; } public string? AdminNote { get; set; } public DateTime CreatedAt { get; set; } public DateTime? ResolvedAt { get; set; } }
 public class ComplaintCreatedResult { public int Id { get; set; } public string Status { get; set; } = "Open"; }
 public class SupportChatMessage { public string Text { get; set; } = string.Empty; public bool IsFromAi { get; set; } public bool IsFromUser => !IsFromAi; public DateTime Time { get; set; } = DateTime.Now; public string TimeDisplay => Time.ToString("hh:mm tt"); }
+
+public class SiteLink
+{
+    public string Key { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string? Icon { get; set; }
+    public int SortOrder { get; set; }
+}

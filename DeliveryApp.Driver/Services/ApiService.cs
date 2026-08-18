@@ -287,6 +287,8 @@ public class ApiService
         return true;
     }
 
+    public Task<List<SiteLink>?> GetSiteLinksAsync() => GetAsync<List<SiteLink>>("site-links");
+
     // ─── Orders ──────────────────────────────────────────────────────────────
 
     public Task<List<AvailableOrder>?> GetAvailableOrdersAsync()

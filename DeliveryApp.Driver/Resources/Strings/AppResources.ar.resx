@@ -157,5 +157,23 @@
 		<data name="AboutFeature2" xml:space="preserve"><value>متابعة حالة الطلبات والموقع</value></data>
 		<data name="AboutFeature3" xml:space="preserve"><value>التواصل مع العملاء والدعم</value></data>
 		<data name="AboutFeature4" xml:space="preserve"><value>إدارة الحساب والأرباح بسهولة</value></data>
+
 		<data name="AboutCopyright" xml:space="preserve"><value>جميع الحقوق محفوظة © تالي</value></data>
-	</root>
+		<data name="About_VersionText" xml:space="preserve"><value>الإصدار 1.0.0</value></data>
+	<data name="About_Desc" xml:space="preserve"><value>تطبيق تالي للسائقين يساعدك على إدارة التوصيلات واستقبال الطلبات والتواصل مع العملاء بسهولة.</value></data>
+	<data name="Features" xml:space="preserve"><value>مميزات التطبيق</value></data>
+	<data name="About_Feature1" xml:space="preserve"><value>استقبال وإدارة طلبات التوصيل</value></data>
+	<data name="About_Feature2" xml:space="preserve"><value>متابعة حالة الطلبات والموقع</value></data>
+	<data name="About_Feature3" xml:space="preserve"><value>التواصل مع العملاء والدعم</value></data>
+	<data name="About_Feature4" xml:space="preserve"><value>إدارة الحساب والأرباح بسهولة</value></data>
+	<data name="About_Connect" xml:space="preserve"><value>تواصل معنا</value></data>
+	<data name="About_Website" xml:space="preserve"><value>الموقع الرسمي</value></data>
+	<data name="About_PrivacyPolicy" xml:space="preserve"><value>سياسة الخصوصية</value></data>
+	<data name="About_Terms" xml:space="preserve"><value>الشروط والأحكام</value></data>
+	<data name="About_Developer" xml:space="preserve"><value>جميع الحقوق محفوظة © تالي</value></data>
+	<data name="Distance" xml:space="preserve"><value>المسافة</value></data>
+	<data name="PreparationTime" xml:space="preserve"><value>وقت التجهيز</value></data>
+	<data name="OrderStatus" xml:space="preserve"><value>الحالة</value></data>
+	<data name="OrderPreparing" xml:space="preserve"><value>جاري التجهيز</value></data>
+	<data name="OrderReadyForPickup" xml:space="preserve"><value>جاهز للاستلام</value></data>
+</root>
