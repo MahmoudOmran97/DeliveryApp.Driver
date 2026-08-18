@@ -15,6 +15,7 @@ public partial class HomeViewModel : BaseViewModel
     readonly LocationService _location;
 
     System.Timers.Timer? _refreshTimer;
+    readonly SemaphoreSlim _activeOrdersLoadGate = new(1, 1);
 
     [ObservableProperty] DriverProfile? _profile;
     [ObservableProperty] ActiveOrder? _activeOrder;
@@ -122,8 +123,11 @@ public partial class HomeViewModel : BaseViewModel
 
     async Task JoinActiveOrderGroupsAsync()
     {
-        // عشان المكالمات توصل حتى لو الدرايفر مش على شاشة الأوردر
-        foreach (var order in ActiveOrders)
+        // خُد snapshot قبل أول await؛ ActiveOrders ممكن تتحدث من event آخر
+        // أثناء انتظار SignalR، وenumeration على ObservableCollection وقتها تعمل crash.
+        var ordersSnapshot = ActiveOrders.ToList();
+
+        foreach (var order in ordersSnapshot)
         {
             try { await _hub.JoinOrderAsync(order.Id); }
             catch (Exception ex)
@@ -145,8 +149,16 @@ public partial class HomeViewModel : BaseViewModel
 
     private async Task LoadActiveOrdersAsync()
     {
-        var myOrders = await _api.GetMyOrdersAsync();
-        UpdateActiveOrders(myOrders?.Data, ActiveOrder);
+        await _activeOrdersLoadGate.WaitAsync();
+        try
+        {
+            var myOrders = await _api.GetMyOrdersAsync();
+            UpdateActiveOrders(myOrders?.Data, ActiveOrder);
+        }
+        finally
+        {
+            _activeOrdersLoadGate.Release();
+        }
     }
 
     private void UpdateActiveOrders(List<DriverOrder>? orders, ActiveOrder? activeOrder = null)

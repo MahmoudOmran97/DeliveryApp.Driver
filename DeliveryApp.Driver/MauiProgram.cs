@@ -54,6 +54,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CustomerChatViewModel>();
         builder.Services.AddTransient<SupportChatViewModel>();
         builder.Services.AddTransient<ComplaintsViewModel>();
+        builder.Services.AddTransient<AboutViewModel>();
         builder.Services.AddTransient<CallViewModel>();
         // builder.Services.AddTransient<CallAudioService>();
 #if ANDROID
@@ -80,6 +81,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CustomerChatPage>();
         builder.Services.AddTransient<SupportChatPage>();
         builder.Services.AddTransient<ComplaintsPage>();
+        builder.Services.AddTransient<AboutPage>();
         builder.Services.AddTransient<CallPage>();
         builder.Services.AddTransient<SettingsPage>();
         builder.Services.AddTransient<ProfilePage>();

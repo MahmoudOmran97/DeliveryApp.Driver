@@ -55,4 +55,7 @@ public partial class SettingsViewModel : BaseViewModel
 
     [RelayCommand]
     async Task OpenComplaints() => await Shell.Current.GoToAsync(nameof(ComplaintsPage));
+
+    [RelayCommand]
+    async Task OpenAbout() => await Shell.Current.GoToAsync(nameof(AboutPage));
 }

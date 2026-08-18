@@ -148,6 +148,9 @@
                 <!-- About Section -->
                 <Border BackgroundColor="White" StrokeShape="RoundRectangle 14"
                         Stroke="#E0E0E0" StrokeThickness="1" Padding="16,16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenAboutCommand}"/>
+                    </Border.GestureRecognizers>
                     <HorizontalStackLayout Spacing="14">
                         <Border BackgroundColor="#FFF3EF" StrokeShape="RoundRectangle 10"
                                 Stroke="Transparent" WidthRequest="42" HeightRequest="42">

@@ -148,4 +148,13 @@
 		<data name="ComplaintDescription" xml:space="preserve"><value>Describe the problem</value></data>
 		<data name="SubmitComplaint" xml:space="preserve"><value>Submit complaint</value></data>
 		<data name="NoComplaintsYet" xml:space="preserve"><value>No complaints yet</value></data>
+		<data name="AboutVersion" xml:space="preserve"><value>Version 1.0.0</value></data>
+		<data name="AboutDescriptionTitle" xml:space="preserve"><value>About the app</value></data>
+		<data name="AboutDescription" xml:space="preserve"><value>Taly Driver helps you manage deliveries, receive orders, and communicate with customers easily.</value></data>
+		<data name="AboutFeatures" xml:space="preserve"><value>App features</value></data>
+		<data name="AboutFeature1" xml:space="preserve"><value>Receive and manage delivery orders</value></data>
+		<data name="AboutFeature2" xml:space="preserve"><value>Track order status and location</value></data>
+		<data name="AboutFeature3" xml:space="preserve"><value>Communicate with customers and support</value></data>
+		<data name="AboutFeature4" xml:space="preserve"><value>Manage your account and earnings easily</value></data>
+		<data name="AboutCopyright" xml:space="preserve"><value>All rights reserved © Taly</value></data>
 	</root>

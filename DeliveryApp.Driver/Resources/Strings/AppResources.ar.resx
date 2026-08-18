@@ -149,4 +149,13 @@
 		<data name="ComplaintDescription" xml:space="preserve"><value>اكتب تفاصيل المشكلة</value></data>
 		<data name="SubmitComplaint" xml:space="preserve"><value>إرسال الشكوى</value></data>
 		<data name="NoComplaintsYet" xml:space="preserve"><value>لا توجد شكاوى حتى الآن</value></data>
+		<data name="AboutVersion" xml:space="preserve"><value>الإصدار 1.0.0</value></data>
+		<data name="AboutDescriptionTitle" xml:space="preserve"><value>عن التطبيق</value></data>
+		<data name="AboutDescription" xml:space="preserve"><value>تطبيق تالي للسائقين يساعدك على إدارة التوصيلات واستقبال الطلبات والتواصل مع العملاء بسهولة.</value></data>
+		<data name="AboutFeatures" xml:space="preserve"><value>مميزات التطبيق</value></data>
+		<data name="AboutFeature1" xml:space="preserve"><value>استقبال وإدارة طلبات التوصيل</value></data>
+		<data name="AboutFeature2" xml:space="preserve"><value>متابعة حالة الطلبات والموقع</value></data>
+		<data name="AboutFeature3" xml:space="preserve"><value>التواصل مع العملاء والدعم</value></data>
+		<data name="AboutFeature4" xml:space="preserve"><value>إدارة الحساب والأرباح بسهولة</value></data>
+		<data name="AboutCopyright" xml:space="preserve"><value>جميع الحقوق محفوظة © تالي</value></data>
 	</root>
