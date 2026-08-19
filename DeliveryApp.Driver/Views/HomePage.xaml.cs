@@ -33,4 +33,7 @@ public partial class HomePage : ContentPage
 
     private async void OnEarningsTapped(object sender, TappedEventArgs e)
         => await Shell.Current.GoToAsync(nameof(EarningsPage));
+
+    private async void OnDuesTapped(object sender, TappedEventArgs e)
+        => await Shell.Current.GoToAsync(nameof(DuesPage));
 }

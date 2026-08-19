@@ -122,6 +122,23 @@
 	<data name="OrderNumber"     xml:space="preserve"><value>طلب #</value></data>
 	<data name="EarnedLabel"     xml:space="preserve"><value>مكتسب</value></data>
 
+	<!-- ── Dues Page (المستحقات) ── -->
+	<data name="Dues"                 xml:space="preserve"><value>المستحقات</value></data>
+	<data name="MyDues"               xml:space="preserve"><value>مستحقاتي</value></data>
+	<data name="DuesToPlatform"       xml:space="preserve"><value>اللي عليك للمنصة</value></data>
+	<data name="DuesToPlatformShort"  xml:space="preserve"><value>للمنصة</value></data>
+	<data name="PendingDues"          xml:space="preserve"><value>مستحقات لسه متحصلتش</value></data>
+	<data name="DuesReminder"         xml:space="preserve"><value>برجاء التحصيل مع الأدمن</value></data>
+	<data name="DuesAllSettled"       xml:space="preserve"><value>كل المستحقات اتحصلت، مفيش عليك حاجة</value></data>
+	<data name="DuesHistory"          xml:space="preserve"><value>سجل المستحقات</value></data>
+	<data name="NoDuesYet"            xml:space="preserve"><value>مفيش مستحقات لسه 🧾</value></data>
+	<data name="OrdersCount"          xml:space="preserve"><value>الطلبات</value></data>
+	<data name="AmountDue"            xml:space="preserve"><value>المبلغ المستحق</value></data>
+	<data name="AmountRemaining"      xml:space="preserve"><value>المتبقي</value></data>
+	<data name="DuesStatusPaid"       xml:space="preserve"><value>اتحصلت</value></data>
+	<data name="DuesStatusPartial"    xml:space="preserve"><value>اتحصلت جزئيًا</value></data>
+	<data name="DuesStatusUnpaid"     xml:space="preserve"><value>لسه متحصلتش</value></data>
+
 	<!-- ── Notifications ── -->
 	<data name="NotificationsTitle" xml:space="preserve"><value>الإشعارات</value></data>
 	<data name="UnreadSuffix"       xml:space="preserve"><value> غير مقروء</value></data>

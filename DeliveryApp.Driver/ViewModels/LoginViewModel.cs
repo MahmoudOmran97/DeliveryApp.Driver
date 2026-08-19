@@ -9,15 +9,17 @@ public partial class LoginViewModel : BaseViewModel
     readonly ApiService _api;
     readonly AuthService _auth;
     readonly SignalRService _signalR;
+    readonly FcmTokenService _fcmToken;
 
     [ObservableProperty] string _email = string.Empty;
     [ObservableProperty] string _password = string.Empty;
 
-    public LoginViewModel(ApiService api, AuthService auth, SignalRService signalR)
+    public LoginViewModel(ApiService api, AuthService auth, SignalRService signalR, FcmTokenService fcmToken)
     {
         _api = api;
         _auth = auth;
         _signalR = signalR;
+        _fcmToken = fcmToken;
     }
 
     [RelayCommand]
@@ -51,6 +53,12 @@ public partial class LoginViewModel : BaseViewModel
 
                 var shell = IPlatformApplication.Current!.Services.GetService<AppShell>()!;
                 Application.Current!.MainPage = shell;
+
+                // ✅ تسجيل توكن الـ FCM بعد أول تسجيل دخول مباشرة — لو ده أول
+                // مرة السواق يعمل login، مكانش فيه أي فرصة قبل كده يتبعت التوكن
+                // للباك اند (App.xaml.cs بتسجله بس لو كان مسجّل دخول أصلاً من قبل
+                // وقت ما التطبيق بيفتح)، فالإشعارات معندهاش وين توصله.
+                _ = _fcmToken.RegisterAsync();
             }
             else await AlertAsync("Invalid email or password");
         }

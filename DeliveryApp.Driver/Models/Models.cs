@@ -172,6 +172,61 @@ public class EarningDelivery
     public string TimeText => DeliveredAt?.ToString("hh:mm tt") ?? "";
 }
 
+// ─────────────────────────────────────────────────────────────
+// المستحقات اللي على السواق للمنصة (Taly)، الأدمن هو الوحيد اللي
+// يقدر يغيّر حالتها لما يتحصّل الفلوس منه؛ السواق يشوفها بس.
+// ─────────────────────────────────────────────────────────────
+public class DriverDue
+{
+    public int Id { get; set; }
+    public DateTime PeriodStart { get; set; }
+    public DateTime PeriodEnd { get; set; }
+    public int OrdersCount { get; set; }
+    public decimal OrdersTotal { get; set; }
+    public decimal AmountDue { get; set; }
+    public decimal AmountPaid { get; set; }
+    public decimal AmountRemaining { get; set; }
+
+    /// <summary>Unpaid / PartiallyPaid / Paid</summary>
+    public string Status { get; set; } = "Unpaid";
+    public DateTime? PaidAt { get; set; }
+    public string? Notes { get; set; }
+
+    public bool IsPaid => Status == "Paid";
+    public bool IsPartiallyPaid => Status == "PartiallyPaid";
+
+    public string AmountDueText => $"{AmountDue:F0} EGP";
+    public string AmountPaidText => $"{AmountPaid:F0} EGP";
+    public string AmountRemainingText => $"{AmountRemaining:F0} EGP";
+    public string PeriodText => $"{PeriodStart:dd/MM/yyyy} - {PeriodEnd:dd/MM/yyyy}";
+
+    public string StatusColorHex => Status switch
+    {
+        "Paid" => "#4CAF50",
+        "PartiallyPaid" => "#FF9800",
+        _ => "#F44336"
+    };
+
+    public string StatusKey => Status switch
+    {
+        "Paid" => "DuesStatusPaid",
+        "PartiallyPaid" => "DuesStatusPartial",
+        _ => "DuesStatusUnpaid"
+    };
+
+    public string StatusText => LocalizationService.Get(StatusKey);
+}
+
+public class DriverDuesSummary
+{
+    public bool HasPending { get; set; }
+    public decimal PendingAmount { get; set; }
+    public int PendingCount { get; set; }
+    public DriverDue? LatestDue { get; set; }
+
+    public string PendingAmountText => $"{PendingAmount:F0} EGP";
+}
+
 // ─── Notifications ───────────────────────────────────────────────────────────
 
 public class Notification

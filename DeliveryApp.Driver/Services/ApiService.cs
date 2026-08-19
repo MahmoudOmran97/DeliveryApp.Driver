@@ -269,6 +269,12 @@ public class ApiService
     public Task<EarningsResult?> GetEarningsAsync(string period = "today")
         => GetAsync<EarningsResult>($"drivers/earnings?period={period}");
 
+    public Task<List<DriverDue>?> GetMyDuesAsync()
+        => GetAsync<List<DriverDue>>("drivers/my-dues");
+
+    public Task<DriverDuesSummary?> GetMyDuesSummaryAsync()
+        => GetAsync<DriverDuesSummary>("drivers/my-dues/summary");
+
     public Task<ActiveOrder?> GetActiveOrderAsync()
         => GetAsync<ActiveOrder>("drivers/orders/active");
 

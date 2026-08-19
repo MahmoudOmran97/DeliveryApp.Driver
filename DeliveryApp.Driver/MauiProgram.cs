@@ -50,6 +50,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AvailableOrdersViewModel>();
         builder.Services.AddTransient<ActiveDeliveryViewModel>();
         builder.Services.AddTransient<EarningsViewModel>();
+        builder.Services.AddTransient<DuesViewModel>();
         builder.Services.AddTransient<NotificationsViewModel>();
         builder.Services.AddTransient<CustomerChatViewModel>();
         builder.Services.AddTransient<SupportChatViewModel>();
@@ -80,6 +81,7 @@ public static class MauiProgram
         builder.Services.AddTransient<AvailableOrdersPage>();
         builder.Services.AddTransient<ActiveDeliveryPage>();
         builder.Services.AddTransient<EarningsPage>();
+        builder.Services.AddTransient<DuesPage>();
         builder.Services.AddTransient<NotificationsPage>();
         builder.Services.AddTransient<CustomerChatPage>();
         builder.Services.AddTransient<SupportChatPage>();

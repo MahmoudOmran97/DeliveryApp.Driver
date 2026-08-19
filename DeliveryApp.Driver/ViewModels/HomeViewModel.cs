@@ -27,7 +27,14 @@ public partial class HomeViewModel : BaseViewModel
     [ObservableProperty] bool _hasActiveOrder;
     [ObservableProperty] bool _hasActiveOrders;
     [ObservableProperty] bool _isNotVerified;
-    [ObservableProperty] int _unreadNotifications;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasUnreadNotifications))]
+    [NotifyPropertyChangedFor(nameof(UnreadNotificationsText))]
+    int _unreadNotifications;
+    [ObservableProperty] bool _hasPendingDues;
+
+    public bool HasUnreadNotifications => UnreadNotifications > 0;
+    public string UnreadNotificationsText => UnreadNotifications > 9 ? "9+" : UnreadNotifications.ToString();
     public ObservableCollection<DriverOrder> ActiveOrders { get; } = new();
 
     public HomeViewModel(ApiService api, AuthService auth, SignalRService hub, LocationService location)
@@ -64,6 +71,8 @@ public partial class HomeViewModel : BaseViewModel
                 var result = await _api.GetNotificationsAsync();
                 if (result?.Data != null)
                     UnreadNotifications = result.Data.Count(n => !n.IsRead);
+
+                await LoadDuesSummaryAsync();
             });
         };
 
@@ -88,11 +97,13 @@ public partial class HomeViewModel : BaseViewModel
             var activeTask = _api.GetActiveOrderAsync();
             var myOrdersTask = _api.GetMyOrdersAsync();
             var notifTask = _api.GetNotificationsAsync();
+            var duesSummaryTask = _api.GetMyDuesSummaryAsync();
 
-            await Task.WhenAll(profileTask, earningsTask, activeTask, myOrdersTask, notifTask);
+            await Task.WhenAll(profileTask, earningsTask, activeTask, myOrdersTask, notifTask, duesSummaryTask);
 
             Profile = profileTask.Result;
             TodayEarnings = earningsTask.Result;
+            HasPendingDues = duesSummaryTask.Result?.HasPending ?? false;
 
             if (Profile != null)
             {
@@ -119,6 +130,12 @@ public partial class HomeViewModel : BaseViewModel
             }
         }
         finally { IsBusy = false; }
+    }
+
+    private async Task LoadDuesSummaryAsync()
+    {
+        var summary = await _api.GetMyDuesSummaryAsync();
+        HasPendingDues = summary?.HasPending ?? false;
     }
 
     async Task JoinActiveOrderGroupsAsync()

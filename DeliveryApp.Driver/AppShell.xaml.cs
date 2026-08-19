@@ -24,6 +24,7 @@ public partial class AppShell : Shell
 
         // EarningsPage is now a pushed page (not a tab anymore)
         Routing.RegisterRoute(nameof(EarningsPage), typeof(EarningsPage));
+        Routing.RegisterRoute(nameof(DuesPage), typeof(DuesPage));
 
         // ── Removed from routes (now TabBar items) ───────────────
         // NotificationsPage → Tab 3
