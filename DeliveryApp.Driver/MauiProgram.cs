@@ -10,6 +10,13 @@ using Mapsui.UI.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using Microsoft.Maui.LifecycleEvents;
+
+#if ANDROID
+using Plugin.Firebase.Core.Platforms.Android;
+#elif IOS
+using Plugin.Firebase.Core.Platforms.iOS;
+#endif
 
 namespace DeliveryApp.Driver;
 
@@ -33,6 +40,21 @@ public static class MauiProgram
                 fonts.AddFont("Cairo-Bold.ttf", "CairoBold");
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            })
+            // ✅ لازم يتعمل Initialize لـ Firebase قبل أي استخدام لـ CrossFirebaseCloudMessaging
+            // وإلا GetTokenAsync/CheckIfValidAsync بيفشلوا بصمت (اللي كان بيحصل قبل كده).
+            .ConfigureLifecycleEvents(events =>
+            {
+#if ANDROID
+                events.AddAndroid(android => android.OnCreate((activity, _) =>
+                  CrossFirebase.Initialize(activity, () => Platform.CurrentActivity!)));
+#elif IOS
+                events.AddiOS(ios => ios.WillFinishLaunching((_, __) =>
+                {
+                    CrossFirebase.Initialize();
+                    return false;
+                }));
+#endif
             });
 
         // ── Services ─────────────────────────────────────────────────────────

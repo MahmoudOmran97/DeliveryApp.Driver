@@ -35,33 +35,35 @@
                         </VerticalStackLayout>
 
                         <!-- Notifications bell -->
-                        <Border Grid.Column="1" BackgroundColor="White"
-                            StrokeShape="RoundRectangle 24" Stroke="Transparent"
-                            WidthRequest="44" HeightRequest="44"
-                            HorizontalOptions="End" VerticalOptions="Center">
-                            <Grid>
+                        <!-- ✅ الـ Badge بقى Sibling للفريم (مش جواه) عشان الـ Border بتعمل Clip
+                             لمحتواها على شكلها (StrokeShape)، فأي حاجة جواها بـ Margin سالب كانت
+                             بتتقص عند الحافة بدل ما تظهر برة الفريم. -->
+                        <Grid Grid.Column="1" HorizontalOptions="End" VerticalOptions="Center">
+                            <Border BackgroundColor="White"
+                                StrokeShape="RoundRectangle 24" Stroke="Transparent"
+                                WidthRequest="44" HeightRequest="44">
                                 <Label Text="🔔" FontSize="22"
                                HorizontalOptions="Center" VerticalOptions="Center">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnNotificationsTapped"/>
                                     </Label.GestureRecognizers>
                                 </Label>
+                            </Border>
 
-                                <!-- Badge بعدد الإشعارات اللي لسه معملهاش قراءة -->
-                                <Border IsVisible="{Binding HasUnreadNotifications}"
-                                    BackgroundColor="#F44336" Stroke="Transparent"
-                                    StrokeShape="RoundRectangle 9"
-                                    MinimumWidthRequest="18" HeightRequest="18"
-                                    Padding="4,0"
-                                    HorizontalOptions="End" VerticalOptions="Start"
-                                    Margin="0,-2,-2,0">
-                                    <Label Text="{Binding UnreadNotificationsText}"
+                            <!-- Badge بعدد الإشعارات اللي لسه معملهاش قراءة -->
+                            <Border IsVisible="{Binding HasUnreadNotifications}"
+                                BackgroundColor="#F44336" Stroke="Transparent"
+                                StrokeShape="RoundRectangle 9"
+                                MinimumWidthRequest="18" HeightRequest="18"
+                                Padding="4,0"
+                                HorizontalOptions="End" VerticalOptions="Start"
+                                Margin="0,-4,-4,0">
+                                <Label Text="{Binding UnreadNotificationsText}"
                                        FontFamily="CairoBold" FontSize="10" TextColor="White"
                                        HorizontalOptions="Center" VerticalOptions="Center"
                                        HorizontalTextAlignment="Center"/>
-                                </Border>
-                            </Grid>
-                        </Border>
+                            </Border>
+                        </Grid>
                     </Grid>
 
                     <!-- ── STATUS CARD ── -->
@@ -254,14 +256,16 @@
                             </Border>
 
                             <!-- Dues (المستحقات) -->
-                            <Border Grid.Column="2" BackgroundColor="White"
-                                StrokeShape="RoundRectangle 14" Stroke="Transparent"
-                                Shadow="{Shadow Brush=Black, Offset='0,2', Radius=6, Opacity=0.06}"
-                                Padding="10,14">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnDuesTapped"/>
-                                </Border.GestureRecognizers>
-                                <Grid>
+                            <!-- ✅ الـ Badge بقى Sibling لفريم الكارت (مش جواه ولا جوه الـ Padding
+                                 بتاعته) عشان يظهر كامل برة حافة الفريم بدل ما يتقص. -->
+                            <Grid Grid.Column="2">
+                                <Border BackgroundColor="White"
+                                    StrokeShape="RoundRectangle 14" Stroke="Transparent"
+                                    Shadow="{Shadow Brush=Black, Offset='0,2', Radius=6, Opacity=0.06}"
+                                    Padding="10,14">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnDuesTapped"/>
+                                    </Border.GestureRecognizers>
                                     <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                         <Label Text="🧾" FontSize="28" HorizontalOptions="Center"/>
                                         <Label Text="{loc:Loc Key=Dues}" FontFamily="CairoBold" FontSize="13"
@@ -269,17 +273,17 @@
                                         <Label Text="{loc:Loc Key=DuesToPlatformShort}" FontFamily="CairoRegular" FontSize="11"
                                            TextColor="#757575" HorizontalOptions="Center"/>
                                     </VerticalStackLayout>
+                                </Border>
 
-                                    <!-- Badge لما يكون فيه مستحق لسه متحصلش -->
-                                    <Border IsVisible="{Binding HasPendingDues}"
-                                        BackgroundColor="#F44336" Stroke="Transparent"
-                                        StrokeShape="RoundRectangle 8"
-                                        HorizontalOptions="End" VerticalOptions="Start"
-                                        Padding="6,2" Margin="0,-4,-4,0">
-                                        <Label Text="!" FontFamily="CairoBold" FontSize="11" TextColor="White"/>
-                                    </Border>
-                                </Grid>
-                            </Border>
+                                <!-- Badge لما يكون فيه مستحق لسه متحصلش -->
+                                <Border IsVisible="{Binding HasPendingDues}"
+                                    BackgroundColor="#F44336" Stroke="Transparent"
+                                    StrokeShape="RoundRectangle 8"
+                                    HorizontalOptions="End" VerticalOptions="Start"
+                                    Padding="6,2" Margin="0,-6,-6,0">
+                                    <Label Text="!" FontFamily="CairoBold" FontSize="11" TextColor="White"/>
+                                </Border>
+                            </Grid>
                         </Grid>
 
                         <BoxView HeightRequest="20" Color="Transparent"/>
