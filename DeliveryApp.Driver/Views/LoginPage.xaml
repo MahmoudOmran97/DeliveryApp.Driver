@@ -6,22 +6,40 @@
              x:Class="DeliveryApp.Driver.Views.LoginPage"
              x:DataType="vm:LoginViewModel"
              FlowDirection="{Binding Source={StaticResource LocStrings}, Path=Flow}"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#FF5722">
 
     <ScrollView>
         <Grid RowDefinitions="280,*">
 
             <!-- Orange top section -->
-            <Grid Grid.Row="0" BackgroundColor="#FF5722">
-                <VerticalStackLayout VerticalOptions="End" HorizontalOptions="Center"
-                                     Padding="0,0,0,36" Spacing="10">
-                    <Label Text="🛵" FontSize="60" HorizontalOptions="Center"/>
-                    <Label Text="{loc:Loc Key=DriverPortal}"
-                           FontFamily="CairoBold" FontSize="30" TextColor="White"
-                           HorizontalOptions="Center"/>
-                    <Label Text="{loc:Loc Key=SignInToStart}"
-                           FontFamily="CairoRegular" FontSize="14" TextColor="#FFCCBC"
-                           HorizontalOptions="Center"/>
+            <Grid Padding="20,52,20,36" RowDefinitions="Auto,Auto">
+
+                <!-- Language toggle -->
+                <Border Grid.Row="0" HorizontalOptions="End" VerticalOptions="Start"
+             Padding="12,6"
+             StrokeShape="RoundRectangle 16"
+             Stroke="#FFCCBC"
+             BackgroundColor="Transparent">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleLanguageCommand}"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="{Binding OtherLanguageLabel}"
+                FontFamily="CairoRegular" FontSize="13" TextColor="White"/>
+                </Border>
+
+                <VerticalStackLayout Grid.Row="1" HorizontalOptions="Center"
+                          Padding="0,24,0,0" Spacing="10">
+                    <Image x:Name="imgLogo"
+                Aspect="AspectFill"
+                HeightRequest="110"
+                WidthRequest="110"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
+                    <Label Text="{loc:Loc Key=WelcomeBack}"
+                FontFamily="CairoBold" FontSize="30" TextColor="White" HorizontalOptions="Center"/>
+                    <Label Text="{loc:Loc Key=SignInToContinue}"
+                FontFamily="CairoRegular" FontSize="14" TextColor="#FFCCBC" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Grid>
 

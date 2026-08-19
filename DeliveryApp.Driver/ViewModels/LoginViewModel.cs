@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DeliveryApp.Driver.Services;
+using DeliveryApp.Driver.Views;
 
 namespace DeliveryApp.Driver.ViewModels;
 
@@ -21,7 +22,22 @@ public partial class LoginViewModel : BaseViewModel
         _signalR = signalR;
         _fcmToken = fcmToken;
     }
+    public string OtherLanguageLabel =>
+       LocalizationService.Current.TwoLetterISOLanguageName == LocalizationService.Arabic
+           ? "English"
+           : "العربية";
 
+    [RelayCommand]
+    void ToggleLanguage()
+    {
+        // {loc:Loc} markup extension resolves the string once at page-build time,
+        // it doesn't auto-refresh on language change — so we rebuild the Login page
+        // after switching, same approach SettingsViewModel uses for the rest of the app.
+        LocalizationService.ToggleLanguage();
+
+        var loginPage = IPlatformApplication.Current!.Services.GetService<LoginPage>()!;
+        Application.Current!.MainPage = new NavigationPage(loginPage);
+    }
     [RelayCommand]
     async Task LoginAsync()
     {

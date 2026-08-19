@@ -49,7 +49,12 @@
 	<data name="Password"       xml:space="preserve"><value>كلمة المرور</value></data>
 	<data name="LoginBtn"       xml:space="preserve"><value>دخول</value></data>
 	<data name="ContactAdmin"   xml:space="preserve"><value>تواصل مع المسؤول للحصول على حساب</value></data>
-
+	<data name="WelcomeBack">
+		<value>أهلاً بعودتك!</value>
+	</data>
+	<data name="SignInToContinue">
+		<value>سجّل دخولك للمتابعة</value>
+	</data>
 	<!-- ── Profile &amp; Settings ── -->
 	<data name="Profile"         xml:space="preserve"><value>حسابي</value></data>
 	<data name="Settings"        xml:space="preserve"><value>الإعدادات</value></data>

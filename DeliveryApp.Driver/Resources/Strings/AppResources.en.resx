@@ -49,7 +49,12 @@
 	<data name="Password"       xml:space="preserve"><value>Password</value></data>
 	<data name="LoginBtn"       xml:space="preserve"><value>Login</value></data>
 	<data name="ContactAdmin"   xml:space="preserve"><value>Contact your admin to get an account</value></data>
-
+	<data name="WelcomeBack">
+		<value>Welcome Back!</value>
+	</data>
+	<data name="SignInToContinue">
+		<value>Sign in to continue</value>
+	</data>
 	<!-- ── Profile &amp; Settings ── -->
 	<data name="Profile"         xml:space="preserve"><value>Profile</value></data>
 	<data name="Settings"        xml:space="preserve"><value>Settings</value></data>
