@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using DeliveryApp.Driver.Converters;
 using DeliveryApp.Driver.Models;
 
 namespace DeliveryApp.Driver.Services;
@@ -10,7 +11,13 @@ public class ApiService
     private const string ProductionBaseUrl = "https://deliveryappapi.runasp.net/api";
     private readonly HttpClient _http;
     private readonly AuthService _auth;
-    private readonly JsonSerializerOptions _json = new() { PropertyNameCaseInsensitive = true };
+    // ✅ إضافة UtcDateTimeConverter: أي DateTime جاي من الـ API بيتحول تلقائي
+    // لتوقيت الجهاز المحلي (مصر) لحظة الـ Deserialize، بدل ما نلمس كل شاشة لوحدها.
+    private readonly JsonSerializerOptions _json = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new UtcDateTimeConverter(), new UtcNullableDateTimeConverter() }
+    };
     private string _baseUrl;
 
     public ApiService(AuthService auth)
