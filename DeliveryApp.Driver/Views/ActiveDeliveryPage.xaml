@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
              xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
-             xmlns:mapsui="clr-namespace:Mapsui.UI.Maui;assembly=Mapsui.UI.Maui"
              xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
              x:Class="DeliveryApp.Driver.Views.ActiveDeliveryPage"
              x:DataType="vm:ActiveDeliveryViewModel"
@@ -32,7 +31,12 @@
 
 		<!-- Map -->
 		<Grid Grid.Row="1">
-			<mapsui:MapControl x:Name="MapControl"/>
+			<!-- OpenFreeMap / MapLibre vector map (نفس خريطة تطبيق الكاستمر) -->
+			<WebView x:Name="MapWebView"/>
+			<Label Text="OpenFreeMap © OpenMapTiles · Data from OpenStreetMap"
+                   FontSize="9" TextColor="#555" BackgroundColor="#CCFFFFFF"
+                   Padding="4,2" Margin="8" HorizontalOptions="Start" VerticalOptions="End"
+                   ZIndex="11" InputTransparent="True" />
 
 			<!-- Map Legend -->
 			<Border BackgroundColor="#EEFFFFFF" StrokeShape="RoundRectangle 12" Stroke="Transparent"
