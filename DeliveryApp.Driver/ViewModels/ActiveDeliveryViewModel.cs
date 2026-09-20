@@ -51,17 +51,144 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
         _signalR = signalR;
         _auth = auth;
 
-        _location.LocationUpdated += (lat, lng) =>
-        {
-            DriverLat = lat;
-            DriverLng = lng;
-            MapUpdated?.Invoke();
-        };
+        // الاشتراك في أحداث اللوكيشن و SignalR بيتم في Attach() (من OnAppearing)
+        // وبيتشال في Cleanup() (من OnDisappearing) — عشان مفيش نسخ قديمة تفضل مشتركة.
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    // Attach / Cleanup — دورة حياة الاشتراكات
+    // ═════════════════════════════════════════════════════════════════════
+    bool _hasAttachedBefore;
+    readonly SemaphoreSlim _refreshGate = new(1, 1);
+    bool _isLeaving;
+
+    public void Attach()
+    {
+        _location.LocationUpdated -= OnLocationUpdated;
+        _location.LocationUpdated += OnLocationUpdated;
 
         // ✅ FIX #CallGroup — لو الاتصال يتقطع ويرجع (SignalR AutomaticReconnect)،
         // الـ ConnectionId بيتغيّر والسيرفر بينسى إن الدرايفر كان جوه جروب الطلب،
         // فلازم نرجع نضم نفسنا تاني عشان تفضل المكالمات والشات شغالة.
-        _signalR.Reconnected += () => _ = JoinOrderGroupAsync();
+        _signalR.Reconnected -= OnHubReconnected;
+        _signalR.Reconnected += OnHubReconnected;
+
+        // ✅ تحديث فوري لما حالة الطلب تتغير (المطعم خلّص التحضير مثلاً)
+        _signalR.OrderStatusChanged -= OnHubOrderStatusChanged;
+        _signalR.OrderStatusChanged += OnHubOrderStatusChanged;
+
+        // Cleanup() بيوقف العداد؛ لو رجعنا للصفحة (بعد الشات/المكالمة) نشغّله تاني
+        if (Order != null) EnsureCountdownTimer();
+
+        // لو رجعنا للصفحة بعد ما كنا برّاها، ممكن نكون فوّتنا تحديث → نجيب آخر حالة
+        if (_hasAttachedBefore) _ = RefreshOrderAsync();
+        _hasAttachedBefore = true;
+    }
+
+    void OnLocationUpdated(double lat, double lng)
+    {
+        DriverLat = lat;
+        DriverLng = lng;
+        MapUpdated?.Invoke();
+    }
+
+    void OnHubReconnected() => _ = RejoinAndRefreshAsync();
+
+    async Task RejoinAndRefreshAsync()
+    {
+        try
+        {
+            await JoinOrderGroupAsync();
+            // الأحداث اللي جت وإحنا مقطوعين ضاعت، فنجيب آخر حالة من السيرفر
+            await RefreshOrderAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ActiveDelivery] Reconnect refresh failed: {ex.Message}");
+        }
+    }
+
+    void OnHubOrderStatusChanged(int orderId, string status)
+    {
+        var current = Order;
+        if (current == null || current.Id != orderId) return;
+        _ = HandleOrderStatusChangedAsync(current, status);
+    }
+
+    async Task HandleOrderStatusChangedAsync(ActiveOrder current, string status)
+    {
+        try
+        {
+            // الطلب اتلغى/اترفض → مفيش فايدة نفضل على صفحته
+            if (status is "Cancelled" or "Rejected")
+            {
+                if (_isLeaving) return;
+                _isLeaving = true;
+
+                _location.SetOrderId(null);
+                _chatNotif.UnregisterOrder(current.Id);
+                await AlertAsync("This order was cancelled.", "Order Cancelled");
+                await Shell.Current.GoToAsync("//HomePage");
+                return;
+            }
+
+            await RefreshOrderAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ActiveDelivery] Status refresh failed: {ex.Message}");
+        }
+    }
+
+    // بيجيب آخر نسخة من الطلب من السيرفر، ولو الحالة (أو وقت التحضير) اتغيرت بيستبدل Order
+    // كله — ده نفس اللي بيحصل بعد NextStatusAsync، فالـ UI (البادج/الزر/العدادات/الخريطة) بيتحدث مرة واحدة.
+    async Task RefreshOrderAsync()
+    {
+        await _refreshGate.WaitAsync();
+        try
+        {
+            var current = Order;
+            if (current == null || _isLeaving) return;
+
+            var updated = await _api.GetActiveOrderAsync();
+            if (updated?.Id != current.Id)
+                updated = await _api.GetOrderDetailsForDriverAsync(current.Id);
+
+            if (updated == null || updated.Id != current.Id) return;
+
+            // الحالات النهائية بتتعامل معاها أماكنها (Delivered في NextStatusAsync، والإلغاء فوق)
+            if (updated.Status is "Delivered" or "Cancelled" or "Rejected") return;
+
+            bool changed =
+                updated.Status != current.Status ||
+                updated.EstimatedDeliveryMin != current.EstimatedDeliveryMin ||
+                updated.EstimatedDeliveryMax != current.EstimatedDeliveryMax;
+            if (!changed) return;
+
+            if (string.IsNullOrWhiteSpace(updated.CustomerName))
+                updated.CustomerName = current.CustomerName;
+            if (string.IsNullOrWhiteSpace(updated.CustomerPhone))
+                updated.CustomerPhone = current.CustomerPhone;
+
+            Order = updated;
+        }
+        finally
+        {
+            _refreshGate.Release();
+        }
+    }
+
+    void EnsureCountdownTimer()
+    {
+        if (_countdownTimer != null) return;
+
+        _countdownTimer = new System.Timers.Timer(1_000);
+        _countdownTimer.Elapsed += (_, _) => MainThread.BeginInvokeOnMainThread(() =>
+        {
+            UpdatePrepCountdown();
+            UpdateDeliveryCountdown();
+        });
+        _countdownTimer.Start();
     }
 
     partial void OnOrderChanged(ActiveOrder? value)
@@ -76,16 +203,7 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
 
             ConfigurePrepCountdown(value);
             ConfigureDeliveryCountdown(value);
-            if (_countdownTimer == null)
-            {
-                _countdownTimer = new System.Timers.Timer(1_000);
-                _countdownTimer.Elapsed += (_, _) => MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    UpdatePrepCountdown();
-                    UpdateDeliveryCountdown();
-                });
-                _countdownTimer.Start();
-            }
+            EnsureCountdownTimer();
 
             // ✅ FIX #CallGroup — دي كانت الـ bug الرئيسية: الدرايفر مكنش بينضم أبداً لجروب
             // "order_{orderId}" على الـ Hub، فكل الأحداث اللي بتتبعت بالـ Group
@@ -184,6 +302,10 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
 
     public void Cleanup()
     {
+        _location.LocationUpdated -= OnLocationUpdated;
+        _signalR.Reconnected -= OnHubReconnected;
+        _signalR.OrderStatusChanged -= OnHubOrderStatusChanged;
+
         _countdownTimer?.Stop();
         _countdownTimer?.Dispose();
         _countdownTimer = null;
@@ -219,6 +341,7 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
             {
                 if (nextStatus == "Delivered")
                 {
+                    _isLeaving = true;
                     _location.SetOrderId(null);
                     _chatNotif.UnregisterOrder(Order.Id); // نظّف بعد التوصيل
                     await AlertAsync("Order delivered successfully! Great job! 🎉", "Delivered ✓");

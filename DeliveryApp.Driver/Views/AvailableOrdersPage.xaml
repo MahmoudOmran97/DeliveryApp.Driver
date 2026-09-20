@@ -45,7 +45,7 @@
                      Command="{Binding LoadCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
 			<CollectionView ItemsSource="{Binding Orders}"
-                            EmptyView="{loc:Loc Key=NoAvailableOrders}"
+                            EmptyView="{Binding EmptyMessage}"
                             Margin="0,8">
 				<CollectionView.ItemTemplate>
 					<DataTemplate x:DataType="m:AvailableOrder">

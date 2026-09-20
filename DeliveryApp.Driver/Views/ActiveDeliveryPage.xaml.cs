@@ -1,4 +1,4 @@
-using DeliveryApp.Driver.Services;
+﻿using DeliveryApp.Driver.Services;
 using DeliveryApp.Driver.ViewModels;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -67,6 +67,9 @@ public partial class ActiveDeliveryPage : ContentPage
         _vm.MapUpdated += OnMapUpdated;
         _vm.PropertyChanged -= OnVmPropertyChanged;
         _vm.PropertyChanged += OnVmPropertyChanged;
+
+        // اشتراكات الـ ViewModel (اللوكيشن + SignalR + تحديث حالة الطلب لحظياً)
+        _vm.Attach();
 
         MapWebView.Navigating -= MapWebView_Navigating;
         MapWebView.Navigating += MapWebView_Navigating;

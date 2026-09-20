@@ -99,6 +99,7 @@
 	<data name="AcceptOrder"      xml:space="preserve"><value>قبول الطلب ✓</value></data>
 	<data name="NoAvailableOrders" xml:space="preserve"><value>لا توجد طلبات متاحة الآن. حاول مرة أخرى بعد قليل 🕐</value></data>
 	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} طلب متاح</value></data>
+	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>أنت غير متصل حالياً. اضغط «اتصل الآن» من الصفحة الرئيسية لعرض الطلبات المتاحة 🔴</value></data>
 
 	<!-- ── Active Delivery ── -->
 	<data name="EarningPrefix"    xml:space="preserve"><value>الربح: </value></data>

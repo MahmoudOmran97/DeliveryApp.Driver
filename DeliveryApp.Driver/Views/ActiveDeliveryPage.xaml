@@ -140,16 +140,13 @@
                                    VerticalOptions="Center" LineBreakMode="TailTruncation"/>
 							<Label Grid.Column="2" Text="→" FontSize="16" TextColor="#9E9E9E"
                                    VerticalOptions="Center"/>
-							<Label Grid.Column="3"
-                                   FontFamily="CairoBold" FontSize="13" TextColor="#212121"
-                                   VerticalOptions="Center" LineBreakMode="TailTruncation">
-								<Label.FormattedText>
-									<FormattedString>
-										<Span Text="👤 "/>
-										<Span Text="{Binding Order.CustomerName}"/>
-									</FormattedString>
-								</Label.FormattedText>
-							</Label>
+							<Grid Grid.Column="3" ColumnDefinitions="Auto,*" ColumnSpacing="4"
+                                  VerticalOptions="Center">
+								<Label Grid.Column="0" Text="👤" FontSize="13" VerticalOptions="Center"/>
+								<Label Grid.Column="1" Text="{Binding Order.CustomerName}"
+                                       FontFamily="CairoBold" FontSize="13" TextColor="#212121"
+                                       VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+							</Grid>
 						</Grid>
 
 						<BoxView HeightRequest="1" Color="#F5F5F5"/>
@@ -274,6 +271,7 @@
 
 				<!-- Main Action Button -->
 				<Button Text="{Binding Order.NextActionText}"
+                        IsVisible="{Binding Order.NextActionText, Converter={StaticResource StringNotEmpty}}"
                         Command="{Binding NextStatusCommand}"
                         IsEnabled="{Binding IsNotBusy}"
                         BackgroundColor="#FF5722" TextColor="White"

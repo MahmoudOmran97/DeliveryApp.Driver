@@ -14,6 +14,10 @@ public partial class AvailableOrdersViewModel : BaseViewModel
     [ObservableProperty] bool _isRefreshing;
     [ObservableProperty] string _ordersCount = "0 orders";
 
+    // لو الدريفر Offline منعرضلوش طلبات، ونوريه رسالة توضح السبب بدل "مفيش طلبات"
+    [ObservableProperty] bool _isOffline;
+    [ObservableProperty] string _emptyMessage = LocalizationService.Get("NoAvailableOrders");
+
     public ObservableCollection<AvailableOrder> Orders { get; } = new();
 
     public AvailableOrdersViewModel(ApiService api, LocationService location)
@@ -28,10 +32,18 @@ public partial class AvailableOrdersViewModel : BaseViewModel
         IsRefreshing = true;
         try
         {
-            var orders = await _api.GetAvailableOrdersAsync();
+            // حالة الأونلاين من السيرفر (مصدر الحقيقة) — بنجيبها مع الطلبات في نفس الوقت
+            var profileTask = _api.GetMyProfileAsync();
+            var ordersTask = _api.GetAvailableOrdersAsync();
+            await Task.WhenAll(profileTask, ordersTask);
+
+            IsOffline = profileTask.Result is { IsOnline: false };
+            EmptyMessage = LocalizationService.Get(IsOffline ? "OfflineNoAvailableOrders" : "NoAvailableOrders");
+
             Orders.Clear();
-            if (orders != null)
+            if (!IsOffline && ordersTask.Result is { } orders)
                 foreach (var o in orders) Orders.Add(o);
+
             OrdersCount = string.Format(LocalizationService.Get("AvailableOrdersCount"), Orders.Count);
         }
         finally { IsRefreshing = false; }
@@ -58,10 +70,14 @@ public partial class AvailableOrdersViewModel : BaseViewModel
             }
             else
             {
-                // لو السيرفر رافض لأن عندك طلب شغال بالفعل، نوضح ده للدريفر بدل رسالة عامة
-                var text = !string.IsNullOrWhiteSpace(message) && message.Contains("active order", StringComparison.OrdinalIgnoreCase)
-                    ? "You already have an active order. Deliver it before accepting a new one."
-                    : "This order is no longer available. It may have been taken by another driver.";
+                // لو السيرفر رافض لأن عندك طلب شغال بالفعل (أو إنت Offline)، نوضح ده للدريفر بدل رسالة عامة
+                var hasMessage = !string.IsNullOrWhiteSpace(message);
+                var text =
+                    hasMessage && message!.Contains("active order", StringComparison.OrdinalIgnoreCase)
+                        ? "You already have an active order. Deliver it before accepting a new one."
+                    : hasMessage && message!.Contains("online", StringComparison.OrdinalIgnoreCase)
+                        ? LocalizationService.Get("OfflineNoAvailableOrders")
+                        : "This order is no longer available. It may have been taken by another driver.";
                 await AlertAsync(text);
                 await LoadAsync();
             }

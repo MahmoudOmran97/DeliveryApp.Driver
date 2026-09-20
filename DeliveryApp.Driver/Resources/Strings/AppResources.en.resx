@@ -99,6 +99,7 @@
 	<data name="AcceptOrder"      xml:space="preserve"><value>Accept Order ✓</value></data>
 	<data name="NoAvailableOrders" xml:space="preserve"><value>No available orders right now. Check back soon! 🕐</value></data>
 	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} available orders</value></data>
+	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>You're offline. Go online from the Home page to see available orders. 🔴</value></data>
 
 	<!-- ── Active Delivery ── -->
 	<data name="EarningPrefix"  xml:space="preserve"><value>Earning: </value></data>
