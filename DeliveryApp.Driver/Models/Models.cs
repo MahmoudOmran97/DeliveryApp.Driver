@@ -56,6 +56,9 @@ public class AvailableOrder
     public int? EstimatedDeliveryMax { get; set; }
     public string Status { get; set; } = string.Empty;
 
+    // ✅ من السيرفر: الطلب جوه نطاق القبول المسموح للدريفر ولا لأ (الطلب البعيد يفضل ظاهر بس مايتقبلش)
+    public bool CanAccept { get; set; } = true;
+
     public string DeliveryFeeText => $"{DeliveryFee:F0} EGP";
     public string TotalAmountText => $"{TotalAmount:F0} EGP";
     public string DistanceText => DistanceKm.HasValue ? $"{DistanceKm:F1} km" : "--";
@@ -69,6 +72,12 @@ public class AvailableOrder
         _ => Status
     };
     public string ItemCountText => $"{ItemCount} items";
+
+    // ── للعرض: نص وزرار الزرار لما الطلب يكون برّه نطاق القبول ──
+    public bool IsOutOfRange => !CanAccept;
+    public string AcceptButtonText => CanAccept
+        ? LocalizationService.Get("AcceptOrder")
+        : LocalizationService.Get("OutOfRange");
 }
 
 // ─── Active Order ────────────────────────────────────────────────────────────

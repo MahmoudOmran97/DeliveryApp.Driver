@@ -94,7 +94,7 @@
 									<!-- Status, distance, and preparation time -->
 									<Grid ColumnDefinitions="*,*,*" Margin="0,0,0,2">
 										<VerticalStackLayout Grid.Column="0" Spacing="2"><Label Text="{loc:Loc Key=OrderStatus}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding StatusText}" FontFamily="CairoBold" FontSize="13" TextColor="#FF5722"/></VerticalStackLayout>
-										<VerticalStackLayout Grid.Column="1" Spacing="2"><Label Text="{loc:Loc Key=Distance}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding DistanceText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/></VerticalStackLayout>
+										<VerticalStackLayout Grid.Column="1" Spacing="2"><Label Text="{loc:Loc Key=Distance}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding DistanceText}" FontFamily="CairoBold" FontSize="14" TextColor="{Binding CanAccept, Converter={StaticResource CanAcceptToTextColorConverter}}"/></VerticalStackLayout>
 										<VerticalStackLayout Grid.Column="2" Spacing="2"><Label Text="{loc:Loc Key=PreparationTime}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/><Label Text="{Binding PreparationTimeText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/></VerticalStackLayout>
 									</Grid>
 
@@ -117,10 +117,12 @@
 									</VerticalStackLayout>
 								</Grid>
 
-								<!-- Accept Button -->
-								<Button Text="{loc:Loc Key=AcceptOrder}"
+								<!-- Accept Button (out-of-range orders stay visible in the list but the button greys out and disables) -->
+								<Button Text="{Binding AcceptButtonText}"
                                         CommandParameter="{Binding .}"
-                                        BackgroundColor="#FF5722" TextColor="White"
+                                        BackgroundColor="{Binding CanAccept, Converter={StaticResource BoolToColorConverter}}"
+                                        TextColor="White"
+                                        IsEnabled="{Binding CanAccept}"
                                         FontFamily="CairoBold" FontSize="14"
                                         HeightRequest="44" CornerRadius="10"
                                         Clicked="OnAcceptClicked"/>

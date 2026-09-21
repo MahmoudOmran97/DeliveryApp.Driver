@@ -85,13 +85,30 @@
 						<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
 							<VerticalStackLayout Grid.Column="0" Spacing="2">
 								<Label Text="{loc:Loc Key=Distance}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
-								<Label Text="{Binding Order.DistanceText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+								<Label Text="{Binding Order.DistanceText}" FontFamily="CairoBold" FontSize="14"
+                                       TextColor="{Binding Order.CanAccept, Converter={StaticResource CanAcceptToTextColorConverter}}"/>
 							</VerticalStackLayout>
 							<VerticalStackLayout Grid.Column="1" Spacing="2">
 								<Label Text="{loc:Loc Key=PreparationTime}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
 								<Label Text="{Binding Order.PreparationTimeText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
 							</VerticalStackLayout>
 						</Grid>
+
+						<!-- ✅ المسافة بين المحل والعميل نفسه (مش بين الدريفر والمحل) -->
+						<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+							<Label Grid.Column="0" Text="🏪➜📍" FontSize="14" VerticalOptions="Center"/>
+							<HorizontalStackLayout Grid.Column="1" Spacing="6">
+								<Label Text="{loc:Loc Key=AOD_RestaurantToCustomerDistance}" FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E" VerticalOptions="Center"/>
+								<Label Text="{Binding Order.RestaurantToCustomerDistanceText}" FontFamily="CairoBold" FontSize="13" TextColor="#212121" VerticalOptions="Center"/>
+							</HorizontalStackLayout>
+						</Grid>
+
+						<!-- تحذير لو الطلب برّه نطاق القبول -->
+						<Border IsVisible="{Binding Order.IsOutOfRange}"
+                                BackgroundColor="#FFEBEE" StrokeShape="RoundRectangle 10" Stroke="#FFCDD2"
+                                Padding="10,8">
+							<Label Text="{loc:Loc Key=OutOfRangeMessage}" FontFamily="CairoRegular" FontSize="12" TextColor="#C62828" LineBreakMode="WordWrap"/>
+						</Border>
 
 					</VerticalStackLayout>
 				</Border>
@@ -185,10 +202,11 @@
 		<Border Grid.Row="2" IsVisible="{Binding HasOrder}"
                 BackgroundColor="White" Stroke="#EEEEEE" StrokeShape="RoundRectangle 0"
                 Padding="16,12,16,20">
-			<Button Text="{loc:Loc Key=AcceptOrder}"
+			<Button Text="{Binding Order.AcceptButtonText}"
                     Command="{Binding AcceptCommand}"
-                    IsEnabled="{Binding IsNotBusy}"
-                    BackgroundColor="#FF5722" TextColor="White"
+                    IsEnabled="{Binding CanAccept}"
+                    BackgroundColor="{Binding Order.CanAccept, Converter={StaticResource BoolToColorConverter}}"
+                    TextColor="White"
                     FontFamily="CairoBold" FontSize="16"
                     HeightRequest="54" CornerRadius="14"/>
 		</Border>

@@ -76,3 +76,13 @@ public class BoolToOnlineColorConverter : IValueConverter
     public object ConvertBack(object? v, Type t, object? p, CultureInfo c)
         => throw new NotImplementedException();
 }
+
+// CanAccept true → normal dark text, false (out of range) → red, to flag the distance value
+public class CanAcceptToTextColorConverter : IValueConverter
+{
+    public object Convert(object? v, Type t, object? p, CultureInfo c)
+        => v is true ? Color.FromArgb("#212121") : Color.FromArgb("#F44336");
+
+    public object ConvertBack(object? v, Type t, object? p, CultureInfo c)
+        => throw new NotImplementedException();
+}

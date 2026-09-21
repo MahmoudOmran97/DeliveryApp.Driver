@@ -100,6 +100,8 @@
 	<data name="NoAvailableOrders" xml:space="preserve"><value>لا توجد طلبات متاحة الآن. حاول مرة أخرى بعد قليل 🕐</value></data>
 	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} طلب متاح</value></data>
 	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>أنت غير متصل حالياً. اضغط «اتصل الآن» من الصفحة الرئيسية لعرض الطلبات المتاحة 🔴</value></data>
+	<data name="OutOfRange" xml:space="preserve"><value>برّه النطاق</value></data>
+	<data name="OutOfRangeMessage" xml:space="preserve"><value>الطلب ده برّه نطاق التوصيل بتاعك، مش هتقدر تقبله دلوقتي.</value></data>
 	<data name="AOD_Title" xml:space="preserve"><value>تفاصيل الطلب</value></data>
 	<data name="AOD_OrderNumber" xml:space="preserve"><value>رقم الطلب</value></data>
 	<data name="AOD_PlacedAt" xml:space="preserve"><value>وقت الطلب</value></data>
@@ -208,6 +210,7 @@
 	<data name="About_Developer" xml:space="preserve"><value>جميع الحقوق محفوظة © تالي</value></data>
 	<data name="Distance" xml:space="preserve"><value>المسافة</value></data>
 	<data name="PreparationTime" xml:space="preserve"><value>وقت التجهيز</value></data>
+	<data name="AOD_RestaurantToCustomerDistance" xml:space="preserve"><value>من المحل للعميل</value></data>
 	<data name="Timer_DeliveryTitle" xml:space="preserve"><value>الوقت المتبقي للتوصيل</value></data>
 	<data name="Timer_DeliveryHint" xml:space="preserve"><value>الوقت التقديري للوصول لعنوان العميل</value></data>
 	<data name="OrderStatus" xml:space="preserve"><value>الحالة</value></data>

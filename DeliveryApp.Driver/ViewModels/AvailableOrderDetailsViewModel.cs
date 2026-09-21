@@ -23,11 +23,24 @@ public partial class AvailableOrderDetailsViewModel : BaseViewModel
 
     public bool HasOrder => Order != null;
 
+    // برّه نطاق القبول أو الصفحة مشغولة (Busy) → الزرار يتقفل
+    public bool CanAccept => IsNotBusy && (Order?.CanAccept ?? false);
+
     public AvailableOrderDetailsViewModel(ApiService api, LocationService location)
     {
         _api = api;
         _location = location;
+
+        // IsBusy متعرّفة في BaseViewModel، فبنسمع للتغيير عشان نحدّث CanAccept تبعها
+        PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(IsBusy))
+                OnPropertyChanged(nameof(CanAccept));
+        };
     }
+
+    partial void OnOrderChanged(AvailableOrderDetails? value)
+        => OnPropertyChanged(nameof(CanAccept));
 
     [RelayCommand]
     public async Task LoadAsync()
@@ -56,6 +69,13 @@ public partial class AvailableOrderDetailsViewModel : BaseViewModel
     {
         var order = Order;
         if (order == null) return;
+
+        // الطلب برّه نطاق القبول — منسمحش بالقبول حتى لو الزرار اتنادى عليه برمجياً
+        if (!order.CanAccept)
+        {
+            await AlertAsync(LocalizationService.Get("OutOfRangeMessage"));
+            return;
+        }
 
         var confirm = await ConfirmAsync(
             $"Accept delivery from {order.RestaurantName} to {order.DeliveryAddress}?\nEarning: {order.DeliveryFeeText}",

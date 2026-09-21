@@ -24,6 +24,13 @@ public class AvailableOrderDetails
     public string RestaurantName { get; set; } = string.Empty;
     public string? RestaurantAddress { get; set; }
     public double? DistanceKm { get; set; }
+
+    // ✅ من السيرفر: المسافة بين المحل وعنوان العميل (مش بين الدريفر والمحل)
+    public double? RestaurantToCustomerDistanceKm { get; set; }
+
+    // ✅ من السيرفر: الطلب جوه نطاق القبول المسموح للدريفر ولا لأ
+    public bool CanAccept { get; set; } = true;
+
     public List<AvailableOrderItem> Items { get; set; } = new();
 
     // ── للعرض ──
@@ -37,6 +44,13 @@ public class AvailableOrderDetails
     public bool HasRestaurantAddress => !string.IsNullOrWhiteSpace(RestaurantAddress);
 
     public string DistanceText => DistanceKm.HasValue ? $"{DistanceKm:F1} km" : "--";
+    public string RestaurantToCustomerDistanceText => RestaurantToCustomerDistanceKm.HasValue
+        ? $"{RestaurantToCustomerDistanceKm:F1} km"
+        : "--";
+    public bool IsOutOfRange => !CanAccept;
+    public string AcceptButtonText => CanAccept
+        ? LocalizationService.Get("AcceptOrder")
+        : LocalizationService.Get("OutOfRange");
     public string PreparationTimeText => EstimatedDeliveryMin.HasValue && EstimatedDeliveryMax.HasValue
         ? $"{EstimatedDeliveryMin}-{EstimatedDeliveryMax} min"
         : "--";

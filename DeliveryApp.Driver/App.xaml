@@ -17,6 +17,9 @@
             <converters:InvertedBoolConverter     x:Key="InvertedBool" />
             <converters:BoolToColorConverter      x:Key="BoolToColorConverter" />
 
+            <!-- ✅ NEW: Available-order accept range (CanAccept true/false → normal/red text) -->
+            <converters:CanAcceptToTextColorConverter x:Key="CanAcceptToTextColorConverter" />
+
             <!-- Chat converters -->
             <converters:BoolToLayoutConverter     x:Key="BoolToLayoutConverter" />
             <converters:ChatBubbleColorConverter  x:Key="ChatBubbleColorConverter" />

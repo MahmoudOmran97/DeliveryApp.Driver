@@ -62,6 +62,13 @@ public partial class AvailableOrdersViewModel : BaseViewModel
     [RelayCommand]
     async Task AcceptOrderAsync(AvailableOrder order)
     {
+        // الطلب برّه نطاق القبول (بعيد عن الدريفر) — منمنعوش من الظهور بس منسمحش بالقبول
+        if (!order.CanAccept)
+        {
+            await AlertAsync(LocalizationService.Get("OutOfRangeMessage"));
+            return;
+        }
+
         var confirm = await ConfirmAsync(
             $"Accept delivery from {order.RestaurantName} to {order.DeliveryAddress}?\nEarning: {order.DeliveryFeeText}",
             "Accept Order");
@@ -80,11 +87,13 @@ public partial class AvailableOrdersViewModel : BaseViewModel
             }
             else
             {
-                // لو السيرفر رافض لأن عندك طلب شغال بالفعل (أو إنت Offline)، نوضح ده للدريفر بدل رسالة عامة
+                // لو السيرفر رافض لأن عندك طلب شغال بالفعل (أو إنت Offline أو الطلب برّه نطاقك)، نوضح ده للدريفر بدل رسالة عامة
                 var hasMessage = !string.IsNullOrWhiteSpace(message);
                 var text =
                     hasMessage && message!.Contains("active order", StringComparison.OrdinalIgnoreCase)
                         ? "You already have an active order. Deliver it before accepting a new one."
+                    : hasMessage && message!.Contains("delivery range", StringComparison.OrdinalIgnoreCase)
+                        ? LocalizationService.Get("OutOfRangeMessage")
                     : hasMessage && message!.Contains("online", StringComparison.OrdinalIgnoreCase)
                         ? LocalizationService.Get("OfflineNoAvailableOrders")
                         : "This order is no longer available. It may have been taken by another driver.";

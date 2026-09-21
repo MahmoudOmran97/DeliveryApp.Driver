@@ -100,6 +100,8 @@
 	<data name="NoAvailableOrders" xml:space="preserve"><value>No available orders right now. Check back soon! 🕐</value></data>
 	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} available orders</value></data>
 	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>You're offline. Go online from the Home page to see available orders. 🔴</value></data>
+	<data name="OutOfRange" xml:space="preserve"><value>Out of range</value></data>
+	<data name="OutOfRangeMessage" xml:space="preserve"><value>This order is outside your delivery range and can't be accepted right now.</value></data>
 	<data name="AOD_Title" xml:space="preserve"><value>Order Details</value></data>
 	<data name="AOD_OrderNumber" xml:space="preserve"><value>Order number</value></data>
 	<data name="AOD_PlacedAt" xml:space="preserve"><value>Placed at</value></data>
@@ -207,6 +209,7 @@
 	<data name="About_Developer" xml:space="preserve"><value>All rights reserved © Taly</value></data>
 	<data name="Distance" xml:space="preserve"><value>Distance</value></data>
 	<data name="PreparationTime" xml:space="preserve"><value>Preparation time</value></data>
+	<data name="AOD_RestaurantToCustomerDistance" xml:space="preserve"><value>Restaurant → customer</value></data>
 	<data name="Timer_DeliveryTitle" xml:space="preserve"><value>Time remaining to deliver</value></data>
 	<data name="Timer_DeliveryHint" xml:space="preserve"><value>Estimated time to the customer's address</value></data>
 	<data name="OrderStatus" xml:space="preserve"><value>Status</value></data>
