@@ -49,6 +49,16 @@ public partial class AvailableOrdersViewModel : BaseViewModel
         finally { IsRefreshing = false; }
     }
 
+    // الضغط على الكارت: يفتح صفحة بكل تفاصيل الطلب قبل ما الدريفر يقبله
+    [RelayCommand]
+    async Task OpenDetailsAsync(AvailableOrder? order)
+    {
+        if (order == null || IsBusy) return;
+
+        await Shell.Current.GoToAsync(nameof(Views.AvailableOrderDetailsPage),
+            new Dictionary<string, object> { ["OrderId"] = order.Id });
+    }
+
     [RelayCommand]
     async Task AcceptOrderAsync(AvailableOrder order)
     {

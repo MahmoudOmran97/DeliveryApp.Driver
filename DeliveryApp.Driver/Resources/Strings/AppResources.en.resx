@@ -100,6 +100,18 @@
 	<data name="NoAvailableOrders" xml:space="preserve"><value>No available orders right now. Check back soon! 🕐</value></data>
 	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} available orders</value></data>
 	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>You're offline. Go online from the Home page to see available orders. 🔴</value></data>
+	<data name="AOD_Title" xml:space="preserve"><value>Order Details</value></data>
+	<data name="AOD_OrderNumber" xml:space="preserve"><value>Order number</value></data>
+	<data name="AOD_PlacedAt" xml:space="preserve"><value>Placed at</value></data>
+	<data name="AOD_PickupFrom" xml:space="preserve"><value>Pick up from</value></data>
+	<data name="AOD_DeliverTo" xml:space="preserve"><value>Deliver to</value></data>
+	<data name="AOD_Notes" xml:space="preserve"><value>Delivery notes</value></data>
+	<data name="AOD_Payment" xml:space="preserve"><value>Payment method</value></data>
+	<data name="AOD_Subtotal" xml:space="preserve"><value>Items subtotal</value></data>
+	<data name="AOD_Discount" xml:space="preserve"><value>Discount</value></data>
+	<data name="AOD_DeliveryFee" xml:space="preserve"><value>Delivery fee (your earning)</value></data>
+	<data name="AOD_PayCash" xml:space="preserve"><value>Cash on delivery</value></data>
+	<data name="AOD_NoLongerAvailable" xml:space="preserve"><value>This order is no longer available. It may have been taken by another driver.</value></data>
 
 	<!-- ── Active Delivery ── -->
 	<data name="EarningPrefix"  xml:space="preserve"><value>Earning: </value></data>

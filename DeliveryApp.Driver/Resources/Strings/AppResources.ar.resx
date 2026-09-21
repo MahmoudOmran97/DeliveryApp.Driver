@@ -100,6 +100,18 @@
 	<data name="NoAvailableOrders" xml:space="preserve"><value>لا توجد طلبات متاحة الآن. حاول مرة أخرى بعد قليل 🕐</value></data>
 	<data name="AvailableOrdersCount" xml:space="preserve"><value>{0} طلب متاح</value></data>
 	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>أنت غير متصل حالياً. اضغط «اتصل الآن» من الصفحة الرئيسية لعرض الطلبات المتاحة 🔴</value></data>
+	<data name="AOD_Title" xml:space="preserve"><value>تفاصيل الطلب</value></data>
+	<data name="AOD_OrderNumber" xml:space="preserve"><value>رقم الطلب</value></data>
+	<data name="AOD_PlacedAt" xml:space="preserve"><value>وقت الطلب</value></data>
+	<data name="AOD_PickupFrom" xml:space="preserve"><value>الاستلام من</value></data>
+	<data name="AOD_DeliverTo" xml:space="preserve"><value>التوصيل إلى</value></data>
+	<data name="AOD_Notes" xml:space="preserve"><value>ملاحظات التوصيل</value></data>
+	<data name="AOD_Payment" xml:space="preserve"><value>طريقة الدفع</value></data>
+	<data name="AOD_Subtotal" xml:space="preserve"><value>إجمالي الأصناف</value></data>
+	<data name="AOD_Discount" xml:space="preserve"><value>الخصم</value></data>
+	<data name="AOD_DeliveryFee" xml:space="preserve"><value>سعر التوصيل (ربحك)</value></data>
+	<data name="AOD_PayCash" xml:space="preserve"><value>كاش عند الاستلام</value></data>
+	<data name="AOD_NoLongerAvailable" xml:space="preserve"><value>الطلب ده مبقاش متاح. ممكن يكون سائق تاني قبله.</value></data>
 
 	<!-- ── Active Delivery ── -->
 	<data name="EarningPrefix"    xml:space="preserve"><value>الربح: </value></data>

@@ -16,6 +16,7 @@ public partial class AppShell : Shell
 
         // ── Pushed pages (need back button) ──────────────────────
         Routing.RegisterRoute(nameof(ActiveDeliveryPage), typeof(ActiveDeliveryPage));
+        Routing.RegisterRoute(nameof(AvailableOrderDetailsPage), typeof(AvailableOrderDetailsPage));
         Routing.RegisterRoute(nameof(CustomerChatPage), typeof(CustomerChatPage));
         Routing.RegisterRoute(nameof(SupportChatPage), typeof(SupportChatPage));
         Routing.RegisterRoute(nameof(ComplaintsPage), typeof(ComplaintsPage));

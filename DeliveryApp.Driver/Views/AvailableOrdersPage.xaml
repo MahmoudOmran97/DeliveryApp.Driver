@@ -53,16 +53,28 @@
                                 StrokeShape="RoundRectangle 16" Stroke="Transparent"
                                 Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
                                 Padding="16">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer
+									Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AvailableOrdersViewModel}}, Path=OpenDetailsCommand}"
+									CommandParameter="{Binding .}"/>
+							</Border.GestureRecognizers>
 							<VerticalStackLayout Spacing="12">
 
 								<!-- Top: Restaurant + Time -->
 								<Grid ColumnDefinitions="*,Auto">
-									<HorizontalStackLayout Grid.Column="0" Spacing="8">
+									<VerticalStackLayout Grid.Column="0" Spacing="6">
+										<Border BackgroundColor="#FFF3EE" Stroke="#FFD9CC" StrokeShape="RoundRectangle 8"
+										        Padding="8,2" HorizontalOptions="Start">
+											<Label Text="{Binding Id, StringFormat='#{0}'}"
+											       FontFamily="CairoBold" FontSize="12" TextColor="#FF5722"/>
+										</Border>
+										<HorizontalStackLayout Spacing="8">
 										<Label Text="🏪" FontSize="18" VerticalOptions="Center"/>
 										<Label Text="{Binding RestaurantName}"
                                                FontFamily="CairoBold" FontSize="15" TextColor="#212121"
                                                VerticalOptions="Center"/>
 									</HorizontalStackLayout>
+									</VerticalStackLayout>
 									<Label Grid.Column="1" Text="{Binding TimeAgoText}"
                                            FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E"
                                            VerticalOptions="Center"/>

@@ -355,6 +355,10 @@ public class ApiService
     public Task<List<AvailableOrder>?> GetAvailableOrdersAsync()
         => GetAsync<List<AvailableOrder>>("orders/available");
 
+    // تفاصيل طلب متاح كاملة قبل القبول (بيرجع null لو الطلب اتاخد/اتلغى أو الدريفر Offline)
+    public Task<AvailableOrderDetails?> GetAvailableOrderDetailsAsync(int orderId)
+        => GetAsync<AvailableOrderDetails>($"orders/available/{orderId}");
+
     public async Task<bool> AssignOrderAsync(int orderId)
         => await PutAsync($"orders/{orderId}/assign-driver");
 

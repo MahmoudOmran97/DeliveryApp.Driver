@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:DeliveryApp.Driver.ViewModels"
+             xmlns:m="clr-namespace:DeliveryApp.Driver.Models"
+             xmlns:loc="clr-namespace:DeliveryApp.Driver.Converters"
+             x:Class="DeliveryApp.Driver.Views.AvailableOrderDetailsPage"
+             x:DataType="vm:AvailableOrderDetailsViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="#F8F9FA">
+
+	<Grid RowDefinitions="Auto,*,Auto">
+
+		<!-- Header -->
+		<Grid Grid.Row="0" BackgroundColor="#FF5722" Padding="20,52,20,16"
+              ColumnDefinitions="44,*">
+			<Image Grid.Column="0" Source="icon_back.png" WidthRequest="38" HeightRequest="38"
+                   VerticalOptions="Center">
+				<Image.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding GoBackCommand}"/>
+				</Image.GestureRecognizers>
+			</Image>
+			<VerticalStackLayout Grid.Column="1" Spacing="2" Margin="12,0,0,0">
+				<Label Text="{loc:Loc Key=AOD_Title}" FontFamily="CairoBold" FontSize="20" TextColor="White"/>
+				<Label Text="{Binding OrderId, StringFormat='#{0}'}"
+                       FontFamily="CairoRegular" FontSize="13" TextColor="#FFCCBC"/>
+			</VerticalStackLayout>
+		</Grid>
+
+		<!-- Content -->
+		<ScrollView Grid.Row="1" IsVisible="{Binding HasOrder}">
+			<VerticalStackLayout Padding="16" Spacing="14">
+
+				<!-- Order number + status + time -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 16" Stroke="Transparent"
+                        Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                        Padding="16">
+					<Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+						<VerticalStackLayout Grid.Column="0" Spacing="2">
+							<Label Text="{loc:Loc Key=AOD_OrderNumber}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+							<Label Text="{Binding Order.OrderNumberText}" FontFamily="CairoBold" FontSize="16" TextColor="#FF5722"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="1" Spacing="2">
+							<Label Text="{loc:Loc Key=OrderStatus}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+							<Label Text="{Binding Order.StatusText}" FontFamily="CairoBold" FontSize="13"
+                                   TextColor="{Binding Order.StatusColor}"/>
+						</VerticalStackLayout>
+						<VerticalStackLayout Grid.Column="2" Spacing="2">
+							<Label Text="{loc:Loc Key=AOD_PlacedAt}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+							<Label Text="{Binding Order.CreatedAtText}" FontFamily="CairoBold" FontSize="12" TextColor="#212121"/>
+						</VerticalStackLayout>
+					</Grid>
+				</Border>
+
+				<!-- Pickup + Delivery -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 16" Stroke="Transparent"
+                        Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                        Padding="16">
+					<VerticalStackLayout Spacing="12">
+
+						<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+							<Label Grid.Column="0" Text="🏪" FontSize="20" VerticalOptions="Start"/>
+							<VerticalStackLayout Grid.Column="1" Spacing="2">
+								<Label Text="{loc:Loc Key=AOD_PickupFrom}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+								<Label Text="{Binding Order.RestaurantName}" FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
+								<Label Text="{Binding Order.RestaurantAddress}" IsVisible="{Binding Order.HasRestaurantAddress}"
+                                       FontFamily="CairoRegular" FontSize="13" TextColor="#616161" LineBreakMode="WordWrap"/>
+							</VerticalStackLayout>
+						</Grid>
+
+						<BoxView HeightRequest="1" Color="#F5F5F5"/>
+
+						<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+							<Label Grid.Column="0" Text="📍" FontSize="20" VerticalOptions="Start"/>
+							<VerticalStackLayout Grid.Column="1" Spacing="2">
+								<Label Text="{loc:Loc Key=AOD_DeliverTo}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+								<Label Text="{Binding Order.DeliveryAddress}" FontFamily="CairoRegular" FontSize="14"
+                                       TextColor="#212121" LineBreakMode="WordWrap"/>
+							</VerticalStackLayout>
+						</Grid>
+
+						<BoxView HeightRequest="1" Color="#F5F5F5"/>
+
+						<Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+							<VerticalStackLayout Grid.Column="0" Spacing="2">
+								<Label Text="{loc:Loc Key=Distance}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+								<Label Text="{Binding Order.DistanceText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+							</VerticalStackLayout>
+							<VerticalStackLayout Grid.Column="1" Spacing="2">
+								<Label Text="{loc:Loc Key=PreparationTime}" FontFamily="CairoRegular" FontSize="11" TextColor="#9E9E9E"/>
+								<Label Text="{Binding Order.PreparationTimeText}" FontFamily="CairoBold" FontSize="14" TextColor="#212121"/>
+							</VerticalStackLayout>
+						</Grid>
+
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Delivery notes -->
+				<Border IsVisible="{Binding Order.HasNotes}"
+                        BackgroundColor="#FFFBEA" StrokeShape="RoundRectangle 16" Stroke="#FFE8A3"
+                        Padding="16">
+					<Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+						<Label Grid.Column="0" Text="📝" FontSize="18" VerticalOptions="Start"/>
+						<VerticalStackLayout Grid.Column="1" Spacing="2">
+							<Label Text="{loc:Loc Key=AOD_Notes}" FontFamily="CairoRegular" FontSize="11" TextColor="#8D7B3A"/>
+							<Label Text="{Binding Order.DeliveryNotes}" FontFamily="CairoRegular" FontSize="14"
+                                   TextColor="#4A4020" LineBreakMode="WordWrap"/>
+						</VerticalStackLayout>
+					</Grid>
+				</Border>
+
+				<!-- Items -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 16" Stroke="Transparent"
+                        Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                        Padding="16">
+					<VerticalStackLayout Spacing="10">
+						<Label Text="{loc:Loc Key=OrderItems}" FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
+						<VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Order.Items}">
+							<BindableLayout.ItemTemplate>
+								<DataTemplate x:DataType="m:AvailableOrderItem">
+									<Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+										<Label Grid.Column="0" Text="•" FontSize="14" TextColor="#FF5722" VerticalOptions="Start"/>
+										<VerticalStackLayout Grid.Column="1" Spacing="1">
+											<Label Text="{Binding Display}" FontFamily="CairoRegular" FontSize="14" TextColor="#424242"/>
+											<Label Text="{Binding Notes}" IsVisible="{Binding HasNotes}"
+                                                   FontFamily="CairoRegular" FontSize="12" TextColor="#9E9E9E" LineBreakMode="WordWrap"/>
+										</VerticalStackLayout>
+										<Label Grid.Column="2" Text="{Binding TotalPriceText}"
+                                               FontFamily="CairoBold" FontSize="13" TextColor="#212121" VerticalOptions="Start"/>
+									</Grid>
+								</DataTemplate>
+							</BindableLayout.ItemTemplate>
+						</VerticalStackLayout>
+					</VerticalStackLayout>
+				</Border>
+
+				<!-- Payment + totals -->
+				<Border BackgroundColor="White" StrokeShape="RoundRectangle 16" Stroke="Transparent"
+                        Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.08}"
+                        Padding="16">
+					<VerticalStackLayout Spacing="10">
+
+						<Grid ColumnDefinitions="*,Auto">
+							<Label Grid.Column="0" Text="{loc:Loc Key=AOD_Payment}" FontFamily="CairoRegular" FontSize="13" TextColor="#616161"/>
+							<Label Grid.Column="1" Text="{Binding Order.PaymentMethodText}" FontFamily="CairoBold" FontSize="13" TextColor="#212121"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*,Auto">
+							<Label Grid.Column="0" Text="{loc:Loc Key=AOD_Subtotal}" FontFamily="CairoRegular" FontSize="13" TextColor="#616161"/>
+							<Label Grid.Column="1" Text="{Binding Order.SubTotalText}" FontFamily="CairoBold" FontSize="13" TextColor="#212121"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*,Auto" IsVisible="{Binding Order.HasDiscount}">
+							<Label Grid.Column="0" Text="{loc:Loc Key=AOD_Discount}" FontFamily="CairoRegular" FontSize="13" TextColor="#616161"/>
+							<Label Grid.Column="1" Text="{Binding Order.DiscountText}" FontFamily="CairoBold" FontSize="13" TextColor="#F44336"/>
+						</Grid>
+
+						<Grid ColumnDefinitions="*,Auto">
+							<Label Grid.Column="0" Text="{loc:Loc Key=AOD_DeliveryFee}" FontFamily="CairoRegular" FontSize="13" TextColor="#616161"/>
+							<Label Grid.Column="1" Text="{Binding Order.DeliveryFeeText}" FontFamily="CairoBold" FontSize="14" TextColor="#4CAF50"/>
+						</Grid>
+
+						<BoxView HeightRequest="1" Color="#F5F5F5"/>
+
+						<Grid ColumnDefinitions="*,Auto">
+							<Label Grid.Column="0" Text="{loc:Loc Key=OrderTotal}" FontFamily="CairoBold" FontSize="15" TextColor="#212121"/>
+							<Label Grid.Column="1" Text="{Binding Order.TotalAmountText}" FontFamily="CairoBold" FontSize="16" TextColor="#212121"/>
+						</Grid>
+
+					</VerticalStackLayout>
+				</Border>
+
+				<BoxView HeightRequest="8" Color="Transparent"/>
+			</VerticalStackLayout>
+		</ScrollView>
+
+		<!-- Busy overlay -->
+		<Grid Grid.Row="1" IsVisible="{Binding IsBusy}" BackgroundColor="#80FFFFFF">
+			<ActivityIndicator IsRunning="True" Color="#FF5722"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+		</Grid>
+
+		<!-- Accept bar -->
+		<Border Grid.Row="2" IsVisible="{Binding HasOrder}"
+                BackgroundColor="White" Stroke="#EEEEEE" StrokeShape="RoundRectangle 0"
+                Padding="16,12,16,20">
+			<Button Text="{loc:Loc Key=AcceptOrder}"
+                    Command="{Binding AcceptCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    BackgroundColor="#FF5722" TextColor="White"
+                    FontFamily="CairoBold" FontSize="16"
+                    HeightRequest="54" CornerRadius="14"/>
+		</Border>
+	</Grid>
+</ContentPage>
