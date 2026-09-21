@@ -102,6 +102,10 @@
 	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>You're offline. Go online from the Home page to see available orders. 🔴</value></data>
 	<data name="OutOfRange" xml:space="preserve"><value>Out of range</value></data>
 	<data name="OutOfRangeMessage" xml:space="preserve"><value>This order is outside your delivery range and can't be accepted right now.</value></data>
+	<data name="FilterAll" xml:space="preserve"><value>All</value></data>
+	<data name="FilterInRange" xml:space="preserve"><value>In range</value></data>
+	<data name="FilterOutOfRange" xml:space="preserve"><value>Out of range</value></data>
+	<data name="FilterAllZones" xml:space="preserve"><value>All areas</value></data>
 	<data name="AOD_Title" xml:space="preserve"><value>Order Details</value></data>
 	<data name="AOD_OrderNumber" xml:space="preserve"><value>Order number</value></data>
 	<data name="AOD_PlacedAt" xml:space="preserve"><value>Placed at</value></data>
@@ -122,6 +126,10 @@
 	<data name="CallCustomer"   xml:space="preserve"><value>Call Customer</value></data>
 	<data name="ChatWithCustomer" xml:space="preserve"><value>Chat with Customer</value></data>
 	<data name="Navigate"       xml:space="preserve"><value>Navigate</value></data>
+	<data name="NotifyNearby" xml:space="preserve"><value>Notify customer I'm nearby 📍</value></data>
+	<data name="NotifyNearbySentTitle" xml:space="preserve"><value>Sent ✓</value></data>
+	<data name="NotifyNearbySentMessage" xml:space="preserve"><value>The customer has been notified that you're nearby.</value></data>
+	<data name="NotifiedNearbyAt" xml:space="preserve"><value>Customer notified at {0}</value></data>
 	<data name="GoOnline"       xml:space="preserve"><value>Go Online</value></data>
 	<data name="GoOffline"      xml:space="preserve"><value>Go Offline</value></data>
 	<data name="OrderDetailsNotAvailable" xml:space="preserve"><value>Order details are not available right now.</value></data>

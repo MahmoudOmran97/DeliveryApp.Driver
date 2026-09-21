@@ -59,6 +59,10 @@ public class AvailableOrder
     // ✅ من السيرفر: الطلب جوه نطاق القبول المسموح للدريفر ولا لأ (الطلب البعيد يفضل ظاهر بس مايتقبلش)
     public bool CanAccept { get; set; } = true;
 
+    // ✅ من السيرفر: المنطقة المستنتجة من إحداثيات المحل (لفلتر "المنطقة" في صفحة الطلبات المتاحة)
+    public int? ZoneId { get; set; }
+    public string? ZoneName { get; set; }
+
     public string DeliveryFeeText => $"{DeliveryFee:F0} EGP";
     public string TotalAmountText => $"{TotalAmount:F0} EGP";
     public string DistanceText => DistanceKm.HasValue ? $"{DistanceKm:F1} km" : "--";
@@ -109,8 +113,14 @@ public class ActiveOrder
     public DateTime? AcceptedAt { get; set; }
     public DateTime? PickedUpAt { get; set; }
 
+    // ✅ آخر مرة اتبعت فيها إشعار "قربت أوصل" للعميل — بنستخدمها نمنع سبام على الزرار
+    public DateTime? NearbyNotifiedAt { get; set; }
+
     public string DeliveryFeeText => $"{DeliveryFee:F0} EGP";
     public string TotalAmountText => $"{TotalAmount:F0} EGP";
+
+    // ✅ رقم الطلب يتعرض جمب "التوصيل النشط" فوق الصفحة
+    public string OrderNumberText => $"#{Id}";
 
     public string StatusText => Status switch
     {
@@ -131,6 +141,12 @@ public class ActiveOrder
 
     public bool IsReadyForPickup => Status == "ReadyForPickup";
     public bool IsOnTheWay => Status == "OnTheWay";
+
+    // ✅ زرار "نبّه العميل إني قربت أوصل" — يظهر طول ما الطلب OnTheWay بس
+    public bool WasNotifiedNearby => NearbyNotifiedAt.HasValue;
+    public string NotifiedNearbyText => NearbyNotifiedAt.HasValue
+        ? string.Format(LocalizationService.Get("NotifiedNearbyAt"), NearbyNotifiedAt.Value.ToLocalTime().ToString("h:mm tt"))
+        : string.Empty;
 
     // Next action button
     public string NextActionText => Status switch

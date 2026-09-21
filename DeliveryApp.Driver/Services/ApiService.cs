@@ -312,7 +312,8 @@ public class ApiService
                 EstimatedDeliveryMax = root.TryGetProperty("estimatedDeliveryMax", out var estMax) && estMax.ValueKind != JsonValueKind.Null ? estMax.GetInt32() : null,
                 CreatedAt = root.TryGetProperty("createdAt", out var createdAt) && createdAt.ValueKind != JsonValueKind.Null ? createdAt.GetDateTime() : DateTime.UtcNow,
                 AcceptedAt = root.TryGetProperty("acceptedAt", out var acceptedAt) && acceptedAt.ValueKind != JsonValueKind.Null ? acceptedAt.GetDateTime() : null,
-                PickedUpAt = root.TryGetProperty("pickedUpAt", out var pickedUpAt) && pickedUpAt.ValueKind != JsonValueKind.Null ? pickedUpAt.GetDateTime() : null
+                PickedUpAt = root.TryGetProperty("pickedUpAt", out var pickedUpAt) && pickedUpAt.ValueKind != JsonValueKind.Null ? pickedUpAt.GetDateTime() : null,
+                NearbyNotifiedAt = root.TryGetProperty("nearbyNotifiedAt", out var nearbyAt) && nearbyAt.ValueKind != JsonValueKind.Null ? nearbyAt.GetDateTime() : null
             };
 
             if (root.TryGetProperty("restaurant", out var restaurant))
@@ -385,6 +386,27 @@ public class ApiService
 
     public async Task<bool> UpdateOrderStatusAsync(int orderId, string status)
         => await PutAsync($"orders/{orderId}/status", new { Status = status });
+
+    // ✅ يبعت للعميل تنبيه "السائق قريب منك" (بلغة العميل) — بيتقال بس لما الطلب يكون OnTheWay
+    public async Task<(bool Success, string? Message)> NotifyNearbyAsync(int orderId)
+    {
+        SetAuth();
+        try
+        {
+            var r = await _http.PutAsync($"{_baseUrl}/orders/{orderId}/notify-nearby", null);
+            string? message = null;
+            try
+            {
+                var body = await r.Content.ReadFromJsonAsync<JsonElement>(_json);
+                if (body.TryGetProperty("message", out var m))
+                    message = m.GetString();
+            }
+            catch { /* ignore parse errors */ }
+            return (r.IsSuccessStatusCode, message);
+        }
+        catch (Exception ex) { Debug(ex, $"orders/{orderId}/notify-nearby"); }
+        return (false, null);
+    }
 
     public async Task<PagedResult<DriverOrder>?> GetMyOrdersAsync(int page = 1)
     {

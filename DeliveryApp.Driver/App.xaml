@@ -20,6 +20,11 @@
             <!-- ✅ NEW: Available-order accept range (CanAccept true/false → normal/red text) -->
             <converters:CanAcceptToTextColorConverter x:Key="CanAcceptToTextColorConverter" />
 
+            <!-- ✅ NEW: Available Orders filter bar chips -->
+            <converters:RangeChipBgConverter x:Key="RangeChipBgConverter" />
+            <converters:ZoneChipBgConverter x:Key="ZoneChipBgConverter" />
+            <converters:ChipTextColorConverter x:Key="ChipTextColorConverter" />
+
             <!-- Chat converters -->
             <converters:BoolToLayoutConverter     x:Key="BoolToLayoutConverter" />
             <converters:ChatBubbleColorConverter  x:Key="ChatBubbleColorConverter" />

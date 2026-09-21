@@ -36,6 +36,9 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
     [ObservableProperty] string _deliveryCountdownText = "00:00";
     [ObservableProperty] double _deliveryTimerProgress;
 
+    // ✅ حالة زرار "نبّه العميل إني قربت أوصل" (Busy مستقل عشان ميقفلش باقي أزرار الصفحة)
+    [ObservableProperty] bool _isNotifyingNearby;
+
     public event Action? MapUpdated;
 
     public ActiveDeliveryViewModel(
@@ -422,5 +425,33 @@ public partial class ActiveDeliveryViewModel : BaseViewModel
             await Map.Default.OpenAsync(location, options);
         }
         catch { await AlertAsync("Cannot open maps app"); }
+    }
+
+    // ✅ الدريفر بيبعت للعميل تنبيه "قربت أوصل" — متاح بس بعد استلام الطلب من المحل (OnTheWay)،
+    // النص بيتبعت بلغة العميل تلقائي من السيرفر (PreferredLanguage بتاعه).
+    [RelayCommand]
+    async Task NotifyNearbyAsync()
+    {
+        if (Order == null || !Order.IsOnTheWay || IsNotifyingNearby) return;
+
+        IsNotifyingNearby = true;
+        try
+        {
+            var (ok, message) = await _api.NotifyNearbyAsync(Order.Id);
+            if (ok)
+            {
+                Order.NearbyNotifiedAt = DateTime.UtcNow;
+                OnPropertyChanged(nameof(Order));
+                await AlertAsync(LocalizationService.Get("NotifyNearbySentMessage"), LocalizationService.Get("NotifyNearbySentTitle"));
+            }
+            else
+            {
+                var text = !string.IsNullOrWhiteSpace(message)
+                    ? message!
+                    : "Could not notify the customer. Please try again.";
+                await AlertAsync(text);
+            }
+        }
+        finally { IsNotifyingNearby = false; }
     }
 }

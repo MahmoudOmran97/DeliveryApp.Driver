@@ -102,6 +102,10 @@
 	<data name="OfflineNoAvailableOrders" xml:space="preserve"><value>أنت غير متصل حالياً. اضغط «اتصل الآن» من الصفحة الرئيسية لعرض الطلبات المتاحة 🔴</value></data>
 	<data name="OutOfRange" xml:space="preserve"><value>برّه النطاق</value></data>
 	<data name="OutOfRangeMessage" xml:space="preserve"><value>الطلب ده برّه نطاق التوصيل بتاعك، مش هتقدر تقبله دلوقتي.</value></data>
+	<data name="FilterAll" xml:space="preserve"><value>الكل</value></data>
+	<data name="FilterInRange" xml:space="preserve"><value>جوه النطاق</value></data>
+	<data name="FilterOutOfRange" xml:space="preserve"><value>برّه النطاق</value></data>
+	<data name="FilterAllZones" xml:space="preserve"><value>كل المناطق</value></data>
 	<data name="AOD_Title" xml:space="preserve"><value>تفاصيل الطلب</value></data>
 	<data name="AOD_OrderNumber" xml:space="preserve"><value>رقم الطلب</value></data>
 	<data name="AOD_PlacedAt" xml:space="preserve"><value>وقت الطلب</value></data>
@@ -122,6 +126,10 @@
 	<data name="CallCustomer"     xml:space="preserve"><value>اتصل بالعميل</value></data>
 	<data name="ChatWithCustomer" xml:space="preserve"><value>محادثة العميل</value></data>
 	<data name="Navigate"         xml:space="preserve"><value>تتبع المسار</value></data>
+	<data name="NotifyNearby" xml:space="preserve"><value>نبّه العميل إني قربت أوصل 📍</value></data>
+	<data name="NotifyNearbySentTitle" xml:space="preserve"><value>تم الإرسال ✓</value></data>
+	<data name="NotifyNearbySentMessage" xml:space="preserve"><value>تم إبلاغ العميل إنك قربت توصله.</value></data>
+	<data name="NotifiedNearbyAt" xml:space="preserve"><value>اتبلّغ العميل الساعة {0}</value></data>
 	<data name="GoOnline"         xml:space="preserve"><value>اتصل الآن</value></data>
 	<data name="GoOffline"        xml:space="preserve"><value>إيقاف الاتصال</value></data>
 	<data name="OrderDetailsNotAvailable" xml:space="preserve"><value>تفاصيل الطلب غير متاحة حالياً.</value></data>

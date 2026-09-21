@@ -11,7 +11,7 @@
              Shell.TabBarIsVisible="False"
              BackgroundColor="#F8F9FA">
 
-	<Grid RowDefinitions="Auto,*,Auto">
+	<Grid RowDefinitions="Auto,Auto,*,Auto">
 
 		<!-- Header -->
         <Grid RowDefinitions="Auto,*">
@@ -40,8 +40,58 @@
 			</Grid>
 		</Grid>
 
+		<!-- ✅ Filter Bar — ثابت فوق (مش جوه الـ CollectionView) فيفضل ظاهر حتى لو الدريفر عمل سكرول -->
+		<VerticalStackLayout Grid.Row="1" BackgroundColor="White" Padding="0,10,0,8" Spacing="8">
+
+			<!-- شرائح النطاق: الكل / جوه النطاق / برّه النطاق -->
+			<CollectionView ItemsSource="{Binding RangeFilters}" HeightRequest="38" Margin="12,0,0,0">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout Orientation="Horizontal" ItemSpacing="8"/>
+				</CollectionView.ItemsLayout>
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="vm:FilterChipItem">
+						<Border Padding="14,0" HeightRequest="34" StrokeShape="RoundRectangle 17" Stroke="Transparent"
+                                BackgroundColor="{Binding IsSelected, Converter={StaticResource RangeChipBgConverter}}">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer
+									Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AvailableOrdersViewModel}}, Path=SelectRangeFilterCommand}"
+									CommandParameter="{Binding .}"/>
+							</Border.GestureRecognizers>
+							<Label Text="{Binding Label}" FontFamily="CairoBold" FontSize="12"
+                                   TextColor="{Binding IsSelected, Converter={StaticResource ChipTextColorConverter}}"
+                                   VerticalOptions="Center" HorizontalOptions="Center"/>
+						</Border>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+			<!-- شرائح المنطقة: الكل + منطقة لكل مجموعة محلات (مستنتجة من الإحداثيات) فيها طلبات دلوقتي -->
+			<CollectionView ItemsSource="{Binding ZoneFilters}" HeightRequest="34" Margin="12,0,0,0">
+				<CollectionView.ItemsLayout>
+					<LinearItemsLayout Orientation="Horizontal" ItemSpacing="8"/>
+				</CollectionView.ItemsLayout>
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="vm:FilterChipItem">
+						<Border Padding="12,0" HeightRequest="30" StrokeShape="RoundRectangle 15" Stroke="Transparent"
+                                BackgroundColor="{Binding IsSelected, Converter={StaticResource ZoneChipBgConverter}}">
+							<Border.GestureRecognizers>
+								<TapGestureRecognizer
+									Command="{Binding Source={RelativeSource AncestorType={x:Type vm:AvailableOrdersViewModel}}, Path=SelectZoneFilterCommand}"
+									CommandParameter="{Binding .}"/>
+							</Border.GestureRecognizers>
+							<Label Text="{Binding Label}" FontFamily="CairoRegular" FontSize="11"
+                                   TextColor="{Binding IsSelected, Converter={StaticResource ChipTextColorConverter}}"
+                                   VerticalOptions="Center" HorizontalOptions="Center"/>
+						</Border>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+
+			<BoxView HeightRequest="1" Color="#F0F0F0" Margin="0,2,0,0"/>
+		</VerticalStackLayout>
+
 		<!-- Orders List -->
-		<RefreshView Grid.Row="1"
+		<RefreshView Grid.Row="2"
                      Command="{Binding LoadCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
 			<CollectionView ItemsSource="{Binding Orders}"
@@ -63,11 +113,19 @@
 								<!-- Top: Restaurant + Time -->
 								<Grid ColumnDefinitions="*,Auto">
 									<VerticalStackLayout Grid.Column="0" Spacing="6">
-										<Border BackgroundColor="#FFF3EE" Stroke="#FFD9CC" StrokeShape="RoundRectangle 8"
-										        Padding="8,2" HorizontalOptions="Start">
-											<Label Text="{Binding Id, StringFormat='#{0}'}"
-											       FontFamily="CairoBold" FontSize="12" TextColor="#FF5722"/>
-										</Border>
+										<HorizontalStackLayout Spacing="6">
+											<Border BackgroundColor="#FFF3EE" Stroke="#FFD9CC" StrokeShape="RoundRectangle 8"
+											        Padding="8,2" HorizontalOptions="Start">
+												<Label Text="{Binding Id, StringFormat='#{0}'}"
+												       FontFamily="CairoBold" FontSize="12" TextColor="#FF5722"/>
+											</Border>
+											<Border BackgroundColor="#F0F6FF" Stroke="#D8E9FF" StrokeShape="RoundRectangle 8"
+											        Padding="8,2" HorizontalOptions="Start"
+											        IsVisible="{Binding ZoneName, Converter={StaticResource StringNotEmpty}}">
+												<Label Text="{Binding ZoneName}"
+												       FontFamily="CairoRegular" FontSize="11" TextColor="#1976D2"/>
+											</Border>
+										</HorizontalStackLayout>
 										<HorizontalStackLayout Spacing="8">
 										<Label Text="🏪" FontSize="18" VerticalOptions="Center"/>
 										<Label Text="{Binding RestaurantName}"
@@ -135,13 +193,13 @@
 		</RefreshView>
 
 		<!-- Busy overlay -->
-		<Grid Grid.Row="1" IsVisible="{Binding IsBusy}"
+		<Grid Grid.Row="2" IsVisible="{Binding IsBusy}"
               BackgroundColor="#80FFFFFF">
 			<ActivityIndicator IsRunning="True" Color="#FF5722"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
 		</Grid>
 
-		<controls:CurvedBottomBar Grid.Row="2" SelectedTab="orders"
+		<controls:CurvedBottomBar Grid.Row="3" SelectedTab="orders"
                                  HorizontalOptions="Fill" Margin="0" Padding="0"/>
 	</Grid>
 </ContentPage>

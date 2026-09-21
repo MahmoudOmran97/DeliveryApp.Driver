@@ -86,3 +86,33 @@ public class CanAcceptToTextColorConverter : IValueConverter
     public object ConvertBack(object? v, Type t, object? p, CultureInfo c)
         => throw new NotImplementedException();
 }
+
+// ✅ فلتر شريط الطلبات المتاحة: شريحة النطاق المختارة → برتقالي، غير مختارة → رمادي فاتح
+public class RangeChipBgConverter : IValueConverter
+{
+    public object Convert(object? v, Type t, object? p, CultureInfo c)
+        => v is true ? Color.FromArgb("#FF5722") : Color.FromArgb("#F0F0F0");
+
+    public object ConvertBack(object? v, Type t, object? p, CultureInfo c)
+        => throw new NotImplementedException();
+}
+
+// ✅ فلتر شريط الطلبات المتاحة: شريحة المنطقة المختارة → أزرق، غير مختارة → رمادي فاتح
+public class ZoneChipBgConverter : IValueConverter
+{
+    public object Convert(object? v, Type t, object? p, CultureInfo c)
+        => v is true ? Color.FromArgb("#1976D2") : Color.FromArgb("#F0F0F0");
+
+    public object ConvertBack(object? v, Type t, object? p, CultureInfo c)
+        => throw new NotImplementedException();
+}
+
+// شريحة مختارة → نص أبيض، غير مختارة → نص رمادي غامق (بيتشارك بين نوعين الفلتر فوق)
+public class ChipTextColorConverter : IValueConverter
+{
+    public object Convert(object? v, Type t, object? p, CultureInfo c)
+        => v is true ? Colors.White : Color.FromArgb("#616161");
+
+    public object ConvertBack(object? v, Type t, object? p, CultureInfo c)
+        => throw new NotImplementedException();
+}
